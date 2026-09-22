@@ -64,7 +64,7 @@ budget. Ten worked scripts, from a two-user follow to an IDOR boundary setup, ar
 bug-bounty-research requires or works with
 
 * **Node 22.19.0 or newer.**
-* **An MCP client** — Meta Code, Claude Code, or anything else that speaks MCP over stdio.
+* **An MCP client** — Muse Code, MetaCode, Claude Code, or anything else that speaks MCP over stdio.
 * **A bug bounty researcher API token.** Mint one at
   <https://www.facebook.com/whitehat/fbdl/generate_api_token> — you must be logged in to
   facebook.com for the mint to work. Tokens last 60 days.
@@ -98,33 +98,107 @@ tests drive a real client against a real server over an in-memory transport.
 
 ## Installing bug-bounty-research
 
-**Meta Code** — register the servers you want:
+This package is not on a public registry, so build it once and register the servers by path:
+
+```bash
+npm install
+npm run build          # tsc -> dist/
+pwd                    # the absolute path used below
+```
+
+That leaves three entry points, each one a stdio MCP server: `dist/meta-context/index.js`,
+`dist/sparta/index.js` and `dist/fbdl/index.js`. Run them with `node`, by absolute path.
+
+### Muse Code
+
+Muse has no `mcp add` subcommand — `muse mcp` only logs in to remote servers over OAuth. Register a
+server by editing `${XDG_CONFIG_HOME:-$HOME/.config}/muse/settings.json` and adding it to the
+`mcpServers` object, creating the file as `{"schema_version": 1, "mcpServers": {…}}` if it is not
+there yet:
+
+```json
+{
+  "schema_version": 1,
+  "mcpServers": {
+    "meta-context": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/path/to/bug-bounty-research/dist/meta-context/index.js"],
+      "env": { "BB_RESEARCH_TOKEN": "EAAB…" },
+      "mode": "optional"
+    },
+    "sparta": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/path/to/bug-bounty-research/dist/sparta/index.js"],
+      "env": { "BB_RESEARCH_TOKEN": "EAAB…" },
+      "mode": "optional"
+    },
+    "fbdl": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/path/to/bug-bounty-research/dist/fbdl/index.js"],
+      "env": { "BB_RESEARCH_TOKEN": "EAAB…" },
+      "mode": "optional"
+    }
+  }
+}
+```
+
+Four things about that file are easy to get wrong, and three of them fail quietly:
+
+* **The token has to be inside `env`.** Muse starts a stdio server with a fixed allowlist of your
+  environment — `HOME`, `LANG`, `LOGNAME`, `PATH`, `PWD`, `SHELL`, `SHLVL`, `TERM`, `USER` — plus
+  whatever that entry's `env` map holds, and it does not expand `${VAR}`. Nothing in
+  [Configuration](#configuration) below reaches a server from your shell: an exported
+  `BB_RESEARCH_TOKEN` is not seen, and neither are the proxy variables under
+  [Running through Burp](#running-through-burp).
+* **Keep `"mode": "optional"`.** A server is required by default, so one that fails to start takes
+  Muse down with it. Never write `required` next to `mode` — the pair is an ambiguous-alias fault
+  that drops your *whole* `mcpServers` member, so every server you already had stops loading and
+  plugin installs start failing with `MCP configuration error`.
+* **The key is `mcpServers`, camelCase.** A legacy `mcp_servers` key sitting next to it makes the
+  loader drop the MCP member entirely; rename it rather than adding beside it.
+* **Changes apply on the next launch.** The running session does not pick up a new server.
+
+The agent skills install one at a time:
+
+```bash
+for s in meta-context sparta use-fbdl-mcp generate-fbdl validate-fbdl; do
+  muse skills install "skills/$s" --scope user
+done
+```
+
+Installing this package into Muse as a Claude plugin bundle instead gets you the skills and none of
+the servers: Muse rejects a foreign plugin's MCP entries when they carry an `env` map, which all
+three of ours do (`muse plugins validate .` reports `rejected: non-empty-env`, `mcp=0`).
+
+### MetaCode
+
+A different product, with an `mcp` subcommand that writes the config for you:
 
 ```bash
 export BB_RESEARCH_TOKEN='EAAB…'
 
-metacode mcp add meta-context -- npx -y bug-bounty-research meta-context-mcp
-metacode mcp add sparta       -- npx -y bug-bounty-research sparta-mcp
-metacode mcp add fbdl         -- npx -y bug-bounty-research fbdl-mcp
+metacode mcp add meta-context -- node /path/to/bug-bounty-research/dist/meta-context/index.js
+metacode mcp add sparta       -- node /path/to/bug-bounty-research/dist/sparta/index.js
+metacode mcp add fbdl         -- node /path/to/bug-bounty-research/dist/fbdl/index.js
 ```
 
-Add `--scope project` to write into the repo's config instead of your global one, or
-`--env BB_RESEARCH_TOKEN=EAAB…` to pin the token per server rather than inheriting it from the
-shell. `metacode mcp list` shows what registered and whether it connected.
+Unlike Muse, MetaCode hands a stdio server your whole environment, so an exported token reaches it
+and everything under [Configuration](#configuration) works from the shell. Add `--scope project` to
+write into the repo's config instead of your global one — it needs the directory to be a git
+repository — or `--env BB_RESEARCH_TOKEN=EAAB…` to pin the token per server. `metacode mcp list`
+shows what registered and whether it connected.
 
-**Claude Code**, where the plugin registers all three servers *and* their agent skills in one step:
+### Any other MCP client
 
-```bash
-claude plugin install bug-bounty-research
-export BB_RESEARCH_TOKEN='EAAB…'
-```
-
-**Any other MCP client** — the three binaries speak stdio and can be run directly:
+Point it at the same three commands; they speak stdio and can be run directly:
 
 ```bash
-npx -y bug-bounty-research meta-context-mcp
-npx -y bug-bounty-research sparta-mcp
-npx -y bug-bounty-research fbdl-mcp
+node /path/to/bug-bounty-research/dist/meta-context/index.js
+node /path/to/bug-bounty-research/dist/sparta/index.js
+node /path/to/bug-bounty-research/dist/fbdl/index.js
 ```
 
 ### Configuration
@@ -157,7 +231,8 @@ handshake shows up in your client as "server failed to start", which tells you n
 to fix.
 
 > The token is a bearer credential. Prefer whatever your client offers for reading it from the
-> environment over writing it into a config file.
+> environment over writing it into a config file — except in Muse Code, which passes a stdio server
+> almost none of your environment, so the literal `env` map in `settings.json` is the only way in.
 
 ### Running through Burp
 
@@ -168,6 +243,9 @@ everything else:
 export HTTPS_PROXY=http://127.0.0.1:8080
 export NODE_EXTRA_CA_CERTS=$HOME/burp-ca.pem
 ```
+
+In Muse Code an export does not reach the server — put both in that server's `env` map in
+`settings.json` instead.
 
 `NO_PROXY` is respected, including `*`, bare domains, leading-dot domains and `host:port` entries.
 `BB_RESEARCH_PROXY_URL` overrides all of them if you want these servers proxied and nothing else.
@@ -284,10 +362,10 @@ the other half for whatever you and your agent do.
 
 ### Agent skills
 
-Everything under [`skills/`](skills/) ships with the package and is registered automatically by the
-Claude Code plugin. They teach an agent which tool to reach for, the gotchas that cost requests to
-discover, and which errors are worth retrying. Copy them into your agent's skill directory if your
-client does not pick them up automatically.
+Everything under [`skills/`](skills/) ships with the package. They teach an agent which tool to
+reach for, the gotchas that cost requests to discover, and which errors are worth retrying. Muse
+Code takes them one at a time with `muse skills install skills/<name> --scope user`; for any other
+client, copy them into its skill directory.
 
 ### Layout
 

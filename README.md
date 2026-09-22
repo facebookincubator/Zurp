@@ -5,8 +5,8 @@ login and a different token for every question they have about a Meta endpoint. 
 umbrella, not the tool**: FBDL, SPARTA and Meta Context are each their own tool with their own API,
 and Zurp is where they meet. The Burp extension puts all of them in one suite tab, on the traffic
 you are already proxying. The MCP servers and agent skills expose the same tools, over the same
-APIs, on the same token, to whatever agentic setup you prefer — [Meta Code](#installing-the-mcp-servers),
-Claude Code, or any MCP client.
+APIs, on the same token, to whatever agentic setup you prefer — [Muse Code](#installing-the-mcp-servers),
+MetaCode, Claude Code, or any MCP client.
 
 | Tool | What it answers | In Burp | For an agent |
 |---|---|---|---|
@@ -55,7 +55,7 @@ against that endpoint:
  61237498765432   GROUP   Test Group 7
 ```
 
-**Ask your agent instead.** With the MCP servers installed, hand a raw capture to Meta Code or
+**Ask your agent instead.** With the MCP servers installed, hand a raw capture to Muse Code or
 Claude Code and let it scrape the identifiers out for you:
 
 ```
@@ -87,7 +87,8 @@ Zurp requires or works with
   `burp.api.montoya.utilities.json`, which landed in that release.
 * **Java 17**, to build the extension. Burp supplies its own JVM to run it.
 * **Node 22.19.0 or newer**, for the MCP servers. The Burp extension does not need it.
-* **An MCP client**, for the agent side — Meta Code, Claude Code, or anything else that speaks MCP.
+* **An MCP client**, for the agent side — Muse Code, MetaCode, Claude Code, or anything else that
+  speaks MCP over stdio.
 * **A bug bounty researcher API token.** Mint one at
   <https://www.facebook.com/whitehat/fbdl/generate_api_token> — you must be logged in to
   facebook.com for the mint to work. Tokens last 60 days, and **one token drives everything here**:
@@ -162,33 +163,97 @@ the precedence rules.
 code with the Java here, so a researcher who does not run Burp can install it on its own. Each tool
 is a separate server — register the ones you want.
 
-**Meta Code:**
+The package is not on a public registry, so build it once and register the servers by path:
+
+```bash
+cd bug-bounty-research
+npm install
+npm run build          # tsc -> dist/
+pwd                    # the absolute path used below
+```
+
+That leaves three entry points, each one a stdio MCP server: `dist/meta-context/index.js`,
+`dist/sparta/index.js` and `dist/fbdl/index.js`. Run them with `node`, by absolute path.
+
+**Muse Code** has no `mcp add` subcommand — `muse mcp` only logs in to remote servers over OAuth.
+Register a server by editing `${XDG_CONFIG_HOME:-$HOME/.config}/muse/settings.json` and adding it to
+the `mcpServers` object, creating the file as `{"schema_version": 1, "mcpServers": {…}}` if it is not
+there yet:
+
+```json
+{
+  "schema_version": 1,
+  "mcpServers": {
+    "meta-context": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/path/to/Zurp/bug-bounty-research/dist/meta-context/index.js"],
+      "env": { "BB_RESEARCH_TOKEN": "EAAB…" },
+      "mode": "optional"
+    },
+    "sparta": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/path/to/Zurp/bug-bounty-research/dist/sparta/index.js"],
+      "env": { "BB_RESEARCH_TOKEN": "EAAB…" },
+      "mode": "optional"
+    },
+    "fbdl": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/path/to/Zurp/bug-bounty-research/dist/fbdl/index.js"],
+      "env": { "BB_RESEARCH_TOKEN": "EAAB…" },
+      "mode": "optional"
+    }
+  }
+}
+```
+
+Four things about that file are easy to get wrong, and three of them fail quietly:
+
+* **The token has to be inside `env`.** Muse starts a stdio server with a fixed allowlist of your
+  environment — `HOME`, `LANG`, `LOGNAME`, `PATH`, `PWD`, `SHELL`, `SHLVL`, `TERM`, `USER` — plus
+  whatever that entry's `env` map holds, and it does not expand `${VAR}`. An exported
+  `BB_RESEARCH_TOKEN` never reaches the server, and neither do `HTTPS_PROXY`, `NO_PROXY` or
+  `NODE_EXTRA_CA_CERTS`: to run these through Burp, put those in `env` too.
+* **Keep `"mode": "optional"`.** A server is required by default, so one that fails to start takes
+  Muse down with it. Never write `required` next to `mode` — the pair is an ambiguous-alias fault
+  that drops your *whole* `mcpServers` member, so every server you already had stops loading and
+  plugin installs start failing with `MCP configuration error`.
+* **The key is `mcpServers`, camelCase.** A legacy `mcp_servers` key sitting next to it makes the
+  loader drop the MCP member entirely; rename it rather than adding beside it.
+* **Changes apply on the next launch.** The running session does not pick up a new server.
+
+The agent skills install one at a time, from the package:
+
+```bash
+cd bug-bounty-research
+for s in meta-context sparta use-fbdl-mcp generate-fbdl validate-fbdl; do
+  muse skills install "skills/$s" --scope user
+done
+```
+
+**MetaCode** — a different product, with an `mcp` subcommand that writes the config for you:
 
 ```bash
 export BB_RESEARCH_TOKEN='EAAB…'
 
-metacode mcp add meta-context -- npx -y bug-bounty-research meta-context-mcp
-metacode mcp add sparta       -- npx -y bug-bounty-research sparta-mcp
-metacode mcp add fbdl         -- npx -y bug-bounty-research fbdl-mcp
+metacode mcp add meta-context -- node /path/to/Zurp/bug-bounty-research/dist/meta-context/index.js
+metacode mcp add sparta       -- node /path/to/Zurp/bug-bounty-research/dist/sparta/index.js
+metacode mcp add fbdl         -- node /path/to/Zurp/bug-bounty-research/dist/fbdl/index.js
 ```
 
-Add `--scope project` to write into the repo's config instead of your global one, or
-`--env BB_RESEARCH_TOKEN=EAAB…` to pin the token per server rather than inheriting it from the
-shell. `metacode mcp list` shows what registered and whether it connected.
+Unlike Muse, MetaCode hands a stdio server your whole environment, so an exported token reaches it.
+Add `--scope project` to write into the repo's config instead of your global one — it needs the
+directory to be a git repository — or `--env BB_RESEARCH_TOKEN=EAAB…` to pin the token per server.
+`metacode mcp list` shows what registered and whether it connected.
 
-**Claude Code**, where the plugin registers all three servers *and* their agent skills in one step:
-
-```bash
-claude plugin install bug-bounty-research
-export BB_RESEARCH_TOKEN='EAAB…'
-```
-
-**Any other MCP client** — the three binaries speak stdio:
+**Claude Code and any other MCP client** — point it at the same three commands:
 
 ```bash
-npx -y bug-bounty-research meta-context-mcp
-npx -y bug-bounty-research sparta-mcp
-npx -y bug-bounty-research fbdl-mcp
+node /path/to/Zurp/bug-bounty-research/dist/meta-context/index.js
+node /path/to/Zurp/bug-bounty-research/dist/sparta/index.js
+node /path/to/Zurp/bug-bounty-research/dist/fbdl/index.js
 ```
 
 The agent skills in [`bug-bounty-research/skills/`](bug-bounty-research/skills/) teach an agent

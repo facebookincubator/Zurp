@@ -1,0 +1,18 @@
+# IDOR / Authorization Boundary Testing
+# Bug bounty scenario: set up entities across two separate businesses to test cross-boundary access.
+# Tests whether employees/admins of one business can access assets of another.
+# Covers: Business, Page, App, gen_token, biz_assign_partner_asset, biz_request_page_access
+
+[setup] User OwnerA User OwnerB User EmployeeA User EmployeeB Page PageA with {owner: OwnerA} Page PageB with {owner: OwnerB} App AppA with {owner: OwnerA, live: true, type: business}
+OwnerA create_business BizA with {primary_page: PageA}
+OwnerB create_business BizB with {primary_page: PageB}
+OwnerA add_biz_employees BizA with {new_roles: [EmployeeA]}
+OwnerB add_biz_employees BizB with {new_roles: [EmployeeB]}
+OwnerA biz_link_app BizA with {app: AppA}
+OwnerA create_ad_account AdAcctA with {business: BizA}
+OwnerB create_ad_account AdAcctB with {business: BizB}
+OwnerA add_ad_admins AdAcctA with {new_roles: [EmployeeA]}
+OwnerB add_ad_admins AdAcctB with {new_roles: [EmployeeB]}
+OwnerA biz_request_page_access BizA with {page: PageB, permissions: [manage, advertise]}
+OwnerA gen_token TokenA with {app: AppA, scopes: [ads_management, ads_read]}
+OwnerB gen_token TokenB with {app: fb4a}

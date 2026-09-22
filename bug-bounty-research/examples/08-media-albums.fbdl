@@ -1,0 +1,15 @@
+# Media and Albums
+# Shared album workflow: create album, add photos/videos, tag users, add contributors.
+# Covers: Album, create_album, add_photo, add_video, tag_photo, add_contributors, add_cover_photo, add_story
+
+[setup] User Photographer User Model User Viewer Album SharedAlbum with {owner: Photographer, type: shared, place: Photographer, privacy: friends_only, contributors: [Model]}
+Photographer add_photo PhotoOne with {album: SharedAlbum, place: Photographer}
+Photographer add_photo PhotoTwo with {album: SharedAlbum, place: Photographer}
+Model add_photo ModelPhoto with {album: SharedAlbum, place: Photographer}
+Photographer add_video BehindScenes with {album: SharedAlbum, place: Photographer}
+Photographer tag_photo PhotoOne with {taggee: Model}
+Photographer tag_photo PhotoTwo with {taggee: Model}
+Photographer add_contributors SharedAlbum with {new_roles: [Viewer]}
+Photographer make_post_photo AlbumPost with {place: Photographer, text: 'New photoshoot!', attachment_label: CoverShot}
+Photographer add_cover_photo NewCover with {place: Photographer}
+Photographer add_story DayStory

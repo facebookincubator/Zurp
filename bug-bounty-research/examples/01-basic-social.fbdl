@@ -1,0 +1,12 @@
+# Basic Social Interactions
+# Two users become friends, post, comment, like, share, and message each other.
+# Covers: User, Friendship, make_post_text, make_comment, like_post, share_post, send_message
+
+[setup] User Alice User Bob Friendship with {sender: Alice, receivers: [Bob]}
+Alice make_post_text AlicePost with {place: Alice, text: 'Just joined the platform!'}
+Bob like_post AlicePost
+Bob make_comment BobComment with {place: AlicePost, text: 'Welcome aboard!', tagged_object: Alice}
+Alice make_comment AliceReply with {place: AlicePost, replied_comment: BobComment, text: 'Thanks Bob!'}
+Bob share_post SharedPost with {post: AlicePost, place: Bob, text: 'Check out my friend Alice'}
+Alice send_message Bob with {text: 'Thanks for sharing my post!'}
+Bob send_message Alice with {text: 'No problem!'}

@@ -159,6 +159,17 @@ public abstract class ZurpDataFetcher {
     }
     ZurpLog.output("fetchDataAsynchronously - " + dataTypeName + " (" + batch.size() + ")");
 
+    // Only what this tick will actually fetch. The snapshot still holds everything queued,
+    // including items a previous tick left in flight, and priming those again would spend a batch
+    // call per tick on answers already in hand.
+    List<String> unstarted = new ArrayList<>();
+    for (String dataItem : batch) {
+      if (!inFlight.contains(dataItem)) {
+        unstarted.add(dataItem);
+      }
+    }
+    prefetch(unstarted);
+
     for (String dataItem : batch) {
       // A tick fires every 10s whether or not the previous one settled; without this the same
       // item is fetched once per tick until it lands.
@@ -192,6 +203,13 @@ public abstract class ZurpDataFetcher {
           });
     }
   }
+
+  /**
+   * Called once a tick with everything queued, before any of it is fetched. Override to resolve the
+   * whole tick in one call and cache the answers, so each {@link #fetchData} that follows costs
+   * nothing. The default does nothing, leaving one call per item.
+   */
+  protected void prefetch(List<String> dataItems) {}
 
   /**
    * Override to distinguish a transient failure worth retrying from a permanent one. The default

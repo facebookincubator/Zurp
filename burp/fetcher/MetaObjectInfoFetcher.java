@@ -26,7 +26,7 @@ public class MetaObjectInfoFetcher extends ZurpDataFetcher {
 
   @Override
   protected FetchOutcome fetchData(String dataItem) {
-    AssetResolver.Lookup lookup = Zurp.assetResolver.lookup(dataItem);
+    AssetResolver.Lookup lookup = Zurp.assetResolver.lookup(dataItem, true);
     if (lookup.assets == null) {
       return lookup.outcome;
     }
@@ -64,5 +64,10 @@ public class MetaObjectInfoFetcher extends ZurpDataFetcher {
           persistedObj.getString("object_type"));
     }
     return null;
+  }
+
+  @Override
+  protected void prefetch(java.util.List<String> dataItems) {
+    Zurp.assetResolver.prime(dataItems);
   }
 }

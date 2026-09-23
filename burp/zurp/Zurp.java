@@ -45,6 +45,7 @@ public class Zurp implements BurpExtension {
 
   public static MetaObjectInfoFetcher metaObjectInfoFetcher;
   public static MetaUrlInfoFetcher metaUrlInfoFetcher;
+  public static MetaGraphqlInfoFetcher metaGraphqlInfoFetcher;
   public static SpartaFindingFetcher spartaFindingFetcher;
   public static FbdlRunFetcher fbdlRunFetcher;
 
@@ -77,9 +78,15 @@ public class Zurp implements BurpExtension {
     this.spartaFindingFetcher = new SpartaFindingFetcher();
     this.metaObjectInfoFetcher = new MetaObjectInfoFetcher();
     this.metaUrlInfoFetcher = new MetaUrlInfoFetcher();
+    this.metaGraphqlInfoFetcher = new MetaGraphqlInfoFetcher();
     this.fbdlRunFetcher = new FbdlRunFetcher();
     this.fetchers =
-        List.of(spartaFindingFetcher, metaObjectInfoFetcher, metaUrlInfoFetcher, fbdlRunFetcher);
+        List.of(
+            spartaFindingFetcher,
+            metaObjectInfoFetcher,
+            metaUrlInfoFetcher,
+            metaGraphqlInfoFetcher,
+            fbdlRunFetcher);
 
     // http handler that will process meta request
     api.http().registerHttpHandler(new MetaHttpHandler());

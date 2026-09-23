@@ -37,6 +37,14 @@ class FbdlRunStore {
   private static final String F_RUN_CODE = "run_code";
   private static final String F_NOTE = "note";
   private static final String F_EXCEPTION_STACK = "exception_stack";
+
+  /**
+   * Set only by the detail fetch. Presence of labels cannot stand in for this: a run that failed,
+   * or completed without producing any, has none either way, and inferring from them re-queues it
+   * on every sweep forever.
+   */
+  private static final String F_DETAIL_FETCHED = "detail_fetched";
+
   private static final String F_RESULT = "result";
   private static final String F_LABEL = "label";
   private static final String F_VALUE = "value";
@@ -96,6 +104,15 @@ class FbdlRunStore {
   }
 
   synchronized void put(FbdlRunModel run) {
+    write(run, false);
+  }
+
+  /** Stores the full run, and records that its detail has been fetched. */
+  synchronized void putDetail(FbdlRunModel run) {
+    write(run, true);
+  }
+
+  private void write(FbdlRunModel run, boolean detailFetched) {
     PersistedObject stored = PersistedObject.persistedObject();
     stored.setString(F_ID, run.id);
     stored.setString(F_RUN_STATUS, run.status.wireValue());
@@ -103,6 +120,7 @@ class FbdlRunStore {
     stored.setString(F_RUN_CODE, run.runCode);
     stored.setString(F_NOTE, run.note);
     stored.setString(F_EXCEPTION_STACK, run.exceptionStack);
+    stored.setBoolean(F_DETAIL_FETCHED, detailFetched);
 
     PersistedObject results = PersistedObject.persistedObject();
     PersistedList<String> labels = PersistedList.persistedStringList();
@@ -163,9 +181,9 @@ class FbdlRunStore {
   }
 
   /** Whether the full run has been fetched, as opposed to just the summary from a list. */
-  synchronized boolean hasResults(String runId) {
+  synchronized boolean hasDetail(String runId) {
     PersistedObject stored = runs.getChildObject(runId);
-    return stored != null && !toStringList(stored.getStringList(RESULT_LABELS)).isEmpty();
+    return stored != null && Boolean.TRUE.equals(stored.getBoolean(F_DETAIL_FETCHED));
   }
 
   /** Newest first, which is the order the FBDL tab will want. */

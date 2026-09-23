@@ -7,27 +7,33 @@
 
 package burp.ui;
 
-import java.awt.GridLayout;
-import javax.swing.*;
+import burp.models.MetaContextTableModel;
+import java.awt.BorderLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
+/**
+ * Everything the current request's identifiers resolved to.
+ *
+ * <p>A table rather than fixed fields because one request can name any number of assets of several
+ * kinds: a URL is an XController or a Graph edge, its query string can carry an object id, and a
+ * GraphQL call names a persisted document and an operation.
+ */
 public class MetaRequestContextInfo extends JPanel {
 
-  public String url;
-  public String controllerName;
+  public MetaRequestContextInfo(MetaContextTableModel assets) {
+    setLayout(new BorderLayout());
 
-  public MetaRequestContextInfo(String url, String controllerName) {
-    this.url = url;
-    this.controllerName = controllerName;
-    setLayout(new GridLayout(2, 2));
+    if (assets.getRowCount() == 0) {
+      // Distinct from a failure: most requests carry identifiers that name nothing.
+      add(new JLabel("No assets resolved for this request."), BorderLayout.NORTH);
+      return;
+    }
 
-    add(new JLabel("URL:"));
-    JTextField urlField = new JTextField(url);
-    urlField.setEditable(false);
-    add(urlField);
-
-    add(new JLabel("Controller Name:"));
-    JTextField controllerNameField = new JTextField(controllerName);
-    controllerNameField.setEditable(false);
-    add(controllerNameField);
+    JTable table = new JTable(assets);
+    table.setAutoCreateRowSorter(true);
+    add(new JScrollPane(table), BorderLayout.CENTER);
   }
 }

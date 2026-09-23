@@ -8,6 +8,7 @@
 package burp.fetcher;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -43,8 +44,9 @@ public class AssetResolverAssetsTest {
   }
 
   @Test
-  public void testKindsDoNotBleedIntoEachOther() {
-    // The case that makes one endpoint viable for both fetchers: a URL carrying an FBID in its
+  public void
+      testKindsDoNotBleedIntoEachOther() { // The case that makes one endpoint viable for both
+    // fetchers: a URL carrying an FBID in its
     // query string resolves to both kinds at once, and each fetcher must see only its own.
     AssetResolver.Assets assets = new AssetResolver.Assets();
     assets.add(AssetResolver.XCONTROLLER, "SomeXController");
@@ -111,5 +113,46 @@ public class AssetResolverAssetsTest {
     assets.setObjectName("zuck");
 
     assertEquals("zuck", assets.objectName());
+  }
+
+  @Test
+  public void testTheNewerKindsAreReadBackToo() {
+    // One request can name a GraphQL operation and a Graph edge as well as the two older kinds.
+    AssetResolver.Assets assets = new AssetResolver.Assets();
+    assets.add(AssetResolver.GRAPHQL, "CometFeedQuery");
+    assets.add(AssetResolver.GRAPH_EDGE, "/me/accounts");
+
+    assertEquals("CometFeedQuery", assets.one(AssetResolver.GRAPHQL, CONTEXT));
+    assertEquals("/me/accounts", assets.one(AssetResolver.GRAPH_EDGE, CONTEXT));
+    assertEquals("", assets.one(AssetResolver.XCONTROLLER, CONTEXT));
+  }
+
+  @Test
+  public void testAnUnknownKindIsDataRatherThanAFailure() {
+    // The type field is an open string: the server can grow a kind at any time, and a client that
+    // does not know it yet must not treat the response as broken.
+    AssetResolver.Assets assets = new AssetResolver.Assets();
+    assets.add("some_future_kind", "Whatever");
+
+    assertEquals("Whatever", assets.one("some_future_kind", CONTEXT));
+    assertEquals("", assets.one(AssetResolver.GRAPHQL, CONTEXT));
+  }
+
+  /**
+   * The batch path settles an identifier on emptiness alone, without a second call, so the
+   * difference between "resolved to nothing" and "carries assets" has to be exact.
+   */
+  @Test
+  public void testEmptyIsTheAbsenceOfEveryKind() {
+    AssetResolver.Assets none = new AssetResolver.Assets();
+    assertTrue(none.isEmpty());
+
+    // Rejected entries leave it empty: a blank name is not an asset.
+    none.add(AssetResolver.GRAPHQL, "");
+    none.add("", "SomethingQuery");
+    assertTrue(none.isEmpty());
+
+    none.add(AssetResolver.GRAPHQL, "ShopQuery");
+    assertFalse(none.isEmpty());
   }
 }

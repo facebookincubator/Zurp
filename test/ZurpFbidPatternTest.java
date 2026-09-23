@@ -101,4 +101,26 @@ public class ZurpFbidPatternTest {
     // \b at both ends: a 30 digit blob must not yield an 18 digit prefix.
     assertTrue(findAll("123456789012345678901234567890").isEmpty());
   }
+
+  /**
+   * Accounts predating the 100... scheme are 14 digits. Both of the real accounts this was first
+   * tested against were, so the old 15 floor made exactly the objects a researcher looks up
+   * invisible.
+   */
+  @Test
+  public void testFourteenDigitAccountMatches() {
+    assertTrue(matchesWhole("59646010200194"));
+    assertTrue(matchesWhole("59833010181715"));
+  }
+
+  /**
+   * The floor stops at 14 because 13 is unix milliseconds, which nearly every request carries.
+   * Reaching one digit lower would queue a clock reading per request for nothing.
+   */
+  @Test
+  public void testMillisecondTimestampStaysOutOfRange() {
+    assertFalse(matchesWhole("1789952697827"));
+    assertEquals(
+        List.of("59833010181715"), findAll("{\"id\":59833010181715,\"timestamp\":1789952697827}"));
+  }
 }

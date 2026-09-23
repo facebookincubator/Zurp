@@ -28,6 +28,7 @@ public class MetaHttpRequestEditor extends MetaHttpEditor
   public void setRequestResponse(HttpRequestResponse requestResponse) {
     this.requestResponse = requestResponse;
     editor.setContents(byteArray(requestResponse.request().toString()));
+    refreshMetaViewTabs();
   }
 
   @Override

@@ -323,14 +323,14 @@ public class FbdlRunFetcher extends ZurpDataFetcher {
 
   /**
    * A summary is worth a detail call while the run is unsettled, or once it has settled and its
-   * results are not cached. A stale unsettled run is skipped so the sweep does not requeue what
-   * {@link #fetchData} just gave up on.
+   * detail has never been fetched. A stale unsettled run is skipped so the sweep does not requeue
+   * what {@link #fetchData} just gave up on.
    */
   private boolean needsDetail(FbdlRunModel run) {
     if (!run.status.isTerminal()) {
       return !isStale(run);
     }
-    return !store().hasResults(run.id);
+    return !store().hasDetail(run.id);
   }
 
   /** Stores every summary on the page and returns them in the order the API sent them. */
@@ -347,8 +347,8 @@ public class FbdlRunFetcher extends ZurpDataFetcher {
       if (run == null) {
         continue;
       }
-      // Summary only: storing it would blank the results of a run already fetched in full.
-      if (!store().hasResults(run.id)) {
+      // Summary only: storing it would blank the detail of a run already fetched in full.
+      if (!store().hasDetail(run.id)) {
         store().put(run);
       }
       page.add(run);

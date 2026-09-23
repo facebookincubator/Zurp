@@ -27,11 +27,16 @@ public class ZurpUtils {
    * (common/fbid/db_spec.cpp allocates the ranges, and an id also has to land on a live shard).
    *
    * <p>The ceiling was 16, which silently hid every 17 and 18 digit object — the whole Instagram
-   * media range (17841400000000000 upward) among them. 15 is a deliberate floor rather than the
+   * media range (17841400000000000 upward) among them. 14 is a deliberate floor rather than the
    * true one: OIDs start around 2.2e9, but 10 digits is also unix seconds and 13 is milliseconds,
    * so reaching down there costs far more noise than it finds. 19 digits would be nanoseconds.
+   *
+   * <p>14 rather than 15 because accounts made before the 100... scheme are 14 digits, and they are
+   * disproportionately what a researcher looks up. The endpoint itself recognises an FBID from 11
+   * digits, but 13 is milliseconds and nearly every request carries one, so 14 is the lowest floor
+   * that sits in the gap between the two timestamp bands.
    */
-  public static final Pattern FBID_PATTERN = Pattern.compile("\\b\\d{15,18}\\b");
+  public static final Pattern FBID_PATTERN = Pattern.compile("\\b\\d{14,18}\\b");
 
   public static boolean isMetaUrl(String url) {
     Matcher matcherExclude = ZurpUtils.EXCLUDE_URL_PATTERN.matcher(url);

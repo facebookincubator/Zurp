@@ -30,6 +30,7 @@ public class MetaHttpResponseEditor extends MetaHttpEditor
   public void setRequestResponse(HttpRequestResponse requestResponse) {
     this.requestResponse = requestResponse;
     editor.setContents(byteArray(requestResponse.response().toString()));
+    refreshMetaViewTabs();
   }
 
   @Override

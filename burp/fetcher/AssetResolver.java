@@ -7,6 +7,7 @@
 
 package burp.fetcher;
 
+import burp.api.montoya.utilities.json.JsonArrayNode;
 import burp.api.montoya.utilities.json.JsonNode;
 import burp.api.montoya.utilities.json.JsonObjectNode;
 import burp.zurp.Zurp;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Resolves one identifier a researcher saw in traffic — an FBID, a URL, a persisted doc id — to the
@@ -32,10 +34,26 @@ public final class AssetResolver {
 
   private static final String ENDPOINT = "bug_bounty/assets";
 
+  private static final String BATCH_ENDPOINT = "bug_bounty/assets/batch";
+
+  /** The endpoint rejects a longer list rather than truncating it. */
+  private static final int MAX_BATCH_QUERIES = 200;
+
+  /**
+   * FBStefiBBResearcherBatchRateLimitingPolicy allows 100 batches an hour. Half, on the same
+   * reasoning as the single-lookup budget -- which still leaves 10,000 resolutions an hour against
+   * the 500 a one-at-a-time drain can manage.
+   */
+  private static final int HOURLY_BATCH_BUDGET = 50;
+
   /** Asset kinds, spelled as {@code WhitehatAssetUtils} returns them. */
   static final String ENT_OR_NODE = "ent_or_node";
 
   static final String XCONTROLLER = "xcontroller";
+
+  static final String GRAPHQL = "graphql";
+
+  static final String GRAPH_EDGE = "graph_edge";
 
   private static final int MAX_ATTEMPTS = 3;
 
@@ -49,14 +67,56 @@ public final class AssetResolver {
 
   private final HourlyCallBudget budget = new HourlyCallBudget(HOURLY_CALL_BUDGET);
 
+  private final HourlyCallBudget batchBudget = new HourlyCallBudget(HOURLY_BATCH_BUDGET);
+
+  /**
+   * What the last batch said about each identifier, consumed by the {@link #lookup} that follows.
+   * Most identifiers scraped out of traffic resolve to nothing -- timestamps, doc ids read as
+   * object ids -- and the point of the batch is to learn that for 1/200th of a call each.
+   */
+  private final Map<String, Assets> primed = new ConcurrentHashMap<>();
+
   /** Set when the endpoint answers 403: this account is not allowlisted, so stop asking. */
   private volatile boolean forbidden;
 
   private final Map<String, AtomicInteger> attempts = new ConcurrentHashMap<>();
 
-  /** False once the endpoint has refused us, or once this hour's budget is spent. */
+  /**
+   * How long to stop calling for after the server rate-limits us. Without this a 429 is retried on
+   * the next tick, and because a 429 reaches the server it also spends a client slot -- so a queue
+   * of any size turns into hundreds of refused calls a minute that can never succeed.
+   */
+  private static final long RATE_LIMIT_COOLDOWN_MILLIS = 5 * 60 * 1000L;
+
+  /** When the server last rate-limited the single lookup, plus the cooldown. */
+  private final AtomicLong rateLimitedUntil = new AtomicLong();
+
+  /**
+   * The same for the batch path, kept apart because the two are separate buckets server side --
+   * 1000 an hour against 100. Sharing one deadline switched batching off exactly when a spent
+   * single-lookup budget made it the only way left to resolve anything.
+   */
+  private final AtomicLong batchRateLimitedUntil = new AtomicLong();
+
+  /**
+   * False once the endpoint has refused us, once this hour's budget is spent, or while backing off
+   * from a 429.
+   */
+  /**
+   * False once the endpoint has refused us, or once neither way of reaching it can run: the single
+   * lookup and the batch have their own budgets and their own cooldowns, and either alone is enough
+   * to make a tick worthwhile.
+   */
   boolean isAvailable() {
-    return !forbidden && budget.remaining() > 0;
+    return !forbidden && (singleAvailable() || batchAvailable());
+  }
+
+  private boolean singleAvailable() {
+    return budget.remaining() > 0 && System.currentTimeMillis() >= rateLimitedUntil.get();
+  }
+
+  private boolean batchAvailable() {
+    return batchBudget.remaining() > 0 && System.currentTimeMillis() >= batchRateLimitedUntil.get();
   }
 
   /**
@@ -77,6 +137,11 @@ public final class AssetResolver {
   /** What one identifier resolved to. */
   static final class Assets {
     private final Map<String, List<String>> byKind = new LinkedHashMap<>();
+
+    /** True when the identifier named nothing at all, which is the common case for scraped ids. */
+    boolean isEmpty() {
+      return byKind.isEmpty();
+    }
 
     /** The object's vanity name, or "" — most identifiers have none. */
     private String objectName = "";
@@ -113,9 +178,89 @@ public final class AssetResolver {
     }
   }
 
+  /**
+   * Resolves everything in {@code queries} in as few calls as the batch endpoint allows, so the
+   * {@link #lookup} that follows for each one can answer without a call of its own. Best effort:
+   * anything not primed simply falls through to a single lookup.
+   *
+   * <p>A primed answer is complete except for {@code object_name}, which the batch endpoint omits
+   * because the vanity costs a profile-alias read each. A caller that needs it still pays for one
+   * lookup -- but only for the identifiers that resolved to something, which is the small minority.
+   */
+  void prime(List<String> queries) {
+    if (forbidden || !batchAvailable() || queries == null || queries.isEmpty()) {
+      return;
+    }
+    for (int from = 0; from < queries.size(); from += MAX_BATCH_QUERIES) {
+      List<String> chunk =
+          queries.subList(from, Math.min(from + MAX_BATCH_QUERIES, queries.size()));
+      if (!batchBudget.tryAcquire()) {
+        return;
+      }
+      JsonObjectNode request = JsonObjectNode.jsonObjectNode();
+      JsonArrayNode wanted = JsonArrayNode.jsonArrayNode();
+      for (String query : chunk) {
+        wanted.addString(query);
+      }
+      request.put("queries", wanted);
+
+      GraphApiRequester.ApiResponse response =
+          Zurp.requester.makePostRequest(BATCH_ENDPOINT, request);
+      if (!response.isOk()) {
+        if (response.statusCode == GraphApiRequester.NOT_ATTEMPTED) {
+          batchBudget.release();
+        }
+        // Deliberately not recorded against the identifiers: the single lookups that follow will
+        // meet the same refusal and settle them, so a batch failure costs a batch and nothing else.
+        outcomeFor(response.statusCode, "batch of " + chunk.size());
+        return;
+      }
+      primeFrom(response.body);
+    }
+  }
+
+  private void primeFrom(JsonObjectNode body) {
+    if (!body.hasArray("results")) {
+      ZurpLog.output(
+          "[AssetResolver] Batch response carried no results array: "
+              + GraphApiRequester.excerpt(body.toJsonString()));
+      return;
+    }
+    for (JsonNode element : body.get("results").asArray().asList()) {
+      if (!element.isObject()) {
+        continue;
+      }
+      JsonObjectNode entry = element.asObject();
+      String query = string(entry, "query");
+      if (!query.isEmpty()) {
+        primed.put(query, parse(entry));
+      }
+    }
+  }
+
   /** Never throws: a caller on a fetch tick gets an outcome, not an exception. */
   Lookup lookup(String query) {
+    return lookup(query, true);
+  }
+
+  /**
+   * @param needsObjectName whether the caller reads {@link Assets#objectName}, which only the
+   *     single lookup returns. When it does not, a primed answer is served whole and costs nothing.
+   */
+  Lookup lookup(String query, boolean needsObjectName) {
+    // Peeked rather than taken: a caller that needs object_name has to ask again anyway, and
+    // evicting here would throw the batch answer away and make the next tick re-batch for it.
+    Assets fromBatch = primed.get(query);
+    if (fromBatch != null && (fromBatch.isEmpty() || !needsObjectName)) {
+      primed.remove(query);
+      return new Lookup(ZurpDataFetcher.FetchOutcome.STORED, fromBatch);
+    }
     if (forbidden) {
+      return new Lookup(ZurpDataFetcher.FetchOutcome.RETRY, null);
+    }
+    // Checked here and not only per tick: a tick submits the whole queue at once, so without this
+    // the first 429 would set the cooldown while every task already in flight went out anyway.
+    if (System.currentTimeMillis() < rateLimitedUntil.get()) {
       return new Lookup(ZurpDataFetcher.FetchOutcome.RETRY, null);
     }
     if (!budget.tryAcquire()) {
@@ -137,6 +282,9 @@ public final class AssetResolver {
     }
 
     attempts.remove(query);
+    // The single answer supersedes anything the batch said, and leaving it would keep a stale copy
+    // for an identifier that is now settled.
+    primed.remove(query);
     return new Lookup(ZurpDataFetcher.FetchOutcome.STORED, parse(response.body));
   }
 
@@ -148,9 +296,25 @@ public final class AssetResolver {
               + "allowlist. No further asset lookups will be attempted.");
       return ZurpDataFetcher.FetchOutcome.RETRY;
     }
-    if (statusCode == GraphApiRequester.NOT_ATTEMPTED || statusCode == 429) {
-      // Says nothing about the identifier. Unset credentials and a spent quota are both common,
-      // and either would otherwise blacklist every identifier seen while it lasted.
+    if (statusCode == 429) {
+      // The researcher's own hourly allowance is gone, not this identifier's fault. Back off
+      // rather than retry on the next tick: the client budget resets when the extension reloads
+      // and the server's does not, so the two disagree and only the server's answer counts.
+      long now = System.currentTimeMillis();
+      // Whoever moves the deadline from a lapsed value is the one episode's start, so only that
+      // thread says so. A plain read-then-write would let every task in flight log it.
+      long previous = rateLimitedUntil.getAndSet(now + RATE_LIMIT_COOLDOWN_MILLIS);
+      if (previous <= now) {
+        ZurpLog.output(
+            "[AssetResolver] Rate limited by the server. Pausing asset lookups for "
+                + (RATE_LIMIT_COOLDOWN_MILLIS / 60000)
+                + " minutes.");
+      }
+      return ZurpDataFetcher.FetchOutcome.RETRY;
+    }
+    if (statusCode == GraphApiRequester.NOT_ATTEMPTED) {
+      // Says nothing about the identifier. Unset credentials are common, and would otherwise
+      // blacklist every identifier seen while they lasted.
       return ZurpDataFetcher.FetchOutcome.RETRY;
     }
     int attempt = attempts.computeIfAbsent(query, unused -> new AtomicInteger()).incrementAndGet();

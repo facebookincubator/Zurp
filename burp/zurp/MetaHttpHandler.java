@@ -20,6 +20,8 @@ import burp.csrf.CsrfScraper;
 import burp.csrf.CsrfTokenStore;
 import burp.fbdl.FbdlRewriter;
 import burp.models.SpartaTarget;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 class MetaHttpHandler implements HttpHandler {
@@ -137,34 +139,89 @@ class MetaHttpHandler implements HttpHandler {
       String responseText = requestResponse.response().toString();
 
       scrapeCsrf(request, responseText);
+      // Ahead of the object scan, so the doc ids it finds can be kept out of it: a doc id is 16-17
+      // digits and matches FBID_PATTERN, so without this every GraphQL request spends a lookup
+      // asking what its own doc id is as an object, and is told nothing.
+      Set<String> docIds = queueSpartaTargets(request, url);
 
       Matcher matcherResponse = ZurpUtils.FBID_PATTERN.matcher(responseText);
-
       while (matcherResponse.find()) {
-        Zurp.metaObjectInfoFetcher.addToQueue(matcherResponse.group());
+        queueObjectId(matcherResponse.group(), docIds);
       }
 
       Matcher matcherRequest = ZurpUtils.FBID_PATTERN.matcher(request.toString());
       while (matcherRequest.find()) {
-        Zurp.metaObjectInfoFetcher.addToQueue(matcherRequest.group());
+        queueObjectId(matcherRequest.group(), docIds);
       }
-
-      queueSpartaTargets(request, url);
     }
 
     return continueWith(responseReceived);
   }
 
-  private void queueSpartaTargets(HttpRequest request, String url) {
+  /**
+   * Queues one scraped number as an object id, unless it is one of the kinds the asset endpoint is
+   * known not to resolve. Each skipped id is a lookup not spent, and one fewer permanent entry in
+   * the failed set, which never shrinks.
+   */
+  private void queueObjectId(String candidate, Set<String> docIds) {
+    // The endpoint documents both of these: an FBID is "never with a leading zero", and a doc id
+    // has to be asked about as doc_id=<id>, which queueSpartaTargets already does.
+    if (candidate.startsWith("0") || docIds.contains(candidate) || isMicrosecondClock(candidate)) {
+      return;
+    }
+    Zurp.metaObjectInfoFetcher.addToQueue(candidate);
+  }
+
+  /** A microsecond reading of about now, which is 16 digits and so looks exactly like an FBID. */
+  private static final int MICROSECOND_DIGITS = 16;
+
+  /** How far from now a reading can be and still be a clock rather than an id. */
+  private static final long CLOCK_WINDOW_MILLIS = 7L * 24 * 60 * 60 * 1000;
+
+  /**
+   * Whether this is a timestamp in microseconds rather than an id. Two thirds of what a page load
+   * offers is these, and every one costs a lookup and then a permanent entry in the failed set.
+   *
+   * <p>Recognised by reading the leading digits as milliseconds and asking whether that lands near
+   * now. Narrow on purpose: a real id would have to begin with the current epoch to the millisecond
+   * to be caught by this, where a clock reading always does.
+   */
+  static boolean isMicrosecondClock(String candidate) {
+    if (candidate.length() != MICROSECOND_DIGITS) {
+      return false;
+    }
     try {
-      for (SpartaTarget target : SpartaTargetExtractor.extract(url, request.bodyToString())) {
+      long asMillis = Long.parseLong(candidate.substring(0, 13));
+      return Math.abs(asMillis - System.currentTimeMillis()) < CLOCK_WINDOW_MILLIS;
+    } catch (NumberFormatException e) {
+      return false;
+    }
+  }
+
+  /**
+   * @return the published doc ids seen, which are not object ids however much they look like it.
+   */
+  private Set<String> queueSpartaTargets(HttpRequest request, String url) {
+    Set<String> docIds = new HashSet<>();
+    try {
+      Set<SpartaTarget> targets = SpartaTargetExtractor.extract(url, request.bodyToString());
+      for (SpartaTarget target : targets) {
         ZurpLog.debug("SPARTA target from " + url + ": " + target.key());
+        if (target.type == SpartaTarget.Type.PUBLISHED_DOC_ID) {
+          docIds.add(target.id);
+        }
         Zurp.spartaFindingFetcher.addToQueue(target);
+      }
+      // The same two identifiers the asset endpoint can resolve, spelled the way it wants them.
+      for (String query : MetaAssetQueries.fromTargets(targets)) {
+        ZurpLog.debug("GraphQL asset from " + url + ": " + query);
+        Zurp.metaGraphqlInfoFetcher.addToQueue(query);
       }
     } catch (Exception e) {
       // Runs on every proxied response; an unexpected body shape must not break the traffic.
       ZurpLog.caught("SPARTA target extraction skipped", e);
     }
+    return docIds;
   }
 
   private void scrapeCsrf(HttpRequest request, String responseText) {

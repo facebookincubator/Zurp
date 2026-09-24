@@ -11,6 +11,7 @@ import burp.models.SpartaFindingTableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
+import javax.swing.ListSelectionModel;
 
 public class SpartaFindingTable extends JTable {
 
@@ -19,6 +20,8 @@ public class SpartaFindingTable extends JTable {
     setAutoCreateRowSorter(true);
     // Summary and PoC variables are long; scroll horizontally rather than squeeze every column.
     setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    // One finding is shown in the detail pane below, so more than one selection has nothing to mean.
+    setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     // Double click to select the cell
     addMouseListener(
@@ -32,5 +35,11 @@ public class SpartaFindingTable extends JTable {
             }
           }
         });
+  }
+
+  /** The model row behind the selection, which differs from the view row once sorted. */
+  public int selectedModelRow() {
+    int viewRow = getSelectedRow();
+    return viewRow < 0 ? -1 : convertRowIndexToModel(viewRow);
   }
 }

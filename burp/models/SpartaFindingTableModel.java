@@ -60,6 +60,11 @@ public class SpartaFindingTableModel extends AbstractTableModel {
     }
   }
 
+  /** Null when nothing is selected, or when the table has been reset under the selection. */
+  public synchronized SpartaFindingModel getRow(int rowIndex) {
+    return rowIndex >= 0 && rowIndex < data.size() ? data.get(rowIndex) : null;
+  }
+
   /** A finding can be reached through more than one target of the same request; show it once. */
   public synchronized void add(SpartaFindingModel finding) {
     if (finding != null && findingIds.add(finding.bbFindingId)) {

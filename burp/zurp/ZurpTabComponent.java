@@ -11,6 +11,7 @@ import burp.api.montoya.core.ToolType;
 import burp.fetcher.ZurpDataFetcher;
 import burp.models.FbdlRunModel;
 import burp.models.FbdlRunTableModel;
+import burp.models.SpartaFindingModel;
 import burp.models.SpartaFindingTableModel;
 import burp.ui.FbdlRunTable;
 import burp.ui.SpartaFindingTable;
@@ -27,6 +28,8 @@ import javax.swing.event.DocumentListener;
 public class ZurpTabComponent extends JPanel {
 
   private final SpartaFindingTableModel spartaFindings = new SpartaFindingTableModel();
+  private final SpartaFindingTable spartaTable = new SpartaFindingTable(spartaFindings);
+  private final JTextArea spartaDetail = new JTextArea(8, 80);
 
   /**
    * Everything that configures Zurp, stacked. The data views get a tab each instead: a findings
@@ -123,8 +126,30 @@ public class ZurpTabComponent extends JPanel {
     organizerPush.setText(ZurpPrefEnum.ORGANIZER_PUSH.getValue());
     controls.add(organizerPush);
 
+    spartaDetail.setEditable(false);
+    // Unlike the FBDL detail: summaries and PoC JSON are long blobs, so wrap rather than
+    // scroll horizontally.
+    spartaDetail.setLineWrap(true);
+    spartaDetail.setWrapStyleWord(true);
+    spartaTable
+        .getSelectionModel()
+        .addListSelectionListener(
+            e -> {
+              // Selection fires twice, on the press and the release; rendering once is enough.
+              if (!e.getValueIsAdjusting()) {
+                renderSpartaDetail(spartaFindings.getRow(spartaTable.selectedModelRow()));
+              }
+            });
+
+    JSplitPane split =
+        new JSplitPane(
+            JSplitPane.VERTICAL_SPLIT, new JScrollPane(spartaTable), new JScrollPane(spartaDetail));
+    // No preferred size: the tab gives the split the whole window, which is the point of it having
+    // a tab. Half each, so a long summary does not squeeze the finding list out.
+    split.setResizeWeight(0.5);
+
     panel.add(controls, BorderLayout.NORTH);
-    panel.add(new JScrollPane(new SpartaFindingTable(spartaFindings)), BorderLayout.CENTER);
+    panel.add(split, BorderLayout.CENTER);
 
     reloadSpartaFindings();
     return panel;
@@ -132,6 +157,35 @@ public class ZurpTabComponent extends JPanel {
 
   private void reloadSpartaFindings() {
     spartaFindings.reset(Zurp.spartaFindingFetcher.getAllFindings());
+    // The previous selection refers to a row that may no longer exist, so start from nothing
+    // rather than leave the detail pane describing a finding that is not highlighted any more.
+    spartaTable.clearSelection();
+    renderSpartaDetail(null);
+  }
+
+  private void renderSpartaDetail(SpartaFindingModel finding) {
+    if (finding == null) {
+      spartaDetail.setText("Select a finding to see its details.");
+      spartaDetail.setCaretPosition(0);
+      return;
+    }
+
+    StringBuilder text = new StringBuilder();
+    text.append("Priority = ").append(finding.priority).append('\n');
+    text.append("Target = ")
+        .append(finding.targetType)
+        .append(' ')
+        .append(finding.targetId)
+        .append('\n');
+    text.append("Title = ").append(finding.title).append('\n');
+    text.append("Finding ID = ").append(finding.bbFindingId).append('\n');
+    text.append("PoC Doc ID = ").append(finding.pocDocId).append('\n');
+    text.append("\nSummary\n").append(finding.summary).append('\n');
+    text.append("\nPoC variables\n").append(finding.pocVariablesJson).append('\n');
+    text.append("\nSubstitute before sending\n").append(finding.pocPlaceholdersJson).append('\n');
+
+    spartaDetail.setText(text.toString());
+    spartaDetail.setCaretPosition(0);
   }
 
   /**

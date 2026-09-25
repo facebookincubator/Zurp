@@ -1,0 +1,16 @@
+# Group Moderation
+# Private group with admin, moderators, members. Test posting, moderation actions, and permissions.
+# Covers: Group, add_group_members, add_group_admins, mute_member, remove_member, pause_group, set_post_permission, set_admin_approval
+
+[setup] User GroupOwner User Moderator User MemberA User MemberB User MemberC Group PrivateGroup with {owner: GroupOwner, privacy: private, members: [MemberA, MemberB], moderators: [Moderator]}
+GroupOwner add_group_members PrivateGroup with {new_roles: [MemberC]}
+MemberA make_post_text MemberPost with {place: PrivateGroup, text: 'Hello everyone!'}
+MemberB make_comment MemberComment with {place: MemberPost, text: 'Hey there!'}
+MemberC make_post_photo GroupPhoto with {place: PrivateGroup, text: 'Check this out', attachment_label: SharedPhoto}
+Moderator mute_member PrivateGroup with {member: MemberC}
+GroupOwner set_admin_approval PrivateGroup with {value: on}
+GroupOwner set_post_permission PrivateGroup with {value: admin}
+GroupOwner remove_member PrivateGroup with {member: MemberB, block: true}
+GroupOwner add_group_admins PrivateGroup with {new_roles: [Moderator]}
+GroupOwner pause_group PrivateGroup
+GroupOwner unpause_group PrivateGroup

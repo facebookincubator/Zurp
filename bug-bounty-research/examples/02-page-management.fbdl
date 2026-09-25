@@ -1,0 +1,15 @@
+# Page Management
+# Create a page, assign roles, post as the page (voice switcher), manage access.
+# Covers: Page, create_page, add_page_facebook_access, add_page_task_access, voice switcher, like_page
+
+[setup] User PageOwner User ContentMgr User Analyst User Follower Page BrandPage with {owner: PageOwner}
+PageOwner add_page_facebook_access BrandPage with {full: true, new_roles: [ContentMgr]}
+PageOwner add_page_task_access BrandPage with {new_role: Analyst, tasks: [insights, ads]}
+PageOwner as BrandPage make_post_text BrandPost with {place: BrandPage, text: 'Welcome to our official page!'}
+PageOwner as BrandPage make_post_photo PhotoPost with {place: BrandPage, text: 'Check out our new product', attachment_label: ProductPhoto}
+Follower like_page BrandPage
+Follower follow BrandPage
+Follower make_comment FollowerComment with {place: BrandPost, text: 'Love this page!'}
+PageOwner as BrandPage make_comment BrandReply with {place: BrandPost, replied_comment: FollowerComment, text: 'Thanks for the support!'}
+PageOwner as BrandPage add_cover_photo BrandCover with {place: BrandPage}
+PageOwner as BrandPage add_story BrandStory

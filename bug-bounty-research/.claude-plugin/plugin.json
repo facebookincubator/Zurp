@@ -1,0 +1,6 @@
+{
+  "name": "bug-bounty-research",
+  "description": "Meta bug bounty research tooling: build FBDL test environments to reproduce bugs against, resolve identifiers seen in Meta traffic to the code assets behind them, and read the SPARTA scanner findings disclosed to you.",
+  "version": "0.1.0",
+  "keywords": ["bug-bounty", "security-research", "fbdl", "meta-context", "sparta", "burp"]
+}

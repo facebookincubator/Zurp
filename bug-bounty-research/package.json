@@ -1,0 +1,59 @@
+{
+  "name": "bug-bounty-research",
+  "version": "0.1.0",
+  "description": "MCP servers for Meta bug bounty research: build FBDL test environments, resolve identifiers seen in Meta traffic to the code assets behind them, and read the SPARTA scanner findings disclosed to you.",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/core/index.js",
+  "types": "dist/core/index.d.ts",
+  "exports": {
+    ".": "./dist/core/index.js",
+    "./meta-context": "./dist/meta-context/index.js",
+    "./fbdl": "./dist/fbdl/index.js",
+    "./sparta": "./dist/sparta/index.js"
+  },
+  "bin": {
+    "meta-context-mcp": "dist/meta-context/index.js",
+    "fbdl-mcp": "dist/fbdl/index.js",
+    "sparta-mcp": "dist/sparta/index.js"
+  },
+  "files": [
+    "dist",
+    "skills",
+    "examples",
+    ".claude-plugin",
+    ".mcp.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "tsc && node --test dist/*/__tests__/*.test.js",
+    "start:meta-context": "node dist/meta-context/index.js",
+    "start:fbdl": "node dist/fbdl/index.js",
+    "start:sparta": "node dist/sparta/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "bug-bounty",
+    "fbdl",
+    "sparta",
+    "burp",
+    "zurp",
+    "security-research"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "undici": "^8.0.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
+  }
+}

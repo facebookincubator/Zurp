@@ -1,0 +1,14 @@
+# Page-Linked Group
+# Create a page, link it to a group, manage the group as the page via voice switcher.
+# Covers: create_linked_group, page_link_group, group_link_page, voice switcher on group actions
+
+[setup] User Admin User MemberOne User MemberTwo Page CommunityPage with {owner: Admin} Friendship with {sender: Admin, receivers: [MemberOne, MemberTwo]}
+Admin create_linked_group CommunityGroup with {page: CommunityPage, privacy: private, members: [MemberOne, MemberTwo]}
+Admin as CommunityPage make_post_text WelcomePost with {place: CommunityGroup, text: 'Welcome to the official community!'}
+MemberOne make_post_text MemberPost with {place: CommunityGroup, text: 'Glad to be here'}
+MemberTwo make_comment MemberReply with {place: MemberPost, text: 'Same!'}
+Admin as CommunityPage add_group_moderators CommunityGroup with {new_roles: [MemberOne]}
+Admin as CommunityPage mute_member CommunityGroup with {member: MemberTwo}
+Admin create_learning_unit UnitOne with {group: CommunityGroup}
+Admin create_doc GroupDoc with {group: CommunityGroup, can_edit: true}
+Admin create_quiz GroupQuiz with {group: CommunityGroup, unit: UnitOne}

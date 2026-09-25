@@ -1,0 +1,3891 @@
+{
+  "hints": {
+    "setup": [
+      {
+        "name": "OculusThirdPartyTestDeveloper",
+        "info": "Create an Oculus Test User for use by an external (non-employee) person, but owned/managed by a Meta Employee. These Users live in prod, and are used for testing third party apps. See https://developers.meta.com/horizon/resources/test-users/ for more info.\n\n### Parameters:\n?**username_prefix**: Username Prefix Prefix for the username. Must be provided for 3rd party users. (default: \"oculus_test_\")\n\n\n?**email_prefix**: Email Prefix Prefix for the email. Must be provided for 3rd party users. (default: \"oculus_test_\")\n\n\n?**password**: Test User Password If you don't provide a password, a random 12 character alphanumeric password will be used. (default: \"\")\n\n\n?**org_name**: Org Name Leave blank for a random organization name. (default: \"\")\n\n\n?**generate_app_and_binary**: Generate Unpublished App and Binary Mark to create a draft app submission and attach a test binary for the developer. (default: false)\n\n\n\n### Returned Data:\n**FBID** account_id\n\n**string** email\n\n**string** password\n",
+        "params": [
+          {
+            "name": "username_prefix",
+            "type": "string",
+            "info": "Prefix for the username. Must be provided for 3rd party users.",
+            "optional": true,
+            "default": "\"oculus_test_\"",
+            "values_json": ""
+          },
+          {
+            "name": "email_prefix",
+            "type": "string",
+            "info": "Prefix for the email. Must be provided for 3rd party users.",
+            "optional": true,
+            "default": "\"oculus_test_\"",
+            "values_json": ""
+          },
+          {
+            "name": "password",
+            "type": "string",
+            "info": "If you don't provide a password, a random 12 character alphanumeric password will be used.",
+            "optional": true,
+            "default": "\"\"",
+            "values_json": ""
+          },
+          {
+            "name": "org_name",
+            "type": "string",
+            "info": "Leave blank for a random organization name.",
+            "optional": true,
+            "default": "\"\"",
+            "values_json": ""
+          },
+          {
+            "name": "generate_app_and_binary",
+            "type": "bool",
+            "info": "Mark to create a draft app submission and attach a test binary for the developer.",
+            "optional": true,
+            "default": "false",
+            "values_json": ""
+          }
+        ],
+        "data": [
+          {
+            "name": "account_id",
+            "type": "FBID"
+          },
+          {
+            "name": "email",
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "WearablesTestDeveloper",
+        "info": "Create a Wearables Developer Center test developer, owned/managed by a Meta Employee. These accounts are used for testing the Wearables Developer Center platform.\n\n### Parameters:\n?**user_prefix**: User Prefix Prefix for the generated company name and email. E.g. \"mbbrc\" produces \"MBBRC Test Co <suffix>\" and \"MBBRC_test_<suffix>@tfbnw.net\". Defaults to \"WDC\" if omitted. (default: \"\")\n\n\n?**company_name**: Company Name Overrides the prefix-based company name. (default: \"\")\n\n\n?**admin_name**: Admin Name Leave blank for a random admin name. (default: \"\")\n\n\n?**email**: Email Overrides the prefix-based email. Uses @tfbnw.net domain. (default: \"\")\n\n\n?**password**: Password If not provided, a random 10-character alphanumeric password will be generated. (default: \"\")\n\n\n?**org_name**: Organization Name Leave blank for a random organization name. (default: \"\")\n\n\n?**create_application**: Create Application Mark to create a wearables application for the developer. (default: false)\n\n\n?**app_name**: Application Name Name for the application. Leave blank for a random name. (default: \"\")\n\n\n\n### Returned Data:\n**int** dev_profile_id\n\n**int** mma_id\n\n**string** email\n\n**string** password\n\n**string** org_name\n\n**string** company_name\n\n**?int** app_id\n",
+        "params": [
+          {
+            "name": "user_prefix",
+            "type": "string",
+            "info": "Prefix for the generated company name and email. E.g. \"mbbrc\" produces \"MBBRC Test Co <suffix>\" and \"MBBRC_test_<suffix>@tfbnw.net\". Defaults to \"WDC\" if omitted.",
+            "optional": true,
+            "default": "\"\"",
+            "values_json": ""
+          },
+          {
+            "name": "create_application",
+            "type": "bool",
+            "info": "Mark to create a wearables application for the developer.",
+            "optional": true,
+            "default": "false",
+            "values_json": ""
+          }
+        ],
+        "data": [
+          {
+            "name": "dev_profile_id",
+            "type": "int"
+          },
+          {
+            "name": "mma_id",
+            "type": "int"
+          },
+          {
+            "name": "email",
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "type": "string"
+          },
+          {
+            "name": "org_name",
+            "type": "string"
+          },
+          {
+            "name": "company_name",
+            "type": "string"
+          },
+          {
+            "name": "app_id",
+            "type": "?int"
+          }
+        ]
+      },
+      {
+        "name": "WhitehatTestUser",
+        "info": "Create a whitehat test user.\n\n### Parameters:\n?**name**: Name If you don't provide a name, we'll generate a random one. (default: \"\")\n\n\n?**email**: Email If you don't provide an email, we'll generate a random one that's receivable by you. (default: \"\")\n\n\n?**age_range**: Age range  (default: \"adult\")\n\n\n**owner_id**: Owner ID If you don't provide an owner, we'll use the viewer context. (default: null)\n\n\n\n### Returned Data:\n**FBID** uid\n\n**string** password\n",
+        "params": [
+          {
+            "name": "name",
+            "type": "string",
+            "info": "If you don't provide a name, we'll generate a random one.",
+            "optional": true,
+            "default": "\"\"",
+            "values_json": ""
+          },
+          {
+            "name": "age_range",
+            "type": "TestUserAgeRange",
+            "info": "",
+            "optional": true,
+            "default": "\"adult\"",
+            "values_json": "{\"ADULT\":\"adult\",\"MINOR\":\"minor\",\"KID\":\"kid\"}"
+          }
+        ],
+        "data": [
+          {
+            "name": "uid",
+            "type": "FBID"
+          },
+          {
+            "name": "password",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "User",
+        "info": "Create a Whitehat test user.\n\n### POSITIONAL PARAMETERS\n* Label: The label that will be used to reference the created object later in the FBDL script.\n### EXAMPLE\nCreates a User.\n\n```\n[setup]\n  User UserOne\n```",
+        "params": [],
+        "data": [
+          {
+            "name": "",
+            "type": "USER"
+          }
+        ]
+      },
+      {
+        "name": "Page",
+        "info": "Create a Page with various setting options.\n\n### POSITIONAL PARAMETERS\n* Label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* owner: The owner of the page\n* ?is_parent_location: If set to true, this page will be marked as the parent location page. The default is false.Value: false | true\n* ?admins: Users to add as page admins.\n* ?editors: Users to add as page editors.\n* ?moderators: Users to add as page moderators.\n* ?advertisers: Users to add as page advertisers.\n* ?analysts: Users to add as page analysts.\n### EXAMPLE\nCreate a User and make that user an owner of the Page.\n\n```\n[setup]\n  User UserOne\n  Page PageOne with {owner: UserOne}\n```",
+        "params": [
+          {
+            "name": "owner",
+            "type": "USER",
+            "info": "Page owner",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "is_parent_location",
+            "type": "bool",
+            "info": "Whether this is a parent location",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "PAGE"
+          }
+        ]
+      },
+      {
+        "name": "Group",
+        "info": "Create a Group with various setting options.\n\n### POSITIONAL PARAMETERS\n* Label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* owner: Owner of the group.\n* privacy: Choose from public | private | public_legacy.\n* visibility: Choose from anyone (default) | members_only.\n* ?members: The list of members of the group.\n* ?admins: The list of admins of the group.\n* ?moderators: The list of moderators of the group.\n* ?name: Name of the group.\n* ?description: Description of the group.\n* ?allow_anonymous_posts: Allow anonymous post setting of the group. Default is false.\n* ?pending_participants: The list of pending participants for a public community.\n* ?approved_participants: The list of approved participants for a public community.\n* ?participation_control_enabled: Turns on/off participation controls for Public Communities. Default to false.\"\n### EXAMPLE\nCreate a Group with an owner, an admin, two members, and set it's privacy to `private\". In order to accomplished this, the required Users must be created before creating the Group.\n\n```\n[setup]\n  User MemberOne\n  User MemberTwo\n  User OwnerOne\n  User AdminOne\n  Group GroupOne with {owner: OwnerOne, privacy: private, members:[MemberOne, MemberTwo], admins: [AdminOne]}\n```",
+        "params": [
+          {
+            "name": "privacy",
+            "type": "string",
+            "info": "Group privacy setting",
+            "optional": false,
+            "default": "private",
+            "values_json": "{\"0\":\"public\",\"1\":\"private\",\"2\":\"public_legacy\"}"
+          },
+          {
+            "name": "owner",
+            "type": "USER",
+            "info": "Group owner",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "members",
+            "type": "vec<USER>",
+            "info": "Group members",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "admins",
+            "type": "vec<USER>",
+            "info": "Group admins",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "moderators",
+            "type": "vec<USER>",
+            "info": "Group moderators",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "allow_anonymous_posts",
+            "type": "bool",
+            "info": "Allow anonymous posts",
+            "optional": true,
+            "default": "false",
+            "values_json": ""
+          },
+          {
+            "name": "visibility",
+            "type": "string",
+            "info": "Group visibility setting",
+            "optional": true,
+            "default": "anyone",
+            "values_json": "{\"0\":\"anyone\",\"1\":\"members_only\"}"
+          },
+          {
+            "name": "pending_participants",
+            "type": "vec<USER>",
+            "info": "The list of pending participants for a public community.",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "approved_participants",
+            "type": "vec<USER>",
+            "info": "The list of approved participants for a public community.",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "participation_control_enabled",
+            "type": "bool",
+            "info": "Turns on/off participation controls for Public Communities. Default to false. Only for Public Communities.",
+            "optional": true,
+            "default": "false",
+            "values_json": ""
+          }
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "GROUP"
+          }
+        ]
+      },
+      {
+        "name": "Album",
+        "info": "Create a photo Album with various setting options.\n\n### POSITIONAL PARAMETERS\n* Label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* owner: The owner of the album.\n* type: The type of the album.Value: user | shared | page | group\n* place: The place of the album. That is, where is this album from. Set to a User label for user and shared album. Set to Page and Group label for albums from page or group.\n* ?privacy: The privacy setting of the album. The default is public.Value: public | friends_only | only_me | contributors_only | friends_of_contributors\n* ?contributors: The list of contributors if it's a shared album.\n* ?actor: The page that you wish to create the album as (owner still required). Also, only for group albums.\n### EXAMPLE\nCreate a User and make that user the owner of the new photo album where the album's privacy setting is for friends_only.\n\n```\n [setup]\n  User UserOne\n  Album AlbumOne with {owner: UserOne, type: user, place: UserOne, privacy: friends_only}\n```",
+        "params": [
+          {
+            "name": "owner",
+            "type": "USER",
+            "info": "Album owner",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "type",
+            "type": "string",
+            "info": "Album type",
+            "optional": false,
+            "default": "",
+            "values_json": "{\"0\":\"user\",\"1\":\"shared\",\"2\":\"page\",\"3\":\"group\"}"
+          },
+          {
+            "name": "place",
+            "type": "Page|Group|User",
+            "info": "Where the album is posted (user, page, group)",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "privacy",
+            "type": "string",
+            "info": "Album privacy setting",
+            "optional": true,
+            "default": "public",
+            "values_json": "{\"0\":\"public\",\"1\":\"friends_only\",\"2\":\"contributors_only\",\"3\":\"only_me\",\"4\":\"friends_of_contributors\"}"
+          },
+          {
+            "name": "contributors",
+            "type": "vec<USER>",
+            "info": "Album contributors",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "actor",
+            "type": "PAGE",
+            "info": "The page that you wish to create the album as",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "ALBUM"
+          }
+        ]
+      },
+      {
+        "name": "Friendship",
+        "info": "Create friendship between a User and a list of other Users.\n\n### POSITIONAL PARAMETERS\n* Label: None. This type does not require a label.\n### KEYWORD PARAMETERS\n* sender: The label of the sender (e.g.: a user)\n* receivers: The list of labels for the receivers (e.g.: list of users)\n### EXAMPLE\nCreate two Users and make UserOne be the sender and UserTwo be the receiver in the friendship.\n\n```\n[setup]\n  User UserOne\n  User UserTwo\n  Friendship with {sender: UserOne, receivers: [UserTwo]}\n```",
+        "params": [
+          {
+            "name": "sender",
+            "type": "USER",
+            "info": "Friend request sender",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "receivers",
+            "type": "vec<USER>",
+            "info": "Friend request receivers",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "data": []
+      },
+      {
+        "name": "Business",
+        "info": "Create a Business with various setting options.\n\n### POSITIONAL PARAMETERS\n* Label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* owner: The owner of the business\n* ?admins: The list of admins\n* ?employees: The list of employees\n* ?primary_page: The primary page that the business owns\n* ?tier: The trust tier associated with the business (tier_[0-3])\n* ?quarantine: Sets the business under quarantine\n### EXAMPLE\nCreate an owner and two workers for this business relationship. Create a business Page and make the owner user as owner of the page. Create a business and make the owner as the owner of the business, add the two workers as employees of the business, and set the business Page we just created as the primary page for this new business.\n\n```\n[setup]\n  User OwnerOne\n  User WorkerOne\n  User WorkerTwo\n  Page BizPageOne with {owner: OwnerOne}\n  Business BizOne with {owner: OwnerOne, employees:[WorkerOne, WorkerTwo], primary_page: BizPageOne}\n```\nCreate and quarantine a business.\n\n```\n[setup]\n  User OwnerOne\n  Business BizOne with {owner: OwnerOne, quarantine: true}\n```",
+        "params": [
+          {
+            "name": "owner",
+            "type": "USER",
+            "info": "Business owner",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "primary_page",
+            "type": "PAGE",
+            "info": "Primary page that the business own",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "admins",
+            "type": "vec<USER>",
+            "info": "Business admins",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "employees",
+            "type": "vec<USER>",
+            "info": "Business employees",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "tier",
+            "type": "string",
+            "info": "Business tier",
+            "optional": true,
+            "default": "",
+            "values_json": "{\"0\":\"tier_0\",\"1\":\"tier_1\",\"2\":\"tier_2\",\"3\":\"tier_3\"}"
+          },
+          {
+            "name": "quarantine",
+            "type": "bool",
+            "info": "Whether business is quarantined (ADA integrity violation)",
+            "optional": true,
+            "default": "false",
+            "values_json": ""
+          }
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "BUSINESS"
+          }
+        ]
+      },
+      {
+        "name": "App",
+        "info": "Create an App with owner and set it's live status.\n\n### POSITIONAL PARAMETERS\n* Label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* owner: The owner of the app\n* ?live: Specify if the App is live (e.g.: app is published). The default is true.Value: true | false\n* ?type: Specify the app's type. The default is none (Legacy).Value: business | workplace | consumer | instant_games | gaming | none\n### EXAMPLE\nCreate an App with a User as owner and set it's live status as false. This means the app is not published.\n\n```\n[setup]\n  User OwnerOne\n  App AppOne with {owner: OwnerOne, live: false, type: instant_games}\n```",
+        "params": [
+          {
+            "name": "owner",
+            "type": "USER",
+            "info": "App owner",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "live",
+            "type": "bool",
+            "info": "Whether app is live",
+            "optional": true,
+            "default": "true",
+            "values_json": ""
+          },
+          {
+            "name": "type",
+            "type": "string",
+            "info": "Specify the app's type. The default is none (Legacy).",
+            "optional": true,
+            "default": "none",
+            "values_json": "{\"0\":\"business\",\"1\":\"workplace\",\"2\":\"consumer\",\"3\":\"instant_games\",\"4\":\"gaming\",\"5\":\"none\"}"
+          }
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "APP"
+          }
+        ]
+      },
+      {
+        "name": "Event",
+        "info": "Create an event with various setting options.\n\n### POSITIONAL PARAMETERS\n* Label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* owner: The owner of the event\n* place: Where is the event.Value: Specify a label from one of these types: user | page | group.\n* ?privacy: If place is a User, will set privacy for event. The default is public.Value: public | private\n* ?is_past: If the event is in the past. The default is false.Value: false | true\n* ?post_permission: Post permission setting. The default is admin.Value: admin | anyone\n* ?post_approval: Post approval setting. The default is off.Value: on | off\n* ?accept_invite: If the invited co-hosts are going to be accept automatically. The default is true. Value: false | true\n* ?show_guest_list: Show the guest list. The default is true. Value: false | true\n* ?co_hosts: List of co-hosts (e.g.: user or page).\n### EXAMPLE\nCreate an Event for a Group where anyone can post and posts are approved automatically. To accomplished this, some Users and a Group is created first.\n\n```\n[setup]\n  User OwnerOne\n  User MemberOne\n  Group GroupOne with {owner: OwnerOne, members:[MemberOne]}\n  Event EventOne with {owner: OwnerOne, place: GroupOne, post_permission:anyone, post_approval:on}\n```",
+        "params": [
+          {
+            "name": "owner",
+            "type": "USER",
+            "info": "Event owner",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "place",
+            "type": "USER|PAGE|GROUP",
+            "info": "Where is the event posted (user, page, group)",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "show_guest_list",
+            "type": "bool",
+            "info": "Show guest list",
+            "optional": true,
+            "default": "true",
+            "values_json": ""
+          },
+          {
+            "name": "post_permission",
+            "type": "string",
+            "info": "Post permission setting",
+            "optional": true,
+            "default": "admin",
+            "values_json": "{\"0\":\"admin\",\"1\":\"anyone\"}"
+          },
+          {
+            "name": "post_approval",
+            "type": "string",
+            "info": "Post approval setting",
+            "optional": true,
+            "default": "off",
+            "values_json": "{\"0\":\"on\",\"1\":\"off\"}"
+          },
+          {
+            "name": "privacy",
+            "type": "string",
+            "info": "Event privacy setting",
+            "optional": true,
+            "default": "public",
+            "values_json": "{\"0\":\"public\",\"1\":\"private\"}"
+          },
+          {
+            "name": "is_past",
+            "type": "bool",
+            "info": "Whether event is in the past",
+            "optional": true,
+            "default": "false",
+            "values_json": ""
+          },
+          {
+            "name": "co_hosts",
+            "type": "vec<USER|PAGE>",
+            "info": "Event co-hosts",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "accept_invite",
+            "type": "bool",
+            "info": "Accept invite setting",
+            "optional": true,
+            "default": "true",
+            "values_json": ""
+          }
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "EVENT"
+          }
+        ]
+      }
+    ],
+    "action": [
+      {
+        "name": "make_anonymous_post",
+        "info": "Make an anonymous post in a health or parenting type group. Voice switcher is not supported here.\n### SIGNATURE\n```\n       Subject as Subject make_anonymous_post Label with {group, approved_by}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* group: Label of a group object where the post will be posted.\n* approved_by: Label of an user object who will approve the post when allow anonymous post are enabled in a group.\n### EXAMPLE 1:\n```\n       UserTwo make_anonymous_post AnonPostOne with {group:GroupOne, approved_by: UserOne}\n```",
+        "params": [
+          {
+            "name": "group",
+            "type": "GROUP",
+            "info": "Group to post in",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "approved_by",
+            "type": "USER",
+            "info": "Admin who will approve the post when allow anonymous posts are enabled in a group",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "POST"
+          }
+        ]
+      },
+      {
+        "name": "make_post_text",
+        "info": "Make a text post as User or Page. Voice switcher supported.\n### SIGNATURE\n```\n        Subject as Subject make_post_text Label with {place, ?text, ?tagged_object}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* place: Where to send the post. Acceptable values include label of User, Page, Event or Group.\n* ?text: The text message with the post. The default is random text.Value: user provide or random text.\n* ?tagged_object: The object being tagged (e.g.: label of a User or Page)\n### EXAMPLE 1:\nAs PageOne, post a text with the specified text message to GroupOne.\n```\n        UserOne as PageOne make_post_text PostOne with {place: GroupOne, text: 'This is my first group post as Page'}\n```\n### EXAMPLE 2:\nPost some random text to UserOne.\n```\n        UserOne make_post_text PostOne with {place: UserOne}\n```",
+        "params": [
+          {
+            "name": "place",
+            "type": "USER|PAGE|EVENT|GROUP|FUNDRAISER",
+            "info": "Where to send the post. Acceptable values include label of User, Page, Event, Group, or Fundraiser",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "text",
+            "type": "string",
+            "info": "The text message with the post. The default is random text",
+            "optional": true,
+            "default": "random text",
+            "values_json": ""
+          },
+          {
+            "name": "approver",
+            "type": "USER",
+            "info": "Admin who will approve the post when post approvals are enabled in a group. Default will leave post unapproved",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "is_exclusive",
+            "type": "bool",
+            "info": "Make post exclusive (paid) content. Default is false",
+            "optional": true,
+            "default": "false",
+            "values_json": ""
+          },
+          {
+            "name": "audience",
+            "type": "string",
+            "info": "Specifies the audience for the post. Default to public",
+            "optional": true,
+            "default": "public",
+            "values_json": "{\"0\":\"public\",\"1\":\"only_me\",\"2\":\"friends\"}"
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "POST"
+          }
+        ]
+      },
+      {
+        "name": "make_post_photo",
+        "info": "Make (status, photo or video) post as User or Page. Voice switcher supported.\n### SIGNATURE\n```\n        Subject as Subject make_post* Label with {place, ?text, ?tagged_object}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* place: Where to send the post. Acceptable values include label of User, Page, Event or Group.\n* ?text: The text message with the post. The default is random text.Value: user provide or random text.\n* ?attachment_label: Specify the label for the media attachment. Default is '<PostLabel>Photo/Video'.\n* ?multiple_photos: Specify if multiple photos are needed for make_post_photo action. Default is false when not provided.\n* ?tagged_object: The object being tagged (e.g.: label of a User or Page)\n### EXAMPLE 1:\nAs PageOne, post a photo with the specified text message to GroupOne.\n```\n        UserOne as PageOne make_post_photo PostOne with {place: GroupOne, text: 'This is my first group post as Page', attachment_label: PhotoOne}\n```\n### EXAMPLE 2:\nPost some random text and a photo to UserOne.\n```\n        UserOne make_post_photo PostOne with {place: UserOne, attachment_label: PhotoOne}\n```",
+        "params": [
+          {
+            "name": "place",
+            "type": "USER|PAGE|EVENT|GROUP|FUNDRAISER",
+            "info": "Where to send the post. Acceptable values include label of User, Page, Event, Group, or Fundraiser",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "attachment_label",
+            "type": "string",
+            "info": "Specify the label for the media attachment. Default is '<PostLabel>Photo'",
+            "optional": true,
+            "default": "<PostLabel>Photo",
+            "values_json": ""
+          },
+          {
+            "name": "text",
+            "type": "string",
+            "info": "The text message with the post. The default is random text",
+            "optional": true,
+            "default": "random text",
+            "values_json": ""
+          },
+          {
+            "name": "multiple_photos",
+            "type": "bool",
+            "info": "Add multiple photos in a photo post. Default is false",
+            "optional": true,
+            "default": "false",
+            "values_json": ""
+          },
+          {
+            "name": "approver",
+            "type": "USER",
+            "info": "Admin who will approve the post when post approvals are enabled in a group. Default will leave post unapproved",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "is_exclusive",
+            "type": "bool",
+            "info": "Make post exclusive (paid) content. Default is false",
+            "optional": true,
+            "default": "false",
+            "values_json": ""
+          },
+          {
+            "name": "audience",
+            "type": "string",
+            "info": "Specifies the audience for the post. Default to public",
+            "optional": true,
+            "default": "public",
+            "values_json": "{\"0\":\"public\",\"1\":\"only_me\",\"2\":\"friends\"}"
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "POST"
+          }
+        ]
+      },
+      {
+        "name": "make_post_video",
+        "info": "Make a video post as User or Page. Voice switcher supported.\n### SIGNATURE\n```\n        Subject as Subject make_post_video Label with {place, ?text, ?attachment_label, ?tagged_object}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* place: Where to send the post. Acceptable values include label of User, Page, Event or Group.\n* ?text: The text message with the post. The default is random text.Value: user provide or random text.\n* ?attachment_label: Specify the label for the media attachment. Default is '<PostLabel>Video'.\n* ?tagged_object: The object being tagged (e.g.: label of a User or Page)\n### EXAMPLE 1:\nAs PageOne, post a video with the specified text message to GroupOne.\n```\n        UserOne as PageOne make_post_video PostOne with {place: GroupOne, text: 'This is my first group post as Page', attachment_label: VideoOne}\n```\n### EXAMPLE 2:\nPost a video to UserOne.\n```\n        UserOne make_post_video PostOne with {place: UserOne, attachment_label: VideoOne}\n```",
+        "params": [
+          {
+            "name": "place",
+            "type": "USER|PAGE|GROUP|EVENT|FUNDRAISER",
+            "info": "Where to post",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "attachment_label",
+            "type": "string",
+            "info": "Label for the video attachment",
+            "optional": true,
+            "default": "<PostLabel>Video",
+            "values_json": ""
+          },
+          {
+            "name": "text",
+            "type": "string",
+            "info": "Text content of the post",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "POST"
+          }
+        ]
+      },
+      {
+        "name": "make_comment",
+        "info": "User makes a comment on an object. Mention is supported. Replying to a comment is supported. Voice switcher is supported.\n### SIGNATURE\n```\n        Subject as Subject make_comment Label with {place, ?text, ?tagged_object, ?replied_comment}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* place: Label of an object where the comment will be posted. Supports post, comment, photo, and album.\n* ?text: The text of the comment. The default is random text.Value: user supplied or random text.\n* ?tagged_object: The object being tagged (e.g.: label of a User or Page)\n* ?replied_comment: The replied comment. Must be a comment on the SAME post/object as place. (e.g.: label of a comment to reply to)\n### EXAMPLE 1:\nUserTwo is making a comment and tagging UserOne in the comment.\n```\n        UserTwo make_comment CommentLabel with {place: PostLabel, text: 'UserTwo is commenting here', tagged_object: UserOne}\n```\n### EXAMPLE 2:\nUserOne replying to UserTwo.\n```\n        UserOne make_comment RepliedCommentLabel with {place: PostLabel, replied_comment: CommentLabel, text: 'That sounds great!'}\n```\n### EXAMPLE 3:\nUserTwo is commenting on AlbumOne as PageOne via voice switcher.\n```\n        UserTwo as PageOne make_comment CommentLabel with {place: AlbumOne}\n```",
+        "params": [
+          {
+            "name": "place",
+            "type": "POST|ALBUM|PHOTO|COMMENT",
+            "info": "Where to comment",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "text",
+            "type": "string",
+            "info": "Text content of the comment",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "attach_photo",
+            "type": "bool",
+            "info": "Whether to attach a photo",
+            "optional": true,
+            "default": "false",
+            "values_json": ""
+          },
+          {
+            "name": "tagged_object",
+            "type": "USER|PAGE",
+            "info": "Object to tag in the comment (user, page)",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "replied_comment",
+            "type": "COMMENT",
+            "info": "Comment to reply to. Must be on the same post/object as place.",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "COMMENT"
+          }
+        ]
+      },
+      {
+        "name": "block",
+        "info": "As a User or page, blocks another user. Voice switcher supported.\n\n### SIGNATURE\n```\n        Subject as Subject block Label\n```\n### POSITIONAL PARAMETERS\n* label: The label of the user that will get blocked.\n### EXAMPLE 1:\n```\n        UserOne as PageOne block UserTwo\n```\n### EXAMPLE 2:\n```\n        UserOne block UserTwo\n```",
+        "params": [],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": []
+      },
+      {
+        "name": "remove_role",
+        "info": "Remove any permission a user/page has from a place. Support voice switcher.\n\n### SIGNATURE\n```\n        Subject as Subject remove_role Label with {old_role}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the place that will have the user/page removed. Supports page role, group role, event cohost, album contributor and app role.\n### KEYWORD PARAMETERS\n* old_role: Label of a user/page to be removed.\n### EXAMPLE 1:\nRemove PageOne as cohost of EventOne.\n```\n        UserTwo remove_role EventOne with {old_role: PageOne}\n```\n### EXAMPLE 2:\nActing as PageOne, remove UserOne from GroupOne\n```\n         UserTwo as PageOne remove_role GroupOne with {old_role: UserOne}\n```\n### EXAMPLE 3:\nActing as PageOne, remove UserTwo from PageOne\n```\n         UserOne as PageOne remove_role PageOne with {old_role: UserTwo}\n```\n",
+        "params": [
+          {
+            "name": "old_role",
+            "type": "USER|PAGE",
+            "info": "Role to remove",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": []
+      },
+      {
+        "name": "make_post_poll",
+        "info": "Post a poll to user profile, page, event or group.\n### SIGNATURE\n```\n        Subject as Subject make_post_poll Label with {place, type, ?anyone_add_options, ?choose_multiple_options, ?tagged_object}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* place: Label of an object where the poll will be posted. Supports User, Page, Event, or Group.\n* type: The type of the poll.Value: text | photo\n* ?anyone_add_options: Specify if participants can add options. Default is true.Value: true | false\n* ?choose_multiple_options: Specify if multiple selections is allowed. Default is true.Value: true | false\n* ?attachment_label: Specify the label for the poll attachment. Default is '<PostLabel>Poll'.\n* ?tagged_object: The object being tagged (e.g.: label of a User or Page)\n### EXAMPLE 1:\nActing as PageOne, post a photo poll to GroupOne. Allow participants to add new options as well as allowing multiple selections.\n```\n        UserOne as PageOne make_post_poll PollPost with {place: GroupOne, type: photo, attachment_label: PollOne}\n```\n### EXAMPLE 2:\nPost a poll to PageOne and do not allow participants to add new options but multiple selections is allowed.\n```\n        UserOne make_post_poll PollPost with {place: PageOne, type: text, anyone_add_options: false}\n```",
+        "params": [
+          {
+            "name": "place",
+            "type": "USER|PAGE|EVENT|GROUP",
+            "info": "Where to post the poll. Supports User, Page, Event, or Group",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "type",
+            "type": "string",
+            "info": "Type of poll",
+            "optional": false,
+            "default": "",
+            "values_json": "{\"0\":\"photo\",\"1\":\"text\"}"
+          },
+          {
+            "name": "attachment_label",
+            "type": "string",
+            "info": "Specify the label for the poll attachment. Default is '<PostLabel>Poll'",
+            "optional": true,
+            "default": "<PostLabel>Poll",
+            "values_json": ""
+          },
+          {
+            "name": "anyone_add_options",
+            "type": "bool",
+            "info": "Specify if participants can add options",
+            "optional": true,
+            "default": "true",
+            "values_json": ""
+          },
+          {
+            "name": "choose_multiple_options",
+            "type": "bool",
+            "info": "Specify if multiple selections is allowed",
+            "optional": true,
+            "default": "true",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "POST"
+          }
+        ]
+      },
+      {
+        "name": "make_post_violation",
+        "info": "Make a post with a certain violation.\n### SIGNATURE\n```\n        Subject as Subject make_post_violation Label with {place, type, ?tagged_object}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* place: Label of an object where the violation is posted. Supports User, Page, or Group.\n* type: Type of violation. See values list.\n* ?tagged_object: The object being tagged (e.g.: label of a User or Page)\n### EXAMPLE 1:\n```\n        UserOne make_post_violation PostTwo with {place: GroupOne, type: hate}\n```\n### EXAMPLE 2:\n```\n        UserOne as PageOne make_post_violation PostPage with {place: PageTwo, type: nudity}\n```",
+        "params": [
+          {
+            "name": "place",
+            "type": "USER|PAGE|GROUP|EVENT",
+            "info": "Where to post",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "type",
+            "type": "string",
+            "info": "Type of violation",
+            "optional": false,
+            "default": "",
+            "values_json": "{\"0\":\"NUDITY\",\"1\":\"HATE\",\"2\":\"VIOLENCE\",\"3\":\"BULLYING\",\"4\":\"HATEORG\",\"5\":\"HARASSMENT\",\"6\":\"REGULATED_PRODUCTS\",\"7\":\"SSI\",\"8\":\"CELEBRATING_YOUR_OWN_CRIME\",\"9\":\"CREDIBLE_VIOLENCE\",\"10\":\"CRUEL_INSENSITIVE\",\"11\":\"CHILD_NUDITY\",\"12\":\"PRIVACY_VIOLATION\",\"13\":\"COORDINATING_HARM\",\"14\":\"ADULT_SEXUAL_EXPLOITATION\",\"15\":\"INSTAGRAM_NUDITY\"}"
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "POST"
+          }
+        ]
+      },
+      {
+        "name": "add_cover_photo",
+        "info": "Adds a new cover photo to a user, page, group, or event's timeline. Supports voice switcher for a page.\n### SIGNATURE\n```\n        Subject as Subject add_cover_photo Label with {place}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created cover photo later in the results of the FBDL script.\n### KEYWORD PARAMETERS\n* place: Label of an object where the cover photo is uploaded. Supports User, Page, Group, or Event.\n### EXAMPLE 1:\nUserOne adds a new cover photo.\n```\n UserOne add_cover_photo CoverPhoto with {place: UserOne}\n```\n### EXAMPLE 2:\nActing as PageOne, UserOne adds a cover photo to PageOne. Supports voice switcher.\n```\n         UserOne as PageOne add_cover_photo CoverPhoto with {place: PageOne}\n```\n### EXAMPLE 3:\nUserOne adds a cover photo to the group GroupOne\n```\n         UserOne add_cover_photo CoverPhoto with {place: GroupOne}\n```\n### EXAMPLE 4:\nUserOne adds a cover photo to the event EventOne\n```\nUserOne add_cover_photo CoverPhoto with {place: EventOne}\n```",
+        "params": [
+          {
+            "name": "place",
+            "type": "USER|PAGE|GROUP|EVENT|FUNDRAISER",
+            "info": "Where to add the cover photo",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "PHOTO"
+          }
+        ]
+      },
+      {
+        "name": "add_story",
+        "info": "Adds a new story to a user or page. Supports voice switcher to page via the as keyword.\n### SIGNATURE\n```\n        Subject as Subject add_story Label\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Story that will be created.\n### EXAMPLE 1:\n```\nUserTwo add_story StoryOne\n```\n### EXAMPLE 2:\n```\nUserTwo as PageTwo add_story StoryOne\n```",
+        "params": [],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "STORY"
+          }
+        ]
+      },
+      {
+        "name": "change_post_audience",
+        "info": "Change the audience of a post.\n### SIGNATURE\n```\n        Subject change_post_audience Label with {audience, ?friends}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the post to have its audience changed.\n### KEYWORD PARAMETERS\n* audience: The new audience setting.Value: public | friends | only_me | specific_friends | friends_except\n* ?friends: A vector of specific friends of the post owner to either include or exclude in audience.\n### EXAMPLE 1:\n```\n        UserOne change_post_audience PostOne with {audience: public}\n```\n### EXAMPLE 2:\n```\n        UserOne change_post_audience PostOne with {audience: specific_friends, friends: [UserTwo, UserThree]}\n```",
+        "params": [
+          {
+            "name": "audience",
+            "type": "string",
+            "info": "New audience setting",
+            "optional": false,
+            "default": "",
+            "values_json": "{\"0\":\"public\",\"1\":\"friends\",\"2\":\"only_me\",\"3\":\"specific_friends\",\"4\":\"friends_except\"}"
+          },
+          {
+            "name": "friends",
+            "type": "vec<USER>",
+            "info": "A vector of specific friends of the post owner to either include or exclude in audience.",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "deactivate_account",
+        "info": "User deactivates its own account.\n### SIGNATURE\n```\n        Subject deactivate_account Label\n```\n### POSITIONAL PARAMETERS\n* label: The label of the same User who is the actor.\n### KEYWORD PARAMETERS\nNone.\n### EXAMPLE 1:\n```\n        UserTwo deactivate_account UserTwo\n```",
+        "params": [],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "lock_profile",
+        "info": "User locks its own profile.\n### SIGNATURE\n```\nSubject lock_profile Label\n```\n### POSITIONAL PARAMETERS\n* label: The label of the same User who is the actor.\n### KEYWORD PARAMETERS\nNone\n### EXAMPLE 1:\n```\nUserTwo lock_profile UserTwo\n```",
+        "params": [],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "friend_user",
+        "info": "One user sends a friend request to another user. They become friends automatically.\n### SIGNATURE\n```\n        Subject2 friend_user Subject1\n```\n### EXAMPLE 1:\n```\n        UserTwo friend_user UserOne\n```",
+        "params": [],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "friend_request",
+        "info": "One user sends a friend request to another user. Request will not be automatically accepted.\n### SIGNATURE\n```\n        Subject2 friend_request Subject1\n```\n### EXAMPLE 1:\n```\n        UserTwo friend_request UserOne\n```",
+        "params": [],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "like_post",
+        "info": "User likes a post.\n### SIGNATURE\n```\n        Subject like_post Label\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Post that will be liked.\n### KEYWORD PARAMETERS\nNone.\n### EXAMPLE 1:\n```\n        UserTwo like_post PostOne\n```",
+        "params": [],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": []
+      },
+      {
+        "name": "gen_token",
+        "info": "Generate an access token for Graph API usage (see https://developers.facebook.com/tools/explorer)\nUse 'as' to enable page voice.\n### SIGNATURE\n```\n        Subject gen_token Label with {app, ?scopes}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the generated token later in the FBDL script.\n### KEYWORD PARAMETERS\n* 'app': either FBDL generated 3rd party app or 1st party app from fb4a|fbios|fbwww|ig|bm|pct|.\n* ?'scopes': default to public profile if not provided. must be a list of permissions.\";\n### EXAMPLE 1:\n```\n        UserOne gen_token TokenOne with {app: fb4a}\n```\n### EXAMPLE 2:\n```\n        UserOne gen_token TokenOne with {app: AppOne, scopes: [ads_management, ads_read]}\n```\n",
+        "params": [
+          {
+            "name": "app",
+            "type": "string|APP",
+            "info": "App to generate token for",
+            "optional": false,
+            "default": "",
+            "values_json": "{\"0\":\"fb4a\",\"1\":\"fbios\",\"2\":\"fbwww\",\"3\":\"ig\",\"4\":\"bm\",\"5\":\"pct\"}"
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": [
+          {
+            "name": "token",
+            "type": "TOKEN"
+          }
+        ]
+      },
+      {
+        "name": "create_collection",
+        "info": "User creates a saved collection.\n### SIGNATURE\n```\n        Subject create_collection Label\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\nNone\n### EXAMPLE 1:\n```\n        UserTwo create_collection ColOne\n```",
+        "params": [],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "COLLECTION"
+          }
+        ]
+      },
+      {
+        "name": "add_collection_contributors",
+        "info": "Add a list of contributors to a collection.\n### SIGNATURE\n```\n        Subject add_collection_contributors Label with {new_roles}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the collection you wish to add the contributors to.\n### KEYWORD PARAMETERS\n* new_roles: Labels of users/pages to be added.\n### EXAMPLE 1:\nAdd UserTwo as a contributor to CollectionOne.\n```\n        UserOne add_collection_contributors CollectionOne with {new_roles: [UserTwo]}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as contributors",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "save_to_collection",
+        "info": "User add one or more posts to one of their collections.\n### SIGNATURE\n```\n        Subject save_to_collection Label with {new_posts}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Collection to be saved to.\n### KEYWORD PARAMETERS\n* new_posts: A list of posts to be added into a collection.\n### EXAMPLE 1:\n```\n        UserOne save_to_collection ColOne with {new_posts: [PostOne, PostTwo, PostThree]}\n```",
+        "params": [
+          {
+            "name": "new_posts",
+            "type": "vec<POST>",
+            "info": "Posts to save to collection",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "like_page",
+        "info": "User likes a page.\n### SIGNATURE\n```\n        Subject like_page Label\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Page that will be liked.\n### KEYWORD PARAMETERS\nNone.\n### EXAMPLE 1:\n```\n        UserTwo like_page PageTwo\n```",
+        "params": [],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": []
+      },
+      {
+        "name": "going_event",
+        "info": "User choose 'going' on the target event.\n### SIGNATURE\n```\n        Subject going_event Label\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Event that the user will be going to.\n### KEYWORD PARAMETERS\nNone.\n### EXAMPLE 1:\n```\n        UserTwo going_event EventOne\n```",
+        "params": [],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "send_message",
+        "info": "User sends a message to another user/page/chat group. Supports voice switcher via the as keyword.\n### SIGNATURE\n```\nSubject send_message Label with {text}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the User to send a message to.\n### KEYWORD PARAMETERS\n* text: The text of the message.\n### EXAMPLE 1:\n```\nUserOne send_message UserTwo with {text: 'Test message'}\n```\n### EXAMPLE 2:\n```\nUserOne send_message PageTwo with {text: 'Test message'}\n```\n### EXAMPLE 3:\n```\nUserTwo as PageTwo send_message UserOne with {text:Hey}\n```",
+        "params": [
+          {
+            "name": "text",
+            "type": "string",
+            "info": "Message text",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "MESSAGE"
+          }
+        ]
+      },
+      {
+        "name": "share_post",
+        "info": "Share post as User or Page. Voice switcher supported.\n### SIGNATURE\n```\n        Subject1 as Subject2 share_post label with {post, place, ?text}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* post: Post to be shared.\n* place: Where to send the post. Acceptable values include label of User, Page, Event or Group.\n* ?text: The text of the shared post.\n### EXAMPLE 1:\n```\n        UserOne share_post SharedPost with {post: Post1, place: UserTwo}\n```\n### EXAMPLE 2:\n```\n        UserOne as PageOne share_post SharedPost with {post: Post1, place: EventOne}\n```",
+        "params": [
+          {
+            "name": "post",
+            "type": "POST",
+            "info": "Post to share",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "place",
+            "type": "USER|PAGE|GROUP|EVENT",
+            "info": "Where to share the post (user, page, group, event)",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "text",
+            "type": "string",
+            "info": "The text of the share",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "POST"
+          }
+        ]
+      },
+      {
+        "name": "create_chat_group",
+        "info": "User creates a chat group with other users.\n### SIGNATURE\n```\nSubject create_chat_group Label with {members, ?text}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the chat group.\n### KEYWORD PARAMETERS\n* members: List of users (must be friends of the group creator).\n* ?text: The text of the initial message.\n### EXAMPLE 1:\n```\nUserOne create_chat_group ChatOne with {text: 'Welcome!', members:[UserTwo, UserThree]}\n```",
+        "params": [
+          {
+            "name": "members",
+            "type": "vec<USER>",
+            "info": "Members to add to chat group",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "text",
+            "type": "string",
+            "info": "Initial message",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "CHAT_GROUP"
+          }
+        ]
+      },
+      {
+        "name": "follow",
+        "info": "As a user, follows another user or page.\n### SIGNATURE\n```\n        Subject follow Label\n```\n### POSITIONAL PARAMETERS\n* label: The label of the user/page that will be followed.\n### EXAMPLE 1:\n```\n        UserOne follow UserTwo\n```\n### EXAMPLE 2:\n```\n        UserOne follow PageOne\n```",
+        "params": [],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "unfollow",
+        "info": "As a user, unfollows another user or page.\n### SIGNATURE\n```\n        Subject unfollow Label\n```\n### POSITIONAL PARAMETERS\n* label: The label of the user/page that will be unfollowed.\n### EXAMPLE 1:\n```\n        UserOne unfollow UserTwo\n```\n### EXAMPLE 2:\n```\n        UserOne unfollow PageOne\n```",
+        "params": [],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "create_additional_profile",
+        "info": "Create an additional profile for a user.\n### SIGNATURE\n```\n        Subject create_additional_profile Label\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created profile later in the FBDL script.\n### KEYWORD PARAMETERS\nNone.\n### EXAMPLE 1:\n```\n        UserOne create_additional_profile ProfileOne\n```",
+        "params": [],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "PROFILE"
+          }
+        ]
+      },
+      {
+        "name": "enable_professional_mode",
+        "info": "Enable professional mode for a user.\n### SIGNATURE\n```\n        Subject enable_professional_mode Label\n```\n### POSITIONAL PARAMETERS\n* label: The label of the user to enable professional mode for.\n### KEYWORD PARAMETERS\nNone.\n### EXAMPLE 1:\n```\n        UserOne enable_professional_mode UserOne\n```",
+        "params": [],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "create_messenger_kids_account",
+        "info": "Create a messenger kids account for a user. (Only supported in non EU countries)\n### SIGNATURE\n```\n        Subject create_messenger_kids_account Label\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created messenger kids account later in the FBDL script.\n### KEYWORD PARAMETERS\nNone.\n### EXAMPLE 1:\n```\n        UserOne create_messenger_kids_account MessengerKidsAccountOne\n```",
+        "params": [],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "MESSENGER_KIDS_ACCOUNT"
+          }
+        ]
+      },
+      {
+        "name": "add_guardians",
+        "info": "Add guardians to a messenger kids account. (Only supported in non EU countries)\n### SIGNATURE\n```\n        Subject add_guardians Label with {guardians}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the messenger kids account to add guardians to.\n### KEYWORD PARAMETERS\n* guardians: Vector of user labels to add as guardians.\n### EXAMPLE 1:\n```\n        UserOne add_guardians MessengerKidsAccountOne with {guardians: [UserTwo, UserThree]}\n```",
+        "params": [
+          {
+            "name": "guardians",
+            "type": "vec<USER>",
+            "info": "Guardians to add",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "create_album",
+        "info": "Create an album. Supports voice switcher via the as keyword.\n\n### SIGNATURE\n```\n        Subject as Subject create_album Label with {type, place}\n```\n\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* type: The type of album.Value: user | shared | page | group.\n* place: The associated label for a specified type (e.g.: a user, shared, page, or group). For example, if type: group then place: GroupOne.\n\n### EXAMPLE\n```\n        UserOne create_album AlbumOne with {type: group, place: GroupOne}\n```\n\n```\n        UserOne as PageOne create_album AlbumOne with {type: group, place: GroupOne}\n```",
+        "params": [
+          {
+            "name": "type",
+            "type": "string",
+            "info": "Type of place where to create the album",
+            "optional": false,
+            "default": "",
+            "values_json": "{\"0\":\"user\",\"1\":\"shared\",\"2\":\"page\",\"3\":\"group\"}"
+          },
+          {
+            "name": "place",
+            "type": "USER|PAGE|GROUP",
+            "info": "Where to create the album (user, page, group)",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "ALBUM"
+          }
+        ]
+      },
+      {
+        "name": "add_photo",
+        "info": "Add a photo to an album. Supports voice switcher via the as keyword.\n\n### SIGNATURE\n```\n        Subject as Subject add_photo Label with {album, place}\n```\n\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* album: The label of the Album to have a photo added to.\n* place: Where is the album?Value: label of a user | page | group.\n\n### EXAMPLE 1:\n```\n        UserOne add_photo PhotoOne with {album: AlbumOne, place: GroupOne}\n```\n### EXAMPLE 2:\n```\n        UserOne as PageOne add_photo PhotoOne with {album: AlbumOne, place: GroupOne}\n```",
+        "params": [
+          {
+            "name": "album",
+            "type": "ALBUM",
+            "info": "Album to add photo to",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "place",
+            "type": "USER|PAGE|GROUP",
+            "info": "Where to add the photo",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "PHOTO"
+          }
+        ]
+      },
+      {
+        "name": "add_video",
+        "info": "Add a video to an album. Supports voice switcher via the as keyword.\n\n### SIGNATURE\n```\n        Subject as Subject add_video Label with {album, place}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* album: The label of the Album to have a photo added to.\n* place: Where is the album?Value: label of a user | page | group.\n\n### EXAMPLE 1\n```\n UserOne add_video VideoOne with {album: AlbumOne, place: PageOne}\n```\n### EXAMPLE 2\n```\n        UserOne as PageOne add_video VideoOne with {album: AlbumOne, place: GroupOne}\n```",
+        "params": [
+          {
+            "name": "album",
+            "type": "ALBUM",
+            "info": "Album to add video to",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "place",
+            "type": "USER|PAGE|GROUP",
+            "info": "Where to add the video",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "VIDEO"
+          }
+        ]
+      },
+      {
+        "name": "tag_photo",
+        "info": "Tag a user or page on a photo. Supports voice switcher via the 'as' keyword.\n\n### SIGNATURE\n```\n        Subject tag_photo Label with {taggee}\n```\n### POSITIONAL PARAMETERS\n* label: The photo label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* taggee: The label of the user or page that is going to be tagged.\n\n### EXAMPLE 1:\n```\n        UserOne tag_photo PhotoOne with {taggee: UserTwo}\n```\n### EXAMPLE 2:\n```\n        UserOne as PageOne tag_photo PhotoOne with {taggee: PageTwo}\n```",
+        "params": [
+          {
+            "name": "taggee",
+            "type": "USER|PAGE",
+            "info": "User or page to tag",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_contributors",
+        "info": "Add one or more contributors to a shared album.\n\n### SIGNATURE\n```\n        Subject add_contributors Label with {new_roles}\n```\n\n### POSITIONAL PARAMETERS\n* label: The label of the Album you wish to add contributors to.\n### KEYWORD PARAMETERS\n* new_roles: A list of contributors (i.e.: label of Users) you want to add.\n### EXAMPLE 1:\n```\n        UserOne add_contributors AlbumOne with {new_roles: [UserTwo, UserThree]}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as contributors",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "create_page",
+        "info": "User creates a page.\n### SIGNATURE\n```\n        Subject create_page Label with {?is_parent_location}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* ?is_parent_location: Default is false. If set to true, this page will be marked as the parent location page.Value: false | true\n### EXAMPLE 1:\n```\n        UserTwo create_page PageOne\n```\n### EXAMPLE 2:\n```\n        UserTwo create_page PageOne with {is_parent_location: true}\n```",
+        "params": [
+          {
+            "name": "is_parent_location",
+            "type": "bool",
+            "info": "Whether this is a parent location",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "PAGE"
+          }
+        ]
+      },
+      {
+        "name": "add_business_location",
+        "info": "Add a new business location sub-page to a business page. The page must have been created with 'is_parent_location=true'.\n### SIGNATURE\n```\n        Subject add_business_location Label with {page}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* page: The Parent business page where we need to add this new location subpage.\n### EXAMPLE 1:\n```\n        UserOne add_business_location LocOne with {page: PageOne}\n```",
+        "params": [
+          {
+            "name": "page",
+            "type": "PAGE",
+            "info": "Page to add location to",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "LOCATION"
+          }
+        ]
+      },
+      {
+        "name": "add_page_facebook_access",
+        "info": "Give someone Facebook access to a Page.\n### SIGNATURE\n```\nSubject add_page_facebook_access Label with {new_roles, ?full}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Page where access is added to.\n### KEYWORD PARAMETERS\n* new_roles: List of users to give access.\n* ?full: Partial/full control, full control would allow the admin to change roles and delete the page. Default is false.\n### EXAMPLE 1:\n```\nUserOne add_page_facebook_access PageOne with {full: true, new_roles: [UserTwo]}\n```\n### EXAMPLE 2:\n```\nUserOne add_page_facebook_access PageOne with {full: false, new_roles: [UserThree]}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add access for",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "full",
+            "type": "bool",
+            "info": "Partial/full control, full control would allow the admin to change roles and delete the page. Default is false",
+            "optional": true,
+            "default": "false",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_page_task_access",
+        "info": "Give someone task access to a Page.\n### SIGNATURE\n```\nSubject add_page_task_access Label with {new_role, tasks}\n```\n### POSITIONAL PARAMETERS\n* label: The Page to add access to. This may be a setup-declared Page label, OR a dotted reference to an AP+ (Additional Profile Plus) delegate page produced by test_additional_profile_plus, e.g. MyAPPlus.delegate_page_ids.0. Use the delegate-page reference to grant a Limited Access Role (LAR) on an AP+ profile DIRECTLY in FBDL — this is NOT a manual browser step.\n### KEYWORD PARAMETERS\n* new_role: User to give access.\n* tasks: List of tasks, choose from [content, messages, community, ads, insights].\n### EXAMPLE 1:\n```\nUserOne add_page_task_access PageOne with {new_role: UserTwo, tasks: [content, messages, community, ads, insights]}\n```\n### EXAMPLE 2:\n```\nUserOne add_page_task_access PageOne with {new_role: UserThree, tasks: [insights]}\n```\n### EXAMPLE 3 (Insights-only LAR on an AP+ profile delegate page):\n```\nOwner test_additional_profile_plus MyAPPlus with {name: 'WH Cat 22'}\nOwner add_page_task_access MyAPPlus.delegate_page_ids.0 with {new_role: Attacker, tasks: [insights]}\n```",
+        "params": [
+          {
+            "name": "new_role",
+            "type": "USER",
+            "info": "User to add access for",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "tasks",
+            "type": "vec<string>",
+            "info": "Tasks to grant access to",
+            "optional": false,
+            "default": "",
+            "values_json": "{\"0\":\"content\",\"1\":\"messages\",\"2\":\"community\",\"3\":\"ads\",\"4\":\"insights\"}"
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "unpublish_page",
+        "info": "Unpublish a page.\n### POSITIONAL PARAMETERS\n* label: The label of the Page to be unpublished.\n### EXAMPLE 1:\n```\n        UserTwo unpublish_page PageOne\n```",
+        "params": [],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "publish_page",
+        "info": "Publish a page.\n### POSITIONAL PARAMETERS\n* label: The label of the Page to be published.\n### EXAMPLE 1:\n```\n        UserTwo publish_page PageOne\n```",
+        "params": [],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "set_age_restriction",
+        "info": "Set the age restriction of a Page.\n### SIGNATURE\n```\n        Subject set_age_restriction Label with {age}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Page to set the age restriction for.\n### KEYWORD PARAMETERS\n* age: Choose from 0 | 17 | 18 | 19 | 21.\n### EXAMPLE 1:\n```\n        UserTwo set_age_restriction PageOne with {age: 21}\n```",
+        "params": [
+          {
+            "name": "age",
+            "type": "int",
+            "info": "Minimum age for access",
+            "optional": false,
+            "default": "",
+            "values_json": "{\"0\":\"0\",\"1\":\"17\",\"2\":\"18\",\"3\":\"19\",\"4\":\"21\"}"
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "set_country_restriction",
+        "info": "Set country restriction on a page",
+        "params": [
+          {
+            "name": "is_block_list",
+            "type": "bool",
+            "info": "Whether to block or allow specified countries",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "countries",
+            "type": "vec<string>",
+            "info": "Country codes like US, CA, etc.",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "create_linked_group",
+        "info": "Creates a Group, add Page as Admin and/or add one or more Users as members of the group.\n### SIGNATURE\n```\n        Subject create_linked_group Label with {?page, ?privacy, ?members}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* page: Label of the Page to be the admin of the Group.\n* ?privacy: The privacy setting of the group. Default is private.Value: private | public\n* ?visibility: The visibility setting of the group. Default is anyone.Value: anyone | members_only\n* ?members: Label of one or more Users to add as members of the group.\n### EXAMPLE 1:\nCreate a Group. Make PageOne as admin of the group and add UserOne and UserFour as members. The privacy is default to private.\n```\n        UserOne create_linked_group GroupOne with {page: PageOne, members:[UserOne, UserFour]}\n```\n### EXAMPLE 2:\nCreate a Group. Make PageOne as admin of the group and add UserOne and UserFour as members. The privacy is set to private and the visibility is set to anyone.\n```\n        UserOne create_linked_group GroupOne with {page: PageOne, members:[UserOne, UserTwo], privacy: private, visibility: anyone}\n```",
+        "params": [
+          {
+            "name": "page",
+            "type": "PAGE",
+            "info": "Page to link to",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "members",
+            "type": "vec<USER>",
+            "info": "Initial members",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "privacy",
+            "type": "string",
+            "info": "Group privacy setting",
+            "optional": true,
+            "default": "",
+            "values_json": "{\"0\":\"public\",\"1\":\"private\",\"2\":\"public_legacy\"}"
+          },
+          {
+            "name": "visibility",
+            "type": "string",
+            "info": "Group visibility setting",
+            "optional": true,
+            "default": "",
+            "values_json": "{\"0\":\"anyone\",\"1\":\"members_only\"}"
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "GROUP"
+          }
+        ]
+      },
+      {
+        "name": "create_ar_permission_group",
+        "info": "Creates a Spark AR Hub permission group for the given page and add a list of Users to the permission group.\n### SIGNATURE\n```\n        Subject create_ar_permission_group Link with {page, users}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* page: The label of the Page that the permission group will belong to.\n* users: A list of one or more Users that will be assigned to the permission group.\n### EXAMPLE 1:\n```\n        UserOne create_ar_permission_group ARPermGroupOne with {page: PageOne, users: [UserTwo, UserFour]}\n```",
+        "params": [
+          {
+            "name": "page",
+            "type": "PAGE",
+            "info": "Page to add the permission group to",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "users",
+            "type": "vec<USER>",
+            "info": "List of users to add to the permission group",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "AR_PERMISSION_GROUP"
+          }
+        ]
+      },
+      {
+        "name": "add_page_community_managers",
+        "info": "Add one or more community managers to a Page.\n### SIGNATURE\n```\n        add_page_community_managers Label with {new_roles}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Page where community managers are added to.\n### KEYWORD PARAMETERS\n* new_roles: A list of Users to add as community managers.\n### EXAMPLE 1:\n```\n        UserTwo add_page_community_managers PageOne with {new_roles: [UserOne, UserFour]}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as community managers",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_page_editors",
+        "info": "Add editors to a page",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as editors",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_page_admins",
+        "info": "Add admins to a page",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as admins",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_page_moderators",
+        "info": "Add moderators to a page",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as moderators",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_page_analysts",
+        "info": "Add analysts to a page",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as analysts",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_page_advertisers",
+        "info": "Add advertisers to a page",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as advertisers",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "page_link_group",
+        "info": "Link a page to a group.\n### SIGNATURE\n```\n        Subject page_link_group Label with {group}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Page to be linked.\n### KEYWORD PARAMETERS\n* group: The Group to link the Page to.\n### EXAMPLE 1:\n```\n        UserOne page_link_group PageOne with {group: GroupOne}\n```",
+        "params": [
+          {
+            "name": "group",
+            "type": "GROUP",
+            "info": "Group to link page to",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "page_invite_friend",
+        "info": "Create invites to like a page.\n### SIGNATURE\n```\n        Subject page_invite_friend Label with {invitees}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the page to be linked.\n### KEYWORD PARAMETERS\n* invitees: The Users to be invited to like the page.\n### EXAMPLE 1:\n```\n        UserOne page_invite_friend PageOne with {invitees: [FriendOne, FriendTwo]}\n```\nPlease note that an invited user must have a friendship with the inviting user.",
+        "params": [
+          {
+            "name": "invitees",
+            "type": "vec<USER>",
+            "info": "Friends to invite",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "request_crossposting",
+        "info": "Request the video crossposting setting between two pages.\n### SIGNATURE\n```\nSubject request_crossposting Label with {mode, ?accept_request}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* mode: Whether live crossposts will be posted automatically or manually. Value: automatic | manual\n* ?accept_request: Default to false. This will auto accept the crossposting request.\n### EXAMPLE 1:\n```\nUserOne as PageOne request_crossposting PageTwo with {mode: automatic, accept_request: true}\n```\n### EXAMPLE 2:\n```\nUserOne as PageOne request_crossposting PageTwo with {mode: manual}\n```",
+        "params": [
+          {
+            "name": "mode",
+            "type": "string",
+            "info": "Crossposting mode",
+            "optional": false,
+            "default": "",
+            "values_json": "{\"0\":\"automatic\",\"1\":\"manual\"}"
+          },
+          {
+            "name": "accept_request",
+            "type": "bool",
+            "info": "Whether to automatically accept the request",
+            "optional": true,
+            "default": "false",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_group_admins",
+        "info": "Add one or more Users as admins of a Group.\n### SIGNATURE\n```\n        Subject as Subject add_group_admins Label with {new_roles, ?accept_invite}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Group that will have admins added.\n### KEYWORD PARAMETERS\n* new_roles: A list of users to add as new admins.\n* ?accept_invite: Whether the invitee accepts the invite. Default is true. Value: true | false\n### EXAMPLE 1:\n```\n        UserTwo add_group_admins GroupOne with {new_roles: [UserOne, UserFour]}\n```\n### EXAMPLE 2:\n```\n        UserTwo as PageTwo add_group_admins GroupOne with {new_roles: [UserOne, UserFour]}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER|PAGE>",
+            "info": "Users or pages to add as admins",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "accept_invite",
+            "type": "bool",
+            "info": "Whether to auto-accept the invitation",
+            "optional": true,
+            "default": "true",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_group_moderators",
+        "info": "Add one or more Users as moderators of a Group.\n### SIGNATURE\n```\n        Subject as Subject add_group_moderators Label with {new_roles, ?accept_invite}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Group that will have moderators added.\n### KEYWORD PARAMETERS\n* new_roles: A list of users to be added as new moderators.\n* ?accept_invite: Whether the invitee accepts the invite. Default is true.Value: true | false\n### EXAMPLE 1:\n```\n        UserTwo add_group_moderators GroupOne with {new_roles: [UserOne, UserFour], accept_invite: false}\n```\n### EXAMPLE 2:\n```\n        UserTwo as PageTwo add_group_moderators GroupOne with {new_roles: [UserOne, UserFour], accept_invite: false}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER|PAGE>",
+            "info": "Users or pages to add as moderators",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "accept_invite",
+            "type": "bool",
+            "info": "Whether to auto-accept the invitation",
+            "optional": true,
+            "default": "true",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_group_members",
+        "info": "Add one or more Users as new members of a Group.\n### SIGNATURE\n```\n        Subject as Subject add_group_members Label with {new_roles, ?accept_invite}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Group that will have members added.\n### KEYWORD PARAMETERS\n* new_roles: A list of users to be added as new members.\n* ?accept_invite: Whether the invitee accepts the invite. Default is true. Value: true | false\n### EXAMPLE 1:\n```\n        UserTwo add_group_members GroupOne with {new_roles: [UserOne, UserFour]}\n```\n### EXAMPLE 2:\n```\n        UserTwo as PageTwo add_group_members GroupOne with {new_roles: [UserOne, UserFour]}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER|PAGE>",
+            "info": "Users or pages to add as members",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "accept_invite",
+            "type": "bool",
+            "info": "Whether to auto-accept the invitation",
+            "optional": true,
+            "default": "true",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "remove_member",
+        "info": "Remove user or page member from group. Support voice switcher.\n### SIGNATURE\n```\n        Subject as Subject remove_member Label with {member}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Group that will have the member removed.\n### KEYWORD PARAMETERS\n* member: Label of the User or Page to be removed.\n* ?block: Also block the user. Can't be used when the removed member is a page. Default to False if not provided. Value: true | false\n### EXAMPLE 1:\n```\n        UserTwo remove_member GroupOne with {member: UserOne}\n```\n### EXAMPLE 2:\n```\n        UserTwo as PageOne remove_member GroupOne with {member: UserOne}\n```",
+        "params": [
+          {
+            "name": "member",
+            "type": "USER|PAGE",
+            "info": "Member to remove",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "block",
+            "type": "bool",
+            "info": "Whether to block the member",
+            "optional": true,
+            "default": "false",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "create_group",
+        "info": "Create a group.\nSIGNATURE\n```\n        Subject create_group Label with{privacy}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* ?privacy: The privacy setting. Default to 'private' if not provided. Value: public | private\n* ?visibility: The visibility setting. Default to 'anyone' if not provided. Value: anyone | members_only\n### EXAMPLE 1:\n```\n        UserTwo create_group GroupOne with {privacy: private, visibility: members_only}\n```",
+        "params": [
+          {
+            "name": "privacy",
+            "type": "string",
+            "info": "Group privacy setting",
+            "optional": true,
+            "default": "private",
+            "values_json": "{\"0\":\"public\",\"1\":\"private\"}"
+          },
+          {
+            "name": "visibility",
+            "type": "string",
+            "info": "Group visibility setting",
+            "optional": true,
+            "default": "anyone",
+            "values_json": "{\"0\":\"anyone\",\"1\":\"members_only\"}"
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "GROUP"
+          }
+        ]
+      },
+      {
+        "name": "create_event",
+        "info": "Create a past or future event.\n### SIGNATURE\n```\n        Subject create_event Label with {place, ?privacy, ?is_past, ?post_permission, ?post_approval}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* place: Where is the event hosted?Value: user | page | group\n* ?privacy: The privacy setting of an event. Default is public.Value: public | private\n* ?is_past: Is this event occurring in the past? Default is false.Value: false | true\n* ?post_permission: Who is allowed to post? Default is admin. Value: admin | anyone\n* ?post_approval: Post approval setting. Default is off. Value: on | off\n### EXAMPLE 1:\n```\n        UserOne create_event EventOne with {place: PageOne, privacy: private, is_past: true}\n```",
+        "params": [
+          {
+            "name": "place",
+            "type": "USER|PAGE|GROUP",
+            "info": "Where to create the event",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "is_past",
+            "type": "bool",
+            "info": "Whether event is in the past",
+            "optional": true,
+            "default": "false",
+            "values_json": ""
+          },
+          {
+            "name": "post_permission",
+            "type": "string",
+            "info": "Post permission setting",
+            "optional": true,
+            "default": "admin",
+            "values_json": "{\"0\":\"admin\",\"1\":\"anyone\"}"
+          },
+          {
+            "name": "post_approval",
+            "type": "string",
+            "info": "Post approval setting",
+            "optional": true,
+            "default": "off",
+            "values_json": "{\"0\":\"on\",\"1\":\"off\"}"
+          },
+          {
+            "name": "privacy",
+            "type": "string",
+            "info": "Event privacy setting",
+            "optional": true,
+            "default": "public",
+            "values_json": "{\"0\":\"public\",\"1\":\"private\"}"
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "EVENT"
+          }
+        ]
+      },
+      {
+        "name": "add_event_cohosts",
+        "info": "Add one or more Users/Pages as cohosts of an event.\n### SIGNATURE\n```\n        Subject add_event_cohosts Label with {new_roles, ?accept_invite}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Event to have cohosts added to.\n### KEYWORD PARAMETERS\n* new_roles: A list of Users or Pages to be added.\n* ?accept_invite: Whether to auto-accept the invitation. Default is true.\n### EXAMPLE 1:\nAdd UserTwo and PageOne as cohosts of EventOne.\n```\n        UserOne add_event_cohosts EventOne with {new_roles: [UserTwo, PageOne]}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER|PAGE>",
+            "info": "Users or pages to add as co-hosts",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "accept_invite",
+            "type": "bool",
+            "info": "Whether to auto-accept the invitation",
+            "optional": true,
+            "default": "true",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "event_invite",
+        "info": "Invite one or more User/Page to an event.\n### SIGNATURE\n```\n        Subject event_invite Label with {invitees}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Event to invite users to.\n### KEYWORD PARAMETERS\n* invitees: A list of User or Page to invite.\n### EXAMPLE 1:\n```\n        UserOne event_invite EventOne with {invitees: [UserTwo, PageOne]}\n```\nNOTE: This action will fail when trying to invite members to an event in a 'public' group",
+        "params": [
+          {
+            "name": "invitees",
+            "type": "vec<USER|PAGE>",
+            "info": "Users to invite",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "cancel_event",
+        "info": "Cancel an event.\n### SIGNATURE\n```\n        Subject cancel_event Label\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Event to cancel.\n### EXAMPLE 1:\n```\n        UserOne cancel_event EventOne\n```",
+        "params": [],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "create_business",
+        "info": "Create a business.\n### SIGNATURE\n```\n        Subject create_business Label with {?primary_page}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* ?primary_page: The label of a Page to be set as the main page of the business.\n### EXAMPLE 1:\n```\n        UserOne create_business BusinessOne with {primary_page: PageOne}\n```",
+        "params": [
+          {
+            "name": "primary_page",
+            "type": "PAGE",
+            "info": "Primary page for the business",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "BUSINESS"
+          }
+        ]
+      },
+      {
+        "name": "add_biz_employees",
+        "info": "Add one or more Users as employees of a business.\n### SIGNATURE\n```\n        Subject add_biz_employees Label with {new_roles}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Business to add employees to.\n### KEYWORD PARAMETERS\n* new_roles: A list of Users to add as new employees.\n### EXAMPLE 1:\n```\n        UserOne add_biz_employees BusinessOne with {new_roles: [UserTwo, UserThree]}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as employees",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_biz_admins",
+        "info": "Add one or more Users as admins of business.\n### SIGNATURE\n```\n        Subject add_biz_admins Label with {new_roles}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Business to add admins to.\n### KEYWORD PARAMETERS\n* new_roles: A list of Users to add as new admins.\n### EXAMPLE 1:\n```\n        UserOne add_biz_admins BusinessOne with {new_roles: [UserTwo, UserThree]}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as admins",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "create_ad_account",
+        "info": "Create an ad account for personal use or a Business.\n### SIGNATURE\n```\n        Subject create_ad_account Label with {?business}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* ?business: The label of the business. If not provided, a personal ad account will be created.\n### EXAMPLE 1:\n```\nUserOne create_ad_account AdOne\n```\n### EXAMPLE 2:\n```\n        UserOne create_ad_account AdOne with {business: BizOne}\n```",
+        "params": [
+          {
+            "name": "business",
+            "type": "BUSINESS",
+            "info": "Business to create ad account under",
+            "optional": true,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "AD_ACCOUNT"
+          }
+        ]
+      },
+      {
+        "name": "add_ad_admins",
+        "info": "Add one or more Users as admins of ad account.\n### SIGNATURE\n```\n        Subject add_ad_admins Label with {new_roles}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the ad account to add admins to.\n### KEYWORD PARAMETERS\n* new_roles: A list of Users to add as new admins.\n### EXAMPLE 1:\n```\n        UserOne add_ad_admins AdOne with {new_roles: [UserTwo, UserThree]}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as ad account admins",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_ad_advertisers",
+        "info": "Add one or more Users as advertisers of ad account.\n### SIGNATURE\n```\n        Subject add_ad_advertisers Label with {new_roles}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the ad account to add advertisers to.\n### KEYWORD PARAMETERS\n* new_roles: A list of Users to add as new advertisers.\n### EXAMPLE 1:\n```\n        UserOne add_ad_advertisers AdOne with {new_roles: [UserTwo, UserThree]}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as ad account advertisers",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_ad_analysts",
+        "info": "Add one or more Users as analysts of ad account.\n### SIGNATURE\n```\n        Subject add_ad_analysts Label with {new_roles}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the ad account to add analysts to.\n### KEYWORD PARAMETERS\n* new_roles: A list of Users to add as new analysts.\n### EXAMPLE 1:\n```\n        UserOne add_ad_analysts AdOne with {new_roles: [UserTwo, UserThree]}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as ad account analysts",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_biz_pages",
+        "info": "Add one or more pages to the business.\n### SIGNATURE\n```\n        Subject add_biz_pages Label with {pages}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Business to add pages to.\n### KEYWORD PARAMETERS\n* pages: A list of Pages to add to the Business.\n### EXAMPLE 1:\n```\n        UserOne add_biz_pages BusinessOne with {pages: [PageTwo, PageThree]}\n```",
+        "params": [
+          {
+            "name": "pages",
+            "type": "vec<PAGE>",
+            "info": "Pages to add to business",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "biz_assign_page_role",
+        "info": "Assign current business employee to a page with certain role.\n### SIGNATURE\n```\n       Subject biz_assign_page_role Label with {business, role, page}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the user who will be assigned a role on a business owned page.\n### KEYWORD PARAMETERS\n* business: The label of the Business.\n* role: Choose from [admin, editor, moderator, advertiser, analyst].\n* page: The label of the Page.\n### EXAMPLE 1:\n```\n        UserOne biz_assign_page_role UserOne with {business: BizOne, role: moderator, page: PageOne}\n```",
+        "params": [
+          {
+            "name": "business",
+            "type": "BUSINESS",
+            "info": "Business context",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "role",
+            "type": "string",
+            "info": "Role to assign",
+            "optional": false,
+            "default": "",
+            "values_json": "{\"0\":\"moderator\",\"1\":\"admin\",\"2\":\"editor\",\"3\":\"advertiser\",\"4\":\"analyst\"}"
+          },
+          {
+            "name": "page",
+            "type": "PAGE",
+            "info": "Page to assign role for",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "biz_assign_partner_asset",
+        "info": "Assign 'app' 'ad account' or 'page' to a business partner with admin permission.\n### SIGNATURE\n```\n        Subject biz_assign_partner_asset Label with {partner, asset, type}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Business that initiates the assign asset request.\n### KEYWORD PARAMETERS\n* partner: The label of the Business partner.\n* asset: Label of the asset.\n* type: Choose from app | page | ad_account.\n### EXAMPLE 1:\n```\n        UserOne biz_assign_partner_asset BizOne with {partner: BizTwo, asset: PageOne, type: page}\n```",
+        "params": [
+          {
+            "name": "partner",
+            "type": "BUSINESS",
+            "info": "Partner business",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "asset",
+            "type": "PAGE|APP|AD_ACCOUNT",
+            "info": "Asset to assign (page, app or ad account)",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "type",
+            "type": "string",
+            "info": "Type of asset",
+            "optional": false,
+            "default": "",
+            "values_json": "{\"0\":\"page\",\"1\":\"app\",\"2\":\"ad_account\"}"
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "biz_link_app",
+        "info": "Link an app to a business.\n### SIGNATURE\n```\n        Subject biz_link_app Label with {app}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Business to be linked.\n### KEYWORD PARAMETERS\n* app: The label of the App to be linked.\n### EXAMPLE 1:\n```\n        UserOne biz_link_app BizOne with {app: AppOne}\n```",
+        "params": [
+          {
+            "name": "app",
+            "type": "APP",
+            "info": "App to link to business",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "biz_request_page_access",
+        "info": "Request page access on behalf of a business\n### SIGNATURE\n```\n       Subject biz_request_page_access Label with {page, ?permissions}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Business that initiates the page access request.\n### KEYWORD PARAMETERS\n* page: The label of the Page to be applied access to.\n* ?permissions: A list of permissions, choose from [manage, create_content, moderate, advertise, analyze, manage_jobs]. This parameter is optional, default value would be [manage].\n### EXAMPLE 1:\n```\n        UserOne biz_request_page_access BizOne with {page:PageTwo, permissions: [manage, advertise]}\n```\n### EXAMPLE 2:\n```\n        UserOne biz_request_page_access BizOne with {page:PageTwo}\n```",
+        "params": [
+          {
+            "name": "page",
+            "type": "PAGE",
+            "info": "Page to request access for",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "permissions",
+            "type": "vec<string>",
+            "info": "Permissions to request (manage, create_content, moderate, advertise, analyze, manage_jobs), default is manage",
+            "optional": true,
+            "default": "manage",
+            "values_json": "{\"0\":\"manage\",\"1\":\"create_content\",\"2\":\"moderate\",\"3\":\"advertise\",\"4\":\"analyze\",\"5\":\"manage_jobs\"}"
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "create_shop",
+        "info": "Create a Shop with an empty catalog.\n### SIGNATURE\n```\n Subject create_shop Label with {page, business}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the shop\n### KEYWORD PARAMETERS\n* page: The label of a Page, which used as a primary_page for a Business.\n* business: The label of a Business.\n### EXAMPLE 1:\n```\n UserOne create_shop ShopOne with {page: PageOne, business: BusinessOne}\n```",
+        "params": [
+          {
+            "name": "page",
+            "type": "PAGE",
+            "info": "Page to create shop for",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "business",
+            "type": "BUSINESS",
+            "info": "Business to create shop under",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "SHOP"
+          }
+        ]
+      },
+      {
+        "name": "create_shop_item",
+        "info": "Create a Shop Item and add it to the Shop.\n### SIGNATURE\n```\n Subject create_shop_item Label with {shop, ?approved}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the shop Item.\n### KEYWORD PARAMETERS\n* shop: The label of the Shop.\n* ?approved: Default is true. If set to true, this will auto approve the product.Value: false | true\n\n### EXAMPLE 1:\n```\n UserOne create_shop_item ItemOne with {shop: ShopOne, approved: false}\n```",
+        "params": [
+          {
+            "name": "shop",
+            "type": "SHOP",
+            "info": "Shop to create item in",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "approved",
+            "type": "bool",
+            "info": "Whether the item is approved",
+            "optional": true,
+            "default": "true",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "SHOP_ITEM"
+          }
+        ]
+      },
+      {
+        "name": "create_pixel",
+        "info": "Create a pixel for a Business.\n### SIGNATURE\n```\n        Subject create_pixel Label with {business}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* business: The label of the business.\n### EXAMPLE 1:\n```\n        UserOne create_pixel PixOne with {business: BizOne}\n```",
+        "params": [
+          {
+            "name": "business",
+            "type": "BUSINESS",
+            "info": "Business to create pixel for",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "PIXEL"
+          }
+        ]
+      },
+      {
+        "name": "add_app_admins",
+        "info": "Add one or more Users as admins of an app.\n\n### SIGNATURE\n```\n        Subject add_app_admins with {new_roles}\n```\n\n### POSITIONAL PARAMETERS\n* label: The label of the App to have admins added to.\n### KEYWORD PARAMETERS\n* new_roles: A list of users (i.e.: label of Users) to be added as admins.\n### EXAMPLE 1:\n```\n        UserOne add_app_admins AppOne with {new_roles: [UserTwo, UserThree]}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as admins",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_app_developers",
+        "info": "Add one more more Users as developers of an app.\n### SIGNATURE\n```\n        Subject add_app_developers with {new_roles}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the App to have developers added to.\n### KEYWORD PARAMETERS\n* new_roles: A list of users (e.g.: label of Users) to be added as developers.\n### EXAMPLE 1:\n```\n        UserOne add_app_developers AppOne with {new_roles: [UserTwo, UserThree]}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as developers",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_app_testers",
+        "info": "Add one or more Users as testers of an app.\n### SIGNATURE\n```\n        Subject add_app_testers with {new_roles}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the App to have testers added to.\n### KEYWORD PARAMETERS\n* new_roles: A list of users (i.e.: label of Users) to be added as testers.\n### EXAMPLE 1:\n```\n        UserOne add_app_testers AppOne with {new_roles: [UserTwo, UserThree]}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as testers",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_app_analytics_users",
+        "info": "Add one or more users as analytics users of an app.\n### SIGNATURE\n```\n        Subject add_app_analytics_users with {new_roles}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the App to have analytics users added to.\n### KEYWORD PARAMETERS\n* new_roles: A list of users (i.e.: label of Users) to be added as analytics users.\n### EXAMPLE 1:\n```\n        UserOne add_app_analytics_users AppOne with {new_roles: [UserTwo, UserThree]}\n```",
+        "params": [
+          {
+            "name": "new_roles",
+            "type": "vec<USER>",
+            "info": "Users to add as analytics users",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "create_learning_unit",
+        "info": "Create a learning unit in group. Support voice switcher.\n### SIGNATURE\n```\n        Subject as Subject create_learning_unit Label with {group}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* group: The group where you want to create a unit.\n### EXAMPLE 1:\n```\n        UserTwo create_learning_unit UnitOne with {group:GroupOne}\n```\n### EXAMPLE 2:\n```\n        UserTwo as PageOne create_learning_unit UnitOne with {group:GroupOne}\n```",
+        "params": [
+          {
+            "name": "group",
+            "type": "GROUP",
+            "info": "Group to create learning unit in",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "LEARNING_UNIT"
+          }
+        ]
+      },
+      {
+        "name": "create_doc",
+        "info": "Create a document in group. Support voice switcher.\n\nSIGNATURE\n\n        Subject as Subject create_doc Label with {group, ?can_edit}\nPOSITIONAL PARAMETERS\nlabel: The label that will be used to reference the created object later in the FBDL script.\nKEYWORD PARAMETERS\ngroup: The group where you want to create a doc.\n?can_edit : Default to true. Whether the group member can edit the doc.\nEXAMPLE 1:\n\n        UserOne create_doc DocOne with {group: GroupOne}\n\n###EXAMPLE 2:\n```\n        UserOne as PageOne create_doc DocOne with {group: GroupOne, can_edit: false}\n```",
+        "params": [
+          {
+            "name": "group",
+            "type": "GROUP",
+            "info": "Group to create document in",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "can_edit",
+            "type": "bool",
+            "info": "Whether the document can be edited",
+            "optional": true,
+            "default": "true",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "DOC"
+          }
+        ]
+      },
+      {
+        "name": "create_quiz",
+        "info": "Create a quiz in group.\n### SIGNATURE\n```\n        Subject create_quiz Label with {group, unit}\n```\n### POSITIONAL PARAMETERS\n* label: The label that will be used to reference the created object later in the FBDL script.\n### KEYWORD PARAMETERS\n* group: The group where you want to create a quiz.\n* unit: The learning unit where the quiz belongs to.\n### EXAMPLE 1:\n```\n        UserOne create_quiz QuizOne with {group: GroupOne, unit: UnitOne}\n```",
+        "params": [
+          {
+            "name": "group",
+            "type": "GROUP",
+            "info": "Group to create quiz in",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          },
+          {
+            "name": "unit",
+            "type": "LEARNING_UNIT",
+            "info": "Learning unit to associate quiz with",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": [
+          {
+            "name": "",
+            "type": "QUIZ"
+          }
+        ]
+      },
+      {
+        "name": "mute_member",
+        "info": "Mute a member in the group. Support voice switcher.\n### SIGNATURE\n```\n        Subject as Subject mute_member Label with {member}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Group that will have the member muted.\n### KEYWORD PARAMETERS\n* member: Label of the User to be muted.\n### EXAMPLE 1:\n```\n        UserTwo mute_member GroupOne with {member: UserOne}\n```\n### EXAMPLE 2:\n```\n       UserTwo as PageOne mute_member GroupOne with {member: UserOne}\n```",
+        "params": [
+          {
+            "name": "member",
+            "type": "USER|PAGE",
+            "info": "Member to mute",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": []
+      },
+      {
+        "name": "pause_group",
+        "info": "Pause a group to prevent new content.\n### SIGNATURE\n```\n        Subject pause_group Label\n```\n### POSITIONAL PARAMETERS\n* label: The label of the group to pause.\n### KEYWORD PARAMETERS\nNone.\n### EXAMPLE 1:\n```\n        UserOne pause_group GroupOne\n```",
+        "params": [],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "unpause_group",
+        "info": "Unpause a group to allow new content.\n### SIGNATURE\n```\n        Subject unpause_group Label\n```\n### POSITIONAL PARAMETERS\n* label: The label of the group to unpause.\n### KEYWORD PARAMETERS\nNone.\n### EXAMPLE 1:\n```\n        UserOne unpause_group GroupOne\n```",
+        "params": [],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "set_post_permission",
+        "info": "Set group posting permission. Supports voice switcher.\n\nNote that post permission cannot be changed on public groups with this action\n### SIGNATURE\n```\n        Subject as Subject set_post_permission Label with {value}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the group to have post permissions set for.\n### KEYWORD PARAMETERS\n* value: The permission value.Value: anyone | admin\n### EXAMPLE 1:\n```\n        UserTwo set_post_permission GroupTwo with {value: anyone}\n```\n### EXAMPLE 2:\n```\n        UserTwo as PageOne set_post_permission GroupTwo with {value: admin}\n```",
+        "params": [
+          {
+            "name": "value",
+            "type": "string",
+            "info": "Post permission value (admin or anyone)",
+            "optional": false,
+            "default": "",
+            "values_json": "{\"0\":\"admin\",\"1\":\"anyone\"}"
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "set_admin_approval",
+        "info": "Set whether Posts to a Group require admin approval. Supports voice switcher.\n### SIGNATURE\n```\n        Subject as Subject set_admin_approval Label with {value}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Group to have admin approval set for.\n### KEYWORD PARAMETERS\n* value: The permission value.Value: on | off\n### EXAMPLE 1:\n```\n        UserTwo set_admin_approval GroupTwo with {value: on}\n```\n### EXAMPLE 2:\n```\n        UserTwo as PageOne set_admin_approval GroupTwo with {value: on}\n```",
+        "params": [
+          {
+            "name": "value",
+            "type": "string",
+            "info": "Admin approval value (on or off)",
+            "optional": false,
+            "default": "",
+            "values_json": "{\"0\":\"on\",\"1\":\"off\"}"
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "group_link_page",
+        "info": "Link group to a page.\n### SIGNATURE\n```\n        Subject group_link_page Label with {page}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Group to be linked.\n### KEYWORD PARAMETERS\n* page: The page to be linked.\n### EXAMPLE\n```\n        UserTwo group_link_page GroupTwo with {page: PageOne}\n```",
+        "params": [
+          {
+            "name": "page",
+            "type": "PAGE",
+            "info": "Page to link to group",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": []
+      },
+      {
+        "name": "group_unlink_page",
+        "info": "Unlink group from a page.\n### SIGNATURE\n```\n        Subject group_unlink_page Label with {page}\n```\n### POSITIONAL PARAMETERS\nlabel: The label of the Group to be unlinked.\n### KEYWORD PARAMETERS\npage: The page to be unlinked.\n### EXAMPLE 1:\n```\n        UserTwo group_unlink_page GroupTwo with {page: PageOne}\n```",
+        "params": [
+          {
+            "name": "page",
+            "type": "PAGE",
+            "info": "Page to unlink from group",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER",
+          "PAGE"
+        ],
+        "data": []
+      },
+      {
+        "name": "group_invite_friends",
+        "info": "Invite invitees to group. Invitees must be friends of the inviter.\n### SIGNATURE\n```\nSubject group_invite_friends Label with {invitees}\n```\n### POSITIONAL PARAMETERS\n* label: The label of the Group.\n### KEYWORD PARAMETERS\n* invitees: The list of users/friends to invite.\n### EXAMPLE 1:\n```\n       UserTwo group_invite_friends GroupOne with {invitees:[UserOne, UserThree]}\n```",
+        "params": [
+          {
+            "name": "invitees",
+            "type": "vec<USER>",
+            "info": "Friends to invite",
+            "optional": false,
+            "default": "",
+            "values_json": ""
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "banhammer_user",
+        "info": "Ban user with enforcement type (ale, political or preharm). These enforcement are restricting user's ability to do advertising, bypassing these enforcements would be an issue.\n### SIGNATURE\n```\nSubject banhammer_user Label with {type}\n```\n### POSITIONAL PARAMETERS\ntype: Type of banhammer, currently supported: ale, political, preharm\n### EXAMPLE 1:\n```\nUserTwo banhammer_user UserTwo with {type: political}\n```",
+        "params": [
+          {
+            "name": "type",
+            "type": "string",
+            "info": "Type of banhammer",
+            "optional": false,
+            "default": "",
+            "values_json": "{\"0\":\"political\",\"1\":\"preharm\",\"2\":\"ale\"}"
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "add_checkpoint",
+        "info": "Enrolls user into specific checkpoint\n### SIGNATURE\n```\nSubject add_checkpoint Label with {checkpoint}\n```\n### POSITIONAL PARAMETERS\ncheckpoint: Name of the checkpoint, currently supported: Epsilon, UFAC\n### EXAMPLE 1:\n```\nUserTwo add_checkpoint UserTwo with {checkpoint: Epsilon}\n```",
+        "params": [
+          {
+            "name": "checkpoint",
+            "type": "string",
+            "info": "Type of checkpoint",
+            "optional": false,
+            "default": "",
+            "values_json": "{\"0\":\"epsilon\",\"1\":\"ufac\"}"
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      },
+      {
+        "name": "set_privacy_jurisdiction",
+        "info": "Set privacy jurisdiction for a user (country of the user) (EU, BR, US, IN, etc ...)\n### SIGNATURE\n```\nSubject set_privacy_jurisdiction Label with {jurisdiction}\n```\n### POSITIONAL PARAMETERS\n* label: The user whose jurisdiction will be set.\n### KEYWORD PARAMETERS\n* jurisdiction: Country of the user in code value (EU, BR, US, IN, etc ...). Default is EU\n### EXAMPLE 1:\n```\nUserOne set_privacy_jurisdiction UserOne with {jurisdiction: IN}\n```",
+        "params": [
+          {
+            "name": "jurisdiction",
+            "type": "string",
+            "info": "Privacy jurisdiction",
+            "optional": false,
+            "default": "",
+            "values_json": "{\"0\":\"EU\",\"1\":\"BR\",\"2\":\"US\",\"3\":\"IN\",\"4\":\"JP\",\"5\":\"KR\",\"6\":\"AU\",\"7\":\"CA\",\"8\":\"GB\",\"9\":\"TH\",\"10\":\"VN\",\"11\":\"PH\",\"12\":\"ID\",\"13\":\"MX\",\"14\":\"AR\",\"15\":\"CL\",\"16\":\"CO\",\"17\":\"PE\",\"18\":\"EC\",\"19\":\"DO\"}"
+          }
+        ],
+        "target_types": [
+          "USER"
+        ],
+        "data": []
+      }
+    ],
+    "sections": [
+      "setup",
+      "action"
+    ]
+  },
+  "examples": [
+    {
+      "type": "example_setup",
+      "name": "user",
+      "description": "User",
+      "code": "User UserFour"
+    },
+    {
+      "type": "example_setup",
+      "name": "user",
+      "description": "User minor age",
+      "code": "User UserOne with { age_range: minor}"
+    },
+    {
+      "type": "example_setup",
+      "name": "user",
+      "description": "User kid age",
+      "code": "User UserOne with { age_range: kid}"
+    },
+    {
+      "type": "example_setup",
+      "name": "page",
+      "description": "Page",
+      "code": "Page PageOne with {owner: UserOne}"
+    },
+    {
+      "type": "example_setup",
+      "name": "page",
+      "description": "Page",
+      "code": "Page PageOne with {owner: UserOne, is_parent_location: true}"
+    },
+    {
+      "type": "example_setup",
+      "name": "group",
+      "description": "Group",
+      "code": "Group GroupOne with {privacy: private, owner: UserOne}"
+    },
+    {
+      "type": "example_setup",
+      "name": "album",
+      "description": "Album",
+      "code": "Album AlbumOne with {owner: UserOne, type: user, place: UserOne"
+    },
+    {
+      "type": "example_setup",
+      "name": "album",
+      "description": "Album",
+      "code": "Album AlbumOne with {owner: UserOne, type: user, place: UserOne, privacy: friends_only, contributors: [UserTwo], actor: PageOne}"
+    },
+    {
+      "type": "example_setup",
+      "name": "friendship",
+      "description": "Friendship",
+      "code": "Friendship with {sender: UserOne, receivers:[UserThree, UserFour]}"
+    },
+    {
+      "type": "example_setup",
+      "name": "business",
+      "description": "Business",
+      "code": "Business Biz with {owner: UserOne}"
+    },
+    {
+      "type": "example_setup",
+      "name": "business",
+      "description": "Business",
+      "code": "Business Biz with {owner: UserOne, primary_page: PageOne, admins:[UserOne], employees:[UserTwo], tier: tier_0}"
+    },
+    {
+      "type": "example_setup",
+      "name": "app",
+      "description": "App",
+      "code": "App AppOne with {owner: UserFour}"
+    },
+    {
+      "type": "example_setup",
+      "name": "app",
+      "description": "App",
+      "code": "App AppOne with {owner: UserFour, live: true}"
+    },
+    {
+      "type": "example_setup",
+      "name": "event",
+      "description": "Event",
+      "code": "Event EventOne with {owner: UserOne, place: UserOne}"
+    },
+    {
+      "type": "example_setup",
+      "name": "event",
+      "description": "Event",
+      "code": "Event EventOne with {owner: UserOne, place: UserOne, show_guest_list: false, post_permission:anyone, post_approval:on, privacy:public, is_past:true, co_hosts:[UserTwo, UserFour], accept_invite:false}"
+    },
+    {
+      "type": "example_setup",
+      "name": "wearablestestdeveloper",
+      "description": "wearables third party developer",
+      "code": "WearablesTestDeveloper WearablesTestDeveloperOne with {user_prefix: \"MBBRC\", create_application: true}"
+    },
+    {
+      "type": "example_setup",
+      "name": "oculusthirdpartytestdeveloper",
+      "description": "oculus/quest third party developer",
+      "code": "OculusThirdPartyTestDeveloper UserVictim with { org_name: \"REPLACE_ME_BY_NON_EXISTING_ORG_NAME\", username_prefix: \"uservictim\", generate_app_and_binary: true}"
+    },
+    {
+      "type": "example_setup",
+      "name": "whitehattestuser",
+      "description": "Whitehat test user, facebook user that can be shared with researchers",
+      "code": "WhitehatTestUser UserOne"
+    },
+    {
+      "type": "example_action",
+      "name": "make_anonymous_post",
+      "description": "General",
+      "code": "UserTwo make_anonymous_post AnonPostOne with {group: GroupOne, approved_by: UserOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "make_post_text",
+      "description": "General",
+      "code": "UserOne make_post_text PostOne with {place: GroupOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "make_post_text",
+      "description": "General",
+      "code": "UserOne as PageOne make_post_text PostOne with {place: GroupOne, text: 'This is my first post as Page'}"
+    },
+    {
+      "type": "example_action",
+      "name": "make_post_photo",
+      "description": "General",
+      "code": "UserOne make_post_photo PhotoPost with {place: PageOne, attachment_label: PhotoOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "make_post_photo",
+      "description": "General",
+      "code": "UserOne as PageOne make_post_photo PhotoPost with {place: PageOne, text: 'This is my first post as Page', multiple_photos: true}"
+    },
+    {
+      "type": "example_action",
+      "name": "make_post_video",
+      "description": "General",
+      "code": "UserOne make_post_video VideoPost with {place: EventOne, attachment_label:VideoOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "make_post_video",
+      "description": "General",
+      "code": "UserOne as PageOne make_post_video VideoPost with {place: EventOne, text: 'This is my first post as Page'}"
+    },
+    {
+      "type": "example_action",
+      "name": "make_comment",
+      "description": "General",
+      "code": "UserTwo make_comment CommentOne with {place: AlbumOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "make_comment",
+      "description": "General",
+      "code": "UserOne as PageOne make_comment CommentOne with {place: PostOne, text: 'UserOne is commenting here', attach_photo: true"
+    },
+    {
+      "type": "example_action",
+      "name": "make_comment",
+      "description": "General",
+      "code": "UserTwo as PageOne make_comment CommentOne with {place: PostOne, text: 'UserTwo is commenting here as PageOne', tagged_object: UserOne, replied_comment: OtherComment}"
+    },
+    {
+      "type": "example_action",
+      "name": "block",
+      "description": "General",
+      "code": "UserOne block PageOne"
+    },
+    {
+      "type": "example_action",
+      "name": "block",
+      "description": "General",
+      "code": "UserOne as PageOne block UserTwo"
+    },
+    {
+      "type": "example_action",
+      "name": "remove_role",
+      "description": "General",
+      "code": "UserOne as PageOne remove_role PageOne with {old_role:UserFour}"
+    },
+    {
+      "type": "example_action",
+      "name": "remove_role",
+      "description": "General",
+      "code": "UserOne as PageOne remove_role EventOne with {old_role:PageTwo}"
+    },
+    {
+      "type": "example_action",
+      "name": "make_post_poll",
+      "description": "General",
+      "code": "UserOne make_post_poll PollPost with {place: GroupOne, type: photo, attachment_label:PollOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "make_post_poll",
+      "description": "General",
+      "code": "UserOne as PageOne make_post_poll PollPost with {place: PageOne, type: text, attachment_label:PollOne, anyone_add_options:false, choose_multiple_options:false}"
+    },
+    {
+      "type": "example_action",
+      "name": "make_post_violation",
+      "description": "General",
+      "code": "UserOne make_post_violation PostTwo with {place: GroupOne, type: hate}"
+    },
+    {
+      "type": "example_action",
+      "name": "make_post_violation",
+      "description": "General",
+      "code": "UserOne as PageOne make_post_violation PostPage with {place: PageOne, type: nudity}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_cover_photo",
+      "description": "General",
+      "code": "UserOne add_cover_photo CoverPhoto with {place: UserOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_cover_photo",
+      "description": "General",
+      "code": "UserOne as PageOne add_cover_photo CoverPhoto with {place: PageOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_cover_photo",
+      "description": "General",
+      "code": "UserOne add_cover_photo CoverPhoto with {place: GroupOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_cover_photo",
+      "description": "General",
+      "code": "UserOne add_cover_photo CoverPhoto with {place: EventOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_story",
+      "description": "General",
+      "code": "UserOne as PageOne add_story StoryOne"
+    },
+    {
+      "type": "example_action",
+      "name": "add_story",
+      "description": "General",
+      "code": "UserOne add_story StoryOne"
+    },
+    {
+      "type": "example_action",
+      "name": "change_post_audience",
+      "description": "General",
+      "code": "UserOne change_post_audience PostOne with {audience: public}"
+    },
+    {
+      "type": "example_action",
+      "name": "change_post_audience",
+      "description": "General",
+      "code": "UserOne change_post_audience PostOne with {audience: friends}"
+    },
+    {
+      "type": "example_action",
+      "name": "change_post_audience",
+      "description": "General",
+      "code": "UserOne change_post_audience PostOne with {audience: only_me}"
+    },
+    {
+      "type": "example_action",
+      "name": "change_post_audience",
+      "description": "General",
+      "code": "UserOne change_post_audience PostOne with {audience: specific_friends, friends:[UserTwo]}"
+    },
+    {
+      "type": "example_action",
+      "name": "change_post_audience",
+      "description": "General",
+      "code": "UserOne change_post_audience PostOne with {audience: friends_except, friends:[UserTwo]}"
+    },
+    {
+      "type": "example_action",
+      "name": "deactivate_account",
+      "description": "User",
+      "code": "UserTwo deactivate_account UserTwo"
+    },
+    {
+      "type": "example_action",
+      "name": "lock_profile",
+      "description": "User",
+      "code": "UserOne lock_profile UserOne"
+    },
+    {
+      "type": "example_action",
+      "name": "friend_user",
+      "description": "User",
+      "code": "UserTwo friend_user UserOne"
+    },
+    {
+      "type": "example_action",
+      "name": "friend_request",
+      "description": "User",
+      "code": "UserTwo friend_request UserOne"
+    },
+    {
+      "type": "example_action",
+      "name": "like_post",
+      "description": "User",
+      "code": "UserOne as PageOne like_post PostOne"
+    },
+    {
+      "type": "example_action",
+      "name": "like_post",
+      "description": "User",
+      "code": "UserOne like_post PostOne"
+    },
+    {
+      "type": "example_action",
+      "name": "gen_token",
+      "description": "Generate a first party access token for FB4A app (facebook for android)",
+      "code": "UserOne gen_token TokenFirst with {app: fb4a}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_ad_account",
+      "description": "User",
+      "code": "UserOne create_ad_account AdOne"
+    },
+    {
+      "type": "example_action",
+      "name": "create_collection",
+      "description": "User",
+      "code": "UserOne create_collection CollectionOne"
+    },
+    {
+      "type": "example_action",
+      "name": "create_messenger_kids_account",
+      "description": "User",
+      "code": "UserOne create_messenger_kids_account KidOne"
+    },
+    {
+      "type": "example_action",
+      "name": "add_collection_contributors",
+      "description": "User",
+      "code": "UserOne add_collection_contributors ColOne with {new_roles:[UserThree]}"
+    },
+    {
+      "type": "example_action",
+      "name": "save_to_collection",
+      "description": "User",
+      "code": "UserOne save_to_collection ColOne with {new_posts:[Post1]}"
+    },
+    {
+      "type": "example_action",
+      "name": "like_page",
+      "description": "User",
+      "code": "UserOne as PageOne like_page PageTwo"
+    },
+    {
+      "type": "example_action",
+      "name": "like_page",
+      "description": "User",
+      "code": "UserOne like_page PageOne"
+    },
+    {
+      "type": "example_action",
+      "name": "going_event",
+      "description": "User",
+      "code": "UserOne going_event EventOne"
+    },
+    {
+      "type": "example_action",
+      "name": "send_message",
+      "description": "User",
+      "code": "UserOne send_message PageTwo"
+    },
+    {
+      "type": "example_action",
+      "name": "send_message",
+      "description": "User",
+      "code": "UserOne as PageOne send_message UserTwo with {text: 'PageOne is sending a message to UserTwo'}"
+    },
+    {
+      "type": "example_action",
+      "name": "send_message",
+      "description": "User",
+      "code": "UserOne send_message UserTwo with {text: 'UserOne is sending a message to UserTwo.'}"
+    },
+    {
+      "type": "example_action",
+      "name": "share_post",
+      "description": "User",
+      "code": "UserOne as PageOne share_post ShareOne with {post: PostOne, place: GroupOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "share_post",
+      "description": "User",
+      "code": "UserOne share_post ShareOne with {post: PostOne, place: GroupOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_chat_group",
+      "description": "User",
+      "code": "UserOne create_chat_group GroupOne with {members: [UserTwo,UserThree], text: 'UserOne is sending a chat group message to UserTwo and UserThree.'}"
+    },
+    {
+      "type": "example_action",
+      "name": "follow",
+      "description": "User",
+      "code": "UserTwo follow UserOne"
+    },
+    {
+      "type": "example_action",
+      "name": "follow",
+      "description": "User",
+      "code": "UserTwo follow PageOne"
+    },
+    {
+      "type": "example_action",
+      "name": "unfollow",
+      "description": "User",
+      "code": "UserTwo unfollow UserOne"
+    },
+    {
+      "type": "example_action",
+      "name": "unfollow",
+      "description": "User",
+      "code": "UserTwo unfollow PageOne"
+    },
+    {
+      "type": "example_action",
+      "name": "create_additional_profile",
+      "description": "User",
+      "code": "UserOne create_additional_profile AdditionalProfileOne"
+    },
+    {
+      "type": "example_action",
+      "name": "enable_professional_mode",
+      "description": "User",
+      "code": "UserOne enable_professional_mode UserOne"
+    },
+    {
+      "type": "example_action",
+      "name": "add_guardians",
+      "description": "User",
+      "code": "UserOne add_guardians KidOne with {guardians:[UserTwo]}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_page",
+      "description": "Page",
+      "code": "UserTwo create_page PageOne"
+    },
+    {
+      "type": "example_action",
+      "name": "create_page",
+      "description": "Page",
+      "code": "UserTwo create_page PageOne with {is_parent_location: true}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_business_location",
+      "description": "Page",
+      "code": "UserOne add_business_location LocOne with {page: PageOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_page_community_managers",
+      "description": "Page",
+      "code": "UserOne add_page_community_managers PageOne with {new_roles: [UserThree]}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_page_facebook_access",
+      "description": "Page",
+      "code": "UserOne add_page_facebook_access PageOne with {new_roles: [UserTwo], full: true}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_page_task_access",
+      "description": "Page",
+      "code": "UserOne add_page_task_access PageOne with {new_role: UserTwo, tasks: [content, messages, community, ads, insights]}"
+    },
+    {
+      "type": "example_action",
+      "name": "unpublish_page",
+      "description": "Page",
+      "code": "UserTwo unpublish_page PageOne"
+    },
+    {
+      "type": "example_action",
+      "name": "publish_page",
+      "description": "Page",
+      "code": "UserTwo publish_page PageOne"
+    },
+    {
+      "type": "example_action",
+      "name": "set_age_restriction",
+      "description": "Page",
+      "code": "UserTwo set_age_restriction PageOne with {age: 21}"
+    },
+    {
+      "type": "example_action",
+      "name": "set_country_restriction",
+      "description": "Page",
+      "code": "UserTwo set_country_restriction PageOne with {is_block_list: false, countries: [US, AF]}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_linked_group",
+      "description": "Page",
+      "code": "UserOne create_linked_group GroupOne with {page: PageOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_linked_group",
+      "description": "Page",
+      "code": "UserOne create_linked_group GroupOne with {page: PageOne, members:[UserOne, UserTwo], privacy: private, visibility: anyone}"
+    },
+    {
+      "type": "example_action",
+      "name": "page_link_group",
+      "description": "Page",
+      "code": "UserOne page_link_group PageOne with {group: GroupOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_ar_permission_group",
+      "description": "Page",
+      "code": "UserOne create_ar_permission_group ARPermGroupOne with {page: PageOne, users: [UserFour]}"
+    },
+    {
+      "type": "example_action",
+      "name": "page_invite_friend",
+      "description": "Page",
+      "code": "UserOne page_invite_friend PageOne with {invitees: [UserTwo, UserThree]}"
+    },
+    {
+      "type": "example_action",
+      "name": "request_crossposting",
+      "description": "Page",
+      "code": "UserOne as PageOne request_crossposting PageTwo with {mode: automatic, accept_request: false}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_group_admins",
+      "description": "Group",
+      "code": "UserTwo add_group_admins GroupOne with {new_roles: [UserOne, UserFour]}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_group_admins",
+      "description": "Group",
+      "code": "UserTwo as PageTwo add_group_admins GroupOne with {new_roles: [UserOne, UserFour], accept_invite: false}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_group_moderators",
+      "description": "Group",
+      "code": "UserTwo add_group_moderators GroupOne with {new_roles: [UserOne, UserFour]}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_group_moderators",
+      "description": "Group",
+      "code": "UserTwo as PageTwo add_group_moderators GroupOne with {new_roles: [UserOne, UserFour]}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_group_members",
+      "description": "Group",
+      "code": "UserTwo add_group_members GroupOne with {new_roles: [UserOne, UserFour]}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_group_members",
+      "description": "Group",
+      "code": "UserTwo as PageTwo add_group_members GroupOne with {new_roles: [UserOne, UserFour]}"
+    },
+    {
+      "type": "example_action",
+      "name": "remove_member",
+      "description": "Group",
+      "code": "UserTwo remove_member GroupOne with {member: UserOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "remove_member",
+      "description": "Group",
+      "code": "UserTwo as PageOne remove_member GroupOne with {member: UserOne, block: true}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_quiz",
+      "description": "Group",
+      "code": "UserOne create_quiz QuizOne with {group: GroupOne, unit: UnitOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_group",
+      "description": "Group",
+      "code": "UserTwo create_group GroupOne"
+    },
+    {
+      "type": "example_action",
+      "name": "create_group",
+      "description": "Group",
+      "code": "UserTwo create_group GroupOne with {privacy: private, visibility:members_only}"
+    },
+    {
+      "type": "example_action",
+      "name": "group_invite_friends",
+      "description": "Group",
+      "code": "UserOne group_invite_friends GroupOne with {invitees: [UserTwo, UserThree]}"
+    },
+    {
+      "type": "example_action",
+      "name": "group_link_page",
+      "description": "Group",
+      "code": "UserTwo group_link_page GroupTwo with {page: PageOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "group_link_page",
+      "description": "Group",
+      "code": "UserTwo as PageTwo group_link_page GroupTwo with {page: PageOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "group_unlink_page",
+      "description": "Group",
+      "code": "UserTwo group_unlink_page GroupTwo with {page: PageOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "group_unlink_page",
+      "description": "Group",
+      "code": "UserTwo as PageTwo group_unlink_page GroupTwo with {page: PageOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "set_post_permission",
+      "description": "Group",
+      "code": "UserTwo set_post_permission GroupTwo with {value: anyone}"
+    },
+    {
+      "type": "example_action",
+      "name": "set_admin_approval",
+      "description": "Group",
+      "code": "UserTwo as PageOne set_admin_approval GroupTwo with {value: on}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_learning_unit",
+      "description": "Group",
+      "code": "UserOne create_learning_unit UnitOne with {group: GroupOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_doc",
+      "description": "Group",
+      "code": "UserOne create_doc DocOne with {group: GroupOne, can_edit:true}"
+    },
+    {
+      "type": "example_action",
+      "name": "mute_member",
+      "description": "Group",
+      "code": "UserTwo mute_member GroupOne with {member: UserOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "mute_member",
+      "description": "Group",
+      "code": "UserTwo as PageTwo mute_member GroupOne with {member: UserOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "pause_group",
+      "description": "Group",
+      "code": "UserOne pause_group GroupOne"
+    },
+    {
+      "type": "example_action",
+      "name": "unpause_group",
+      "description": "Group",
+      "code": "UserOne unpause_group GroupOne"
+    },
+    {
+      "type": "example_action",
+      "name": "tag_photo",
+      "description": "Album",
+      "code": "UserOne tag_photo PhotoOne with {taggee: UserTwo}"
+    },
+    {
+      "type": "example_action",
+      "name": "tag_photo",
+      "description": "Album",
+      "code": "UserOne as PageOne tag_photo PhotoOne with {taggee: PageTwo}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_album",
+      "description": "Album",
+      "code": "UserOne create_album AlbumOne with {type: group, place: GroupOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_album",
+      "description": "Album",
+      "code": "UserOne as PageOne create_album AlbumOne with {type: group, place: GroupOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_photo",
+      "description": "Album",
+      "code": "UserOne as PageOne add_photo PhotoOne with {album: AlbumOne, place: GroupOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_video",
+      "description": "Album",
+      "code": "UserOne as PageOne add_video VideoOne with {album: AlbumOne, place: UserOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_contributors",
+      "description": "Album",
+      "code": "UserOne add_contributors AlbumOne with {new_roles: [UserTwo, UserThree]}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_event",
+      "description": "Event",
+      "code": "UserOne as PageOne create_event EventOne with {place: PageOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_event",
+      "description": "Event",
+      "code": "UserOne create_event EventOne with {place: PageOne, is_past: true, post_permission: anyone, post_approval: on}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_event",
+      "description": "Event",
+      "code": "UserOne create_event EventOne with {place: UserOne, privacy:private"
+    },
+    {
+      "type": "example_action",
+      "name": "add_event_cohosts",
+      "description": "Event",
+      "code": "UserOne add_event_cohosts EventOne with {new_roles: [UserTwo, PageOne], accept_invite:false}"
+    },
+    {
+      "type": "example_action",
+      "name": "event_invite",
+      "description": "Event",
+      "code": "UserOne event_invite EventOne with {invitees: [UserTwo, UserThree]}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_business",
+      "description": "Business",
+      "code": "UserOne create_business BusinessOne"
+    },
+    {
+      "type": "example_action",
+      "name": "create_business",
+      "description": "Business",
+      "code": "UserOne create_business BusinessOne with {primary_page: PageOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_pixel",
+      "description": "Business",
+      "code": "UserOne create_pixel MyPixel with {business: BizOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_biz_employees",
+      "description": "Business",
+      "code": "UserOne add_biz_employees BusinessOne with {new_roles: [UserTwo, UserThree]}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_biz_admins",
+      "description": "Business",
+      "code": "UserOne add_biz_admins BusinessOne with {new_roles: [UserTwo, UserThree]}"
+    },
+    {
+      "type": "example_action",
+      "name": "biz_assign_page_role",
+      "description": "Business",
+      "code": "UserOne biz_assign_page_role UserTwo with {business: BizOne , role: moderator, page: PageOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_ad_account",
+      "description": "Business",
+      "code": "UserOne create_ad_account AdOne"
+    },
+    {
+      "type": "example_action",
+      "name": "create_ad_account",
+      "description": "Business",
+      "code": "UserOne create_ad_account AdOne with {business: BizOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_ad_admins",
+      "description": "Business",
+      "code": "UserOne add_ad_admins AdAccountOne with {new_roles: [UserTwo, UserThree]}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_ad_advertisers",
+      "description": "Business",
+      "code": "UserOne add_ad_advertisers AdAccountOne with {new_roles: [UserTwo, UserThree]}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_ad_analysts",
+      "description": "Business",
+      "code": "UserOne add_ad_analysts AdAccountOne with {new_roles: [UserTwo, UserThree]}"
+    },
+    {
+      "type": "example_action",
+      "name": "biz_link_app",
+      "description": "Business",
+      "code": "UserOne biz_link_app BusinessOne with {app: AppOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "biz_assign_partner_asset",
+      "description": "Business",
+      "code": "UserOne biz_assign_partner_asset BizOne with {partner: BizTwo, asset: PageOne, type: page}"
+    },
+    {
+      "type": "example_action",
+      "name": "biz_request_page_access",
+      "description": "Business",
+      "code": "UserOne biz_request_page_access BizOne with {page: PageOne, permissions: [manage, create_content]}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_biz_pages",
+      "description": "Business",
+      "code": "UserOne add_biz_pages BizOne with {pages: [PageTwo, PageThree]}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_shop",
+      "description": "Business",
+      "code": "UserOne create_shop ShopOne with {page: PageOne, business: BusinessOne}"
+    },
+    {
+      "type": "example_action",
+      "name": "create_shop_item",
+      "description": "Business",
+      "code": "UserOne create_shop_item ItemOne with {shop: ShopOne, approved: false}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_app_admins",
+      "description": "App",
+      "code": "UserTwo add_app_admins AppOne with {new_roles: [UserOne, UserFour]}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_app_developers",
+      "description": "App",
+      "code": "UserTwo add_app_developers AppOne with {new_roles: [UserOne, UserFour]}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_app_testers",
+      "description": "App",
+      "code": "UserTwo add_app_testers AppOne with {new_roles: [UserOne, UserFour]}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_app_analytics_users",
+      "description": "App",
+      "code": "UserTwo add_app_analytics_users AppOne with {new_roles: [UserOne, UserFour]}"
+    },
+    {
+      "type": "example_action",
+      "name": "banhammer_user",
+      "description": "Integrity",
+      "code": "UserOne banhammer_user UserOne with {type: political}"
+    },
+    {
+      "type": "example_action",
+      "name": "add_checkpoint",
+      "description": "Integrity",
+      "code": "UserTwo add_checkpoint UserOne with {checkpoint: Epsilon}"
+    },
+    {
+      "type": "example_action",
+      "name": "set_privacy_jurisdiction",
+      "description": "privacy jurisdiction you want to set. Choose from EU | BR | JP | OTHER | KR | ZA | TH | IN",
+      "code": "UserOne set_privacy_jurisdiction UserOne with {jurisdiction: IN}"
+    }
+  ],
+  "templates": [
+    {
+      "name": "User - post/comment",
+      "description": "make post and comment",
+      "category": "User",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  Page PageOne with {owner: UserOne}\n  Group GroupOne with {privacy:private, owner: UserOne, members: [UserTwo, PageOne]}\n\n[action]\n  UserOne make_post_text TextPost with {place: UserOne}\n  UserOne as PageOne make_post_photo PhotoPost with {place: GroupOne}\n  UserOne make_post_video VideoPost with {place: UserOne, attachment_label: VideoOne}\n  UserTwo make_comment CommentOne with {place: PhotoPost}\n  UserOne as PageOne make_comment CommentTwo with {place: PhotoPost, text: 'UserOne is commenting here', attach_photo: true}\n  UserOne make_post_poll PollOne with {place: PageOne, type: text, anyone_add_options: false}\n  UserOne as PageOne share_post SharedPost with {post: TextPost, place:PageOne}\n  UserTwo like_post PhotoPost\n"
+    },
+    {
+      "name": "User - chat",
+      "description": "chat related actions",
+      "category": "User",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  friendship with {sender:UserOne, receivers:[UserTwo,UserThree]}\n\n[action]\n  UserOne create_chat_group GroupOne with {text:Hello,members:[UserTwo,UserThree]}\n  UserTwo send_message GroupOne with {text:Hi}"
+    },
+    {
+      "name": "User - block/deactivate",
+      "description": "block and deactivate actions",
+      "category": "User",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n\n[action]\n  UserOne block UserTwo\n  UserTwo deactivate_account UserTwo"
+    },
+    {
+      "name": "User - messenger kids",
+      "description": "Messenger kids",
+      "category": "User",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  Friendship with {sender:UserOne, receivers:[UserTwo]}\n\n[action]\n  UserOne create_messenger_kids_account KidOne\n  UserOne add_guardians KidOne with {guardians:[UserTwo]}\n  #UserOne remove_guardians KidOne with {guardians:[UserTwo]}"
+    },
+    {
+      "name": "User - like/follow",
+      "description": "like and follow actions",
+      "category": "User",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  Page PageOne with {owner: UserOne}\n\n[action]\n  UserTwo follow PageOne\n  UserTwo unfollow PageOne\n  UserTwo like_page PageOne"
+    },
+    {
+      "name": "User - collection",
+      "description": "collection related actions",
+      "category": "User",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  Friendship with {sender: UserOne, receivers: [UserThree]}\n\n[action]\n  UserOne create_collection ColOne\n  UserOne add_collection_contributors ColOne with {new_roles:[UserThree]}"
+    },
+    {
+      "name": "User - friendship",
+      "description": "friendship related actions",
+      "category": "User",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  Friendship with {sender:UserOne, receivers:[UserTwo]}\n\n[action]\n  #no auto accept\n  UserTwo friend_request UserThree\n  #auto accept\n  UserThree friend_user UserOne"
+    },
+    {
+      "name": "User - token",
+      "description": "generate different types of token",
+      "category": "User",
+      "fbdl_custom": "[setup]\n  User UserOne\n  Page PageOne with {owner:UserOne}\n  App AppOne with {owner: UserOne}\n  App AppTwo with {owner: UserOne}\n\n[action]\n  UserOne gen_token TokenFirst with {app: fb4a}\n  UserOne gen_token TokenUser with {app: AppTwo, scopes:[user_gender, ads_read]}\n  UserOne as PageOne gen_token TokenPage with {app:AppOne, scopes:[ads_read, user_gender]}"
+    },
+    {
+      "name": "Page - link group",
+      "description": "page link to group as admin",
+      "category": "Page",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  Page PageOne with {owner: UserOne}\n\n[action]\n  UserOne create_linked_group GroupOne with {page:PageOne, members:[UserOne, UserThree]}\n  UserOne create_linked_group GroupTwo with {page:PageOne, privacy: public}\n  UserOne as PageOne make_post_poll PollPost with {place:PageOne, type:text, attachment_label: PollOne}"
+    },
+    {
+      "name": "Page - role",
+      "description": "page role related actions",
+      "category": "Page",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  User UserFour\n  Page PageOne with {owner: UserOne}\n\n[action]\n  UserOne add_page_facebook_access PageOne with {full: true, new_roles: [UserTwo]}\n  UserOne add_page_task_access PageOne with {new_role: UserThree, tasks: [content, messages, community, ads, insights]}\n  UserOne add_page_task_access PageOne with {new_role: UserFour, tasks: [insights]}\n  UserOne remove_role PageOne with {old_role: UserTwo}"
+    },
+    {
+      "name": "Page - location",
+      "description": "location page without business",
+      "category": "Page",
+      "fbdl_custom": "[setup]\n  User UserOne\n  Page PageOne with {owner: UserOne, is_parent_location:true}\n\n[action]\n  UserOne add_business_location LocOne with {page: PageOne}"
+    },
+    {
+      "name": "Page - moderate",
+      "description": "page moderation related actions",
+      "category": "Page",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  Page PageOne with {owner: UserOne}\n\n[action]\n  UserTwo make_post_text VistorPost with {place: PageOne}\n  UserOne as PageOne block UserTwo"
+    },
+    {
+      "name": "Page - setting",
+      "description": "page setting related actions",
+      "category": "Page",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  Page PageOne with {owner: UserOne}\n\n[action]\n  UserOne set_age_restriction PageOne with {age:21}\n  UserOne set_country_restriction PageOne with {is_block_list: false, countries: [US, AF]}\n  UserOne unpublish_page PageOne\n  # UserOne publish_page PageOne"
+    },
+    {
+      "name": "Group - link page",
+      "description": "link page to group as admin",
+      "category": "Group",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  Page PageOne with {owner: UserOne}\n  Page PageTwo with {owner: UserOne}\n\n[action]\n  UserOne create_linked_group GroupOne with {page:PageOne, members:[UserOne, UserThree]}\n  UserOne as PageOne group_link_page GroupOne with {page:PageTwo}\n  # UserOne group_unlinke_page GroupOne with {page: PageTwo}"
+    },
+    {
+      "name": "Group - page member",
+      "description": "link page to group as member",
+      "category": "Group",
+      "fbdl_custom": "[setup]\n  user UserOne\n  user UserTwo\n  page PageMember with {owner: UserOne}\n  page PageAdmin with {owner: UserOne}\n  # page is member of group instead of admin\n  group GroupOne with {privacy: private, owner: UserOne, admins:[UserTwo, PageAdmin], members: [PageMember]}"
+    },
+    {
+      "name": "Group - learning",
+      "description": "group learning unit and quiz",
+      "category": "Group",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  Group GroupOne with {privacy: public, owner: UserOne, members: [UserTwo]}\n\n[action]\n  UserOne create_learning_unit UnitOne with {group: GroupOne}\n  UserOne create_quiz QuizOne with {group: GroupOne, unit: UnitOne}"
+    },
+    {
+      "name": "Album - user",
+      "description": "create user album and add photo",
+      "category": "Album",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  friendship with {sender: UserOne, receivers: [UserTwo]}\n  Album AlbumOne with {owner: UserOne, type: user, privacy: public, place: UserOne}\n\n[action]\n  UserOne add_photo PhotoOne with {album: AlbumOne, place: UserOne}"
+    },
+    {
+      "name": "Album - shared",
+      "description": "create shared album and add photo",
+      "category": "Album",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  User UserFour\n  friendship with {sender: UserOne, receivers: [UserTwo, UserFour]}\n  Album AlbumOne with {owner: UserOne, type: shared, place: UserOne, privacy: public, contributors: [UserTwo]}\n\n[action]\n  UserOne add_contributors AlbumOne with {new_roles: [UserFour]}\n  UserOne add_photo PhotoOne with {album: AlbumOne, place: UserOne}"
+    },
+    {
+      "name": "Album - page",
+      "description": "create page album and add photo",
+      "category": "Album",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  friendship with {sender: UserOne, receivers: [UserTwo]}\n  Page PageOne with {owner: UserOne}\n  Album AlbumOne with {owner: UserOne, type: page, place: PageOne}\n\n[action]\n  UserOne add_photo PhotoOne with {album: AlbumOne, place: PageOne}"
+    },
+    {
+      "name": "Album - group",
+      "description": "create group album and add photo",
+      "category": "Album",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  User UserFour\n  friendship with {sender: UserOne, receivers: [UserTwo]}\n  Group GroupOne with {owner: UserOne, privacy: public, members: [UserTwo, UserFour]}\n  Album AlbumOne with {owner: UserOne, type: group, place: GroupOne}\n\n[action]\n  UserOne add_photo PhotoOne with {album: AlbumOne, place: GroupOne}"
+    },
+    {
+      "name": "Album - photo/video",
+      "description": "add and tag photo/video",
+      "category": "Album",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  friendship with {sender: UserOne, receivers: [UserTwo, UserThree]}\n  Album AlbumOne with {owner: UserOne, type: user, privacy: public, place: UserOne}\n\n[action]\n  UserOne add_photo PhotoOne with {album: AlbumOne, place: UserOne}\n  UserOne add_video VideoOne with {album: AlbumOne, place: UserOne}\n  UserOne make_post_photo PhotoPost with {place: UserOne, attachment_label: PhotoTwo}\n  UserOne tag_photo PhotoTwo with {taggee: UserThree}"
+    },
+    {
+      "name": "Event - create",
+      "description": "create different types of event",
+      "category": "Event",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  Group GroupOne with {privacy: public, owner: UserOne, members: [UserTwo, UserThree]}\n  Page PageOne with {owner: UserOne}\n  Page PageTwo with {owner: UserTwo}\n  # user event\n  Event EventOne with {owner: UserOne, place: UserOne, show_guest_list: false}\n  # page event\n  Event EventTwo with {owner: UserOne, place: PageOne, is_past: true, co_hosts:[PageTwo]}\n\n[action]\n  # group event\n  UserOne create_event EventThree with {place: GroupOne, is_past: true, post_permission: anyone, post_approval: on}\n  UserOne make_post_text PostOne with {place: EventThree}\n"
+    },
+    {
+      "name": "Event - role",
+      "description": "event role related actions",
+      "category": "Event",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  friendship with {sender: UserOne, receivers: [UserTwo, UserThree]}\n  Page PageOne with {owner: UserOne}\n  Page PageTwo with {owner: UserTwo}\n  Event EventOne with {owner: UserOne, place: PageOne, show_guest_list:false, is_past: true, post_permission:anyone, post_approval:on, co_hosts:[PageTwo], accept_invite:true}\n\n[action]\n  UserOne add_event_cohosts EventOne with {new_roles: [UserTwo, UserThree]}\n  UserOne remove_role EventOne with {old_role: UserThree}\n  "
+    },
+    {
+      "name": "Event - invite/rsvp",
+      "description": "event's invite/rsvp related actions",
+      "category": "Event",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  friendship with {sender: UserOne, receivers: [UserTwo]}\n  Event EventOne with {owner: UserOne, place: UserOne, privacy: private}\n\n[action]\n  UserOne event_invite EventOne with {invitees: [UserTwo]}\n  UserTwo going_event EventOne\n  UserOne cancel_event EventOne"
+    },
+    {
+      "name": "Business - role",
+      "description": "business role realted actions",
+      "category": "Business",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  User UserFour\n  Page PageOne with {owner: UserOne}\n  Business BizOne with {owner: UserOne, primary_page: PageOne, employees:[UserTwo, UserFour]}\n\n[action]\n  UserOne add_biz_employees BizOne with {new_roles: [UserThree]}\n  UserOne add_biz_admins BizOne with {new_roles: [UserFour]}\n  UserOne biz_assign_page_role UserTwo with {business: BizOne, role: moderator, page: PageOne}"
+    },
+    {
+      "name": "Business - quarantine",
+      "description": "business quarantine",
+      "category": "Business",
+      "fbdl_custom": "[setup]\n  User UserOne\n  Business BizOne with {owner: UserOne, quarantine:true}"
+    },
+    {
+      "name": "Business - page",
+      "description": "business page realted actions",
+      "category": "Business",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  Page PageOne with {owner: UserOne}\n  Page PageTwo with {owner: UserOne}\n  Page PageThree with {owner: UserThree}\n  Business BizOne with {owner: UserOne, primary_page: PageOne, employees:[UserTwo]}\n\n[action]\n  # add page to business\n  UserOne add_biz_pages BizOne with {pages:[PageTwo]}\n  UserOne biz_assign_page_role UserTwo with {business: BizOne, role: moderator, page: PageOne}\n  UserOne biz_request_page_access BizOne with {page: PageThree, permissions: [manage, create_content]}"
+    },
+    {
+      "name": "Business - ad account",
+      "description": "business ad account related actions",
+      "category": "Business",
+      "fbdl_custom": "[setup]\n   User UserOne\n   User UserTwo\n   User UserThree\n   User UserFour\n   Page PageOne with {owner: UserOne}\n   Business BizOne with {owner: UserOne, primary_page: PageOne, admins:[UserFour]}\n\n[action]\n   UserOne create_ad_account AdOne with {business: BizOne}\n   UserOne add_ad_admins AdOne with {new_roles: [UserThree]}\n   UserOne add_ad_advertisers AdOne with {new_roles: [UserThree]}\n   UserOne add_ad_analysts AdOne with {new_roles: [UserFour]}"
+    },
+    {
+      "name": "Business - partner/asset",
+      "description": "business partner and asset related actions",
+      "category": "Business",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  Page PageOne with {owner: UserOne}\n  Page PageTwo with {owner: UserTwo}\n  app AppTwo with {owner: UserTwo}\n  Business BizOne with {owner: UserOne, primary_page: PageOne}\n  Business BizTwo with {owner: UserTwo, primary_page: PageTwo}\n\n[action]\n  UserOne create_pixel PixelOne with {business: BizOne}\n  UserTwo biz_link_app BizTwo with {app: AppTwo}\n  UserOne biz_assign_partner_asset BizOne with {partner: BizTwo, asset: PageOne, type: page}\n  UserTwo biz_assign_partner_asset BizTwo with {partner: BizOne, asset: AppTwo, type: app}"
+    },
+    {
+      "name": "Business - location",
+      "description": "business location page",
+      "category": "Business",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  Page PageOne with {owner: UserOne, is_parent_location:true}\n  Business Biz with {owner: UserOne, primary_page: PageOne, employees:[UserTwo]}\n\n[action]\n  UserOne add_business_location LocOne with {page: PageOne}"
+    },
+    {
+      "name": "Business - shop",
+      "description": "Commerce manager and shop",
+      "category": "Business",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  Page PageOne with {owner: UserOne}\n  Business BusinessOne with {owner: UserOne, primary_page: PageOne, employees:[UserTwo]}\n[action]\n  UserOne create_shop ShopOne with {page: PageOne, business: BusinessOne}\n  UserOne create_shop_item ItemOne with {shop: ShopOne, approved: false}"
+    },
+    {
+      "name": "App - role",
+      "description": "app role related actions",
+      "category": "App",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n  User UserThree\n  User UserFour\n  App AppOne with {owner: UserOne}\n\n[action]\n  UserOne add_app_admins AppOne with {new_roles: [UserTwo]}\n  UserOne add_app_developers AppOne with {new_roles: [UserThree]}\n  UserOne add_app_testers AppOne with {new_roles: [UserFour]}\n  UserOne remove_role AppOne with {old_role: UserFour}\n  UserOne add_app_analytics_users AppOne with {new_roles: [UserFour]}"
+    },
+    {
+      "name": "Integrity - add checkpoint",
+      "description": "Enrol user into checkpoint",
+      "category": "Integrity",
+      "fbdl_custom": "[setup]\n  User UserOne\n  User UserTwo\n\n[action]\n  UserTwo add_checkpoint UserTwo with {checkpoint: Epsilon}\n"
+    },
+    {
+      "name": "Integrity - set privacy jurisdiction",
+      "description": "Set user privacy jurisdiction to EU",
+      "category": "Integrity",
+      "fbdl_custom": "[setup]\n  User UserOne\n\n[action]\n  UserOne set_privacy_jurisdiction UserOne with {jurisdiction: EU}\n"
+    },
+    {
+      "name": "Integrity - banhammer user",
+      "description": "Place banhammer on given user",
+      "category": "Integrity",
+      "fbdl_custom": "[setup]\n  User UserOne\n\n[action]\n  UserOne banhammer_user UserOne with {type: political}\n"
+    }
+  ]
+}

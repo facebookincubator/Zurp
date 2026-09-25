@@ -1,0 +1,43 @@
+{
+  "mcpServers": {
+    "fbdl": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/dist/fbdl/index.js"],
+      "env": {
+        "BB_RESEARCH_TOKEN": "${BB_RESEARCH_TOKEN:-}",
+        "FBDL_API_TOKEN": "${FBDL_API_TOKEN:-}",
+        "BB_RESEARCH_LOG_LEVEL": "${BB_RESEARCH_LOG_LEVEL:-warn}",
+        "HTTPS_PROXY": "${HTTPS_PROXY:-}",
+        "HTTP_PROXY": "${HTTP_PROXY:-}",
+        "NO_PROXY": "${NO_PROXY:-}",
+        "NODE_EXTRA_CA_CERTS": "${NODE_EXTRA_CA_CERTS:-}"
+      }
+    },
+    "meta-context": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/dist/meta-context/index.js"],
+      "env": {
+        "BB_RESEARCH_TOKEN": "${BB_RESEARCH_TOKEN:-}",
+        "ZURP_ACCESS_TOKEN": "${ZURP_ACCESS_TOKEN:-}",
+        "BB_RESEARCH_LOG_LEVEL": "${BB_RESEARCH_LOG_LEVEL:-warn}",
+        "HTTPS_PROXY": "${HTTPS_PROXY:-}",
+        "HTTP_PROXY": "${HTTP_PROXY:-}",
+        "NO_PROXY": "${NO_PROXY:-}",
+        "NODE_EXTRA_CA_CERTS": "${NODE_EXTRA_CA_CERTS:-}"
+      }
+    },
+    "sparta": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/dist/sparta/index.js"],
+      "env": {
+        "BB_RESEARCH_TOKEN": "${BB_RESEARCH_TOKEN:-}",
+        "ZURP_ACCESS_TOKEN": "${ZURP_ACCESS_TOKEN:-}",
+        "BB_RESEARCH_LOG_LEVEL": "${BB_RESEARCH_LOG_LEVEL:-warn}",
+        "HTTPS_PROXY": "${HTTPS_PROXY:-}",
+        "HTTP_PROXY": "${HTTP_PROXY:-}",
+        "NO_PROXY": "${NO_PROXY:-}",
+        "NODE_EXTRA_CA_CERTS": "${NODE_EXTRA_CA_CERTS:-}"
+      }
+    }
+  }
+}

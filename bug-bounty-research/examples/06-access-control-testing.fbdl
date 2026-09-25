@@ -1,0 +1,18 @@
+# Access Control Testing
+# Bug bounty scenario: test post audience controls, profile locking, account deactivation.
+# Tests whether non-friends can access restricted content after audience changes.
+# Covers: change_post_audience, lock_profile, deactivate_account, block, set_privacy_jurisdiction
+
+[setup] User Victim User Friend User Stranger User Attacker Friendship with {sender: Victim, receivers: [Friend]}
+Victim make_post_text PublicPost with {place: Victim, text: 'This is public'}
+Victim make_post_text FriendsPost with {place: Victim, text: 'Friends only content'}
+Victim change_post_audience FriendsPost with {audience: friends}
+Victim make_post_text SpecificPost with {place: Victim, text: 'Only for Friend'}
+Victim change_post_audience SpecificPost with {audience: specific_friends, friends: [Friend]}
+Victim make_post_text PrivatePost with {place: Victim, text: 'Private thoughts'}
+Victim change_post_audience PrivatePost with {audience: only_me}
+Victim make_post_text ExceptPost with {place: Victim, text: 'Everyone except Friend'}
+Victim change_post_audience ExceptPost with {audience: friends_except, friends: [Friend]}
+Victim block Attacker
+Victim lock_profile Victim
+Victim set_privacy_jurisdiction Victim with {jurisdiction: EU}

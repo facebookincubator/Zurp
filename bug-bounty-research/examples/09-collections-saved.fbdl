@@ -1,0 +1,14 @@
+# Collections and Saved Items
+# Create posts, save them to collections, add contributors to shared collections.
+# Covers: create_collection, save_to_collection, add_collection_contributors
+
+[setup] User Curator User Contributor User Poster Friendship with {sender: Curator, receivers: [Contributor, Poster]}
+Poster make_post_text RecipePost with {place: Poster, text: 'Best pasta recipe'}
+Poster make_post_photo TravelPhoto with {place: Poster, text: 'Visit this place', attachment_label: BeachPhoto}
+Poster make_post_text TechPost with {place: Poster, text: 'New framework review'}
+Curator create_collection FoodCollection
+Curator create_collection TravelCollection
+Curator save_to_collection FoodCollection with {new_posts: [RecipePost]}
+Curator save_to_collection TravelCollection with {new_posts: [TravelPhoto]}
+Curator add_collection_contributors FoodCollection with {new_roles: [Contributor]}
+Contributor make_post_text ContribPost with {place: Contributor, text: 'My recipe to add'}

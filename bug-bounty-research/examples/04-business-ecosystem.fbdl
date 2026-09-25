@@ -1,0 +1,18 @@
+# Business Ecosystem
+# Full business setup: page, business, employees, ad accounts, shop, pixel.
+# Covers: Business, Page, App, create_business, create_shop, create_shop_item, create_ad_account, create_pixel, biz_assign_page_role, biz_link_app
+
+[setup] User BizOwner User Employee User AdManager Page CompanyPage with {owner: BizOwner} App CompanyApp with {owner: BizOwner, live: true, type: business}
+BizOwner create_business CompanyBiz with {primary_page: CompanyPage}
+BizOwner add_biz_employees CompanyBiz with {new_roles: [Employee, AdManager]}
+BizOwner add_biz_admins CompanyBiz with {new_roles: [AdManager]}
+BizOwner biz_link_app CompanyBiz with {app: CompanyApp}
+BizOwner biz_assign_page_role Employee with {business: CompanyBiz, role: editor, page: CompanyPage}
+BizOwner biz_assign_page_role AdManager with {business: CompanyBiz, role: advertiser, page: CompanyPage}
+BizOwner create_ad_account BizAdAcct with {business: CompanyBiz}
+BizOwner add_ad_admins BizAdAcct with {new_roles: [AdManager]}
+BizOwner add_ad_advertisers BizAdAcct with {new_roles: [Employee]}
+BizOwner create_shop CompanyShop with {page: CompanyPage, business: CompanyBiz}
+BizOwner create_shop_item ProductOne with {shop: CompanyShop, approved: true}
+BizOwner create_shop_item ProductTwo with {shop: CompanyShop, approved: false}
+BizOwner create_pixel TrackingPixel with {business: CompanyBiz}

@@ -1,0 +1,15 @@
+# Event Lifecycle
+# Create an event on a page, add cohosts, invite guests, RSVP, post, and cancel.
+# Covers: Event, Page, Friendship, create_event, add_event_cohosts, event_invite, going_event, cancel_event
+
+[setup] User Organizer User Cohost User GuestOne User GuestTwo User GuestThree Page EventPage with {owner: Organizer} Friendship with {sender: Organizer, receivers: [GuestOne, GuestTwo, GuestThree]}
+Organizer create_event LaunchParty with {place: EventPage, privacy: public, post_permission: anyone}
+Organizer add_event_cohosts LaunchParty with {new_roles: [Cohost, EventPage]}
+Organizer event_invite LaunchParty with {invitees: [GuestOne, GuestTwo, GuestThree]}
+GuestOne going_event LaunchParty
+GuestTwo going_event LaunchParty
+GuestOne make_post_text ExcitedPost with {place: LaunchParty, text: 'Cannot wait for this!'}
+GuestTwo make_comment HypeComment with {place: ExcitedPost, text: 'Same here!'}
+Organizer as EventPage make_post_text OrganizerUpdate with {place: LaunchParty, text: 'Doors open at 7pm'}
+Organizer as EventPage add_cover_photo EventCover with {place: LaunchParty}
+Organizer cancel_event LaunchParty

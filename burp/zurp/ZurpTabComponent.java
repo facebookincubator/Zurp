@@ -11,6 +11,7 @@ import burp.api.montoya.core.ToolType;
 import burp.fetcher.ZurpDataFetcher;
 import burp.models.FbdlRunModel;
 import burp.models.FbdlRunTableModel;
+import burp.models.SpartaFindingModel;
 import burp.models.SpartaFindingTableModel;
 import burp.ui.FbdlRunTable;
 import burp.ui.SpartaFindingTable;
@@ -19,6 +20,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+import java.util.Locale;
 import java.util.Map;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -27,6 +31,8 @@ import javax.swing.event.DocumentListener;
 public class ZurpTabComponent extends JPanel {
 
   private final SpartaFindingTableModel spartaFindings = new SpartaFindingTableModel();
+  private final SpartaFindingTable spartaTable = new SpartaFindingTable(spartaFindings);
+  private final JTextArea spartaDetail = new JTextArea(8, 80);
 
   /**
    * Everything that configures Zurp, stacked. The data views get a tab each instead: a findings
@@ -123,8 +129,32 @@ public class ZurpTabComponent extends JPanel {
     organizerPush.setText(ZurpPrefEnum.ORGANIZER_PUSH.getValue());
     controls.add(organizerPush);
 
+    JButton copy = new JButton("Copy");
+    copy.addActionListener(e -> copySelectedFinding());
+    controls.add(copy);
+
+    spartaDetail.setEditable(false);
+    spartaDetail.setLineWrap(true);
+    spartaDetail.setWrapStyleWord(true);
+    spartaTable
+        .getSelectionModel()
+        .addListSelectionListener(
+            e -> {
+              // Selection fires twice, on the press and the release; rendering once is enough.
+              if (!e.getValueIsAdjusting()) {
+                renderSpartaDetail(spartaFindings.getRow(spartaTable.selectedModelRow()));
+              }
+            });
+
+    JSplitPane split =
+        new JSplitPane(
+            JSplitPane.VERTICAL_SPLIT, new JScrollPane(spartaTable), new JScrollPane(spartaDetail));
+    // No preferred size: the tab gives the split the whole window. Half each, so a long summary
+    // does not squeeze the finding list out.
+    split.setResizeWeight(0.5);
+
     panel.add(controls, BorderLayout.NORTH);
-    panel.add(new JScrollPane(new SpartaFindingTable(spartaFindings)), BorderLayout.CENTER);
+    panel.add(split, BorderLayout.CENTER);
 
     reloadSpartaFindings();
     return panel;
@@ -132,6 +162,65 @@ public class ZurpTabComponent extends JPanel {
 
   private void reloadSpartaFindings() {
     spartaFindings.reset(Zurp.spartaFindingFetcher.getAllFindings());
+    // The previous selection refers to a row that may no longer exist, so start from nothing
+    // rather than leave the detail pane describing a finding that is not highlighted any more.
+    spartaTable.clearSelection();
+    renderSpartaDetail(null);
+  }
+
+  private void renderSpartaDetail(SpartaFindingModel finding) {
+    spartaDetail.setText(spartaDetailText(finding));
+    spartaDetail.setCaretPosition(0);
+  }
+
+  private void copySelectedFinding() {
+    SpartaFindingModel finding = spartaFindings.getRow(spartaTable.selectedModelRow());
+    if (finding == null) {
+      JOptionPane.showMessageDialog(this, "Select a finding to copy.");
+      return;
+    }
+    StringSelection selection = new StringSelection(spartaDetailText(finding));
+    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, null);
+  }
+
+  /** Null-safe: the detail pane and the clipboard share this text. */
+  static String spartaDetailText(SpartaFindingModel finding) {
+    if (finding == null) {
+      return "Select a finding to see its summary and proof of concept.";
+    }
+    StringBuilder text = new StringBuilder("SPARTA");
+    if (hasText(finding.priority)) {
+      text.append(' ').append(finding.priority.toUpperCase(Locale.ROOT));
+    }
+    if (hasText(finding.title)) {
+      text.append(": ").append(finding.title);
+    }
+    if (hasText(finding.bbFindingId)) {
+      text.append(" [").append(finding.bbFindingId).append(']');
+    }
+    if (hasText(finding.targetId)) {
+      text.append("\nTarget: ").append(finding.targetId);
+      if (hasText(finding.targetType)) {
+        text.append(" (").append(finding.targetType).append(')');
+      }
+    }
+    if (hasText(finding.pocDocId)) {
+      text.append("\nPoC: ").append(finding.pocDocId);
+    }
+    if (hasText(finding.summary)) {
+      text.append("\n\n").append(finding.summary);
+    }
+    if (hasText(finding.pocVariablesJson)) {
+      text.append("\n\nPoC variables:\n").append(finding.pocVariablesJson);
+    }
+    if (hasText(finding.pocPlaceholdersJson)) {
+      text.append("\n\nSubstitute before sending:\n").append(finding.pocPlaceholdersJson);
+    }
+    return text.toString();
+  }
+
+  private static boolean hasText(String value) {
+    return value != null && !value.isEmpty();
   }
 
   /**

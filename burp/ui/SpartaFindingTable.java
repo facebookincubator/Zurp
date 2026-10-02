@@ -11,8 +11,11 @@ import burp.models.SpartaFindingModel;
 import burp.models.SpartaFindingTableModel;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -50,8 +53,10 @@ public class SpartaFindingTable extends JTable {
   public SpartaFindingTable(SpartaFindingTableModel data) {
     super(data);
     setAutoCreateRowSorter(true);
-    // One finding is shown in the detail pane below, so more than one selection has nothing to mean.
-    setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    // The detail pane follows the lead row; the rest of a multi-selection exists so ranges of
+    // cells can be copied to the clipboard.
+    setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+    setCellSelectionEnabled(true);
     // Fill the viewport, but dragging one border moves only the two columns around it: the
     // next column absorbs the difference and the rest stay put.
     setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
@@ -70,6 +75,12 @@ public class SpartaFindingTable extends JTable {
     colorMenu.addSeparator();
     colorMenu.add(none);
     popup.add(colorMenu);
+
+    popup.addSeparator();
+    JMenuItem copyCells = new JMenuItem("Copy cell(s)");
+    JMenuItem copyDetail = new JMenuItem("Copy finding details");
+    popup.add(copyCells);
+    popup.add(copyDetail);
 
     addMouseListener(
         new MouseAdapter() {
@@ -102,10 +113,109 @@ public class SpartaFindingTable extends JTable {
             if (row < 0) {
               return;
             }
-            setRowSelectionInterval(row, row);
+            // A right click inside an existing multi-selection keeps it; anywhere else the
+            // clicked cell becomes the whole selection.
+            int col = columnAtPoint(e.getPoint());
+            if (col < 0 || !isCellSelected(row, col)) {
+              setRowSelectionInterval(row, row);
+              if (col >= 0) {
+                setColumnSelectionInterval(col, col);
+              }
+            }
+            copyCells.setEnabled(getSelectedRowCount() > 0 && getSelectedColumnCount() > 0);
             popup.show(e.getComponent(), e.getX(), e.getY());
           }
         });
+
+    copyCells.addActionListener(
+        e -> {
+          String text = selectedCellsText();
+          if (!text.isEmpty()) {
+            copyToClipboard(text);
+          }
+        });
+
+    copyDetail.addActionListener(
+        e -> {
+          String text = selectedFindingsText();
+          if (!text.isEmpty()) {
+            copyToClipboard(text);
+          }
+        });
+  }
+
+  /**
+   * The selected cells as TSV (tab-separated, one line per row), so a range pastes cleanly into
+   * a spreadsheet or a terminal. Empty when nothing is selected. Package-visible for tests.
+   */
+  String selectedCellsText() {
+    int[] rows = getSelectedRows();
+    int[] cols = getSelectedColumns();
+    if (rows.length == 0 || cols.length == 0) {
+      return "";
+    }
+    StringBuilder sb = new StringBuilder();
+    for (int r = 0; r < rows.length; r++) {
+      for (int c = 0; c < cols.length; c++) {
+        if (c > 0) {
+          sb.append('\t');
+        }
+        Object value = getValueAt(rows[r], cols[c]);
+        if (value != null) {
+          sb.append(value);
+        }
+      }
+      if (r < rows.length - 1) {
+        sb.append('\n');
+      }
+    }
+    return sb.toString();
+  }
+
+  /** The details of every selected finding, separated by a blank line. Package-visible for tests. */
+  String selectedFindingsText() {
+    StringBuilder sb = new StringBuilder();
+    for (int viewRow : getSelectedRows()) {
+      SpartaFindingModel finding = findingAt(viewRow);
+      if (finding != null) {
+        if (sb.length() > 0) {
+          sb.append('\n');
+        }
+        sb.append(detailOf(finding));
+      }
+    }
+    return sb.toString();
+  }
+
+  private static String detailOf(SpartaFindingModel finding) {
+    StringBuilder detail = new StringBuilder();
+    appendField(detail, "Finding ID", finding.bbFindingId);
+    appendField(detail, "Priority", finding.priority);
+    appendField(detail, "Title", finding.title);
+    appendField(detail, "Summary", finding.summary);
+    appendField(detail, "Target", finding.targetId);
+    appendField(detail, "Target Type", finding.targetType);
+    appendField(detail, "PoC Doc ID", finding.pocDocId);
+    appendField(detail, "PoC Variables", finding.pocVariablesJson);
+    appendField(detail, "PoC Placeholders", finding.pocPlaceholdersJson);
+    if (finding.publishedAt > 0) {
+      String published = Long.toString(finding.publishedAt);
+      try {
+        published += " (" + Instant.ofEpochSecond(finding.publishedAt) + ")";
+      } catch (RuntimeException ignored) {
+        // Not a seconds-since-epoch value; keep the raw number only.
+      }
+      appendField(detail, "Published At", published);
+    }
+    return detail.toString();
+  }
+
+  private static void appendField(StringBuilder detail, String label, String value) {
+    detail.append(label).append(": ").append(value == null ? "" : value).append('\n');
+  }
+
+  private static void copyToClipboard(String text) {
+    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(text), null);
   }
 
   /** The view row converted to a model row; they differ once the table is sorted. */

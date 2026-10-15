@@ -9,6 +9,7 @@ package burp.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import burp.models.SpartaFindingModel;
 import burp.models.SpartaFindingTableModel;
@@ -57,6 +58,43 @@ public class SpartaFindingTableTest {
 
     assertEquals(SpartaFindingTable.colorForName("Red"), row0);
     assertEquals(table.getBackground(), row1);
+  }
+
+  @Test
+  public void testSelectedCellsTextCopiesARangeAsTsv() {
+    SpartaFindingTableModel model = new SpartaFindingTableModel();
+    model.reset(List.of(finding("id-1"), finding("id-2"), finding("id-3")));
+    SpartaFindingTable table = new SpartaFindingTable(model);
+
+    // Priority and Target of the first two findings.
+    table.setRowSelectionInterval(0, 1);
+    table.setColumnSelectionInterval(0, 1);
+
+    assertEquals("high\t1\nhigh\t1", table.selectedCellsText());
+  }
+
+  @Test
+  public void testSelectedCellsTextIsEmptyWithoutSelection() {
+    SpartaFindingTableModel model = new SpartaFindingTableModel();
+    model.reset(List.of(finding("id-1")));
+    SpartaFindingTable table = new SpartaFindingTable(model);
+
+    assertEquals("", table.selectedCellsText());
+  }
+
+  @Test
+  public void testSelectedFindingsTextCoversEverySelectedRow() {
+    SpartaFindingTableModel model = new SpartaFindingTableModel();
+    model.reset(List.of(finding("id-1"), finding("id-2")));
+    SpartaFindingTable table = new SpartaFindingTable(model);
+
+    table.setRowSelectionInterval(0, 1);
+
+    String text = table.selectedFindingsText();
+    assertTrue(text.contains("Finding ID: id-1"));
+    assertTrue(text.contains("Finding ID: id-2"));
+    // A blank line separates one finding's details from the next.
+    assertTrue(text.contains("\n\nFinding ID: id-2"));
   }
 
   private static SpartaFindingModel finding(String id) {

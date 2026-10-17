@@ -80,10 +80,14 @@ public class CsrfTokenStorePerAccountTest {
     CsrfTokenStore store = new CsrfTokenStore();
     CsrfScraper.scrape(store, HOST, VICTIM, VICTIM_BODY);
     CsrfScraper.scrape(
-        store, "business.facebook.com", VICTIM, "[\"DTSGInitialData\",[],{\"token\":\"OTHERHOST\"},1]");
+        store,
+        "business.facebook.com",
+        VICTIM,
+        "[\"DTSGInitialData\",[],{\"token\":\"OTHERHOST\"},1]");
 
     assertEquals("VICTIM_TOKEN", store.peek(HOST, VICTIM).get(CsrfTokenStore.FB_DTSG));
-    assertEquals("OTHERHOST", store.peek("business.facebook.com", VICTIM).get(CsrfTokenStore.FB_DTSG));
+    assertEquals(
+        "OTHERHOST", store.peek("business.facebook.com", VICTIM).get(CsrfTokenStore.FB_DTSG));
     assertEquals(2, store.hostCount());
   }
 

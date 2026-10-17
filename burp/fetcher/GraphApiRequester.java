@@ -84,8 +84,9 @@ public class GraphApiRequester {
       HttpRequest request =
           HttpRequest.httpRequestFromUrl(requestUrl)
               .withMethod(method)
-              // The API reads the bearer token from this header only. Its query-string equivalent is
-              // an opt-in legacy trait for Graph redirection, and this endpoint does not use it.
+              // The API reads the bearer token from this header only. Its query-string
+              // equivalent is an opt-in legacy trait for Graph redirection, and this endpoint
+              // does not use it.
               .withHeader("Authorization", "Bearer " + accessToken);
       if (jsonBody != null) {
         request =

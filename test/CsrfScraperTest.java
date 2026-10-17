@@ -206,12 +206,16 @@ public class CsrfScraperTest {
     CsrfScraper.scrape(
         s, "www.facebook.com", ACCOUNT, "[\"DTSGInitialData\",[],{\"token\":\"WWW\"},1]");
     CsrfScraper.scrape(
-        s, "business.facebook.com", ACCOUNT, "[\"DTSGInitialData\",[],{\"token\":\"OTHERHOST\"},1]");
+        s,
+        "business.facebook.com",
+        ACCOUNT,
+        "[\"DTSGInitialData\",[],{\"token\":\"OTHERHOST\"},1]");
 
     assertEquals(
         "WWW", s.forHost("www.facebook.com").forSession(ACCOUNT).get(CsrfTokenStore.FB_DTSG));
     assertEquals(
-        "OTHERHOST", s.forHost("business.facebook.com").forSession(ACCOUNT).get(CsrfTokenStore.FB_DTSG));
+        "OTHERHOST",
+        s.forHost("business.facebook.com").forSession(ACCOUNT).get(CsrfTokenStore.FB_DTSG));
     assertEquals(2, s.hostCount());
   }
 

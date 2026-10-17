@@ -23,8 +23,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Fetches the SPARTA findings disclosed to the researcher for each target seen in proxied traffic:
- * a persisted GraphQL doc id, a GraphQL operation shortname, or an XController name. Caches
- * them in the Burp project file.
+ * a persisted GraphQL doc id, a GraphQL operation shortname, or an XController name. Caches them in
+ * the Burp project file.
  *
  * <p>Once the queue drains, sweeps the unfiltered list endpoint. That single sweep returns every
  * finding disclosed to this researcher, so while it is fresh the per-target queries are answered
@@ -41,9 +41,9 @@ public class SpartaFindingFetcher extends ZurpDataFetcher {
   private static final int MAX_SWEEP_PAGES = 50;
 
   /**
-   * The endpoint allows each researcher 1000 hits an hour on this
-   * endpoint, and the budget is per endpoint, so this does not compete with the asset lookups. Half
-   * is deliberate: it leaves the researcher as much again for their own calls.
+   * The endpoint allows each researcher 1000 hits an hour on this endpoint, and the budget is per
+   * endpoint, so this does not compete with the asset lookups. Half is deliberate: it leaves the
+   * researcher as much again for their own calls.
    */
   private static final int HOURLY_CALL_BUDGET = 500;
 

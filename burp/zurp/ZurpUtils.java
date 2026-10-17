@@ -26,10 +26,11 @@ public class ZurpUtils {
    * Candidates for an id lookup, not a decision that one is an FBID: only the server can tell,
    * since an id has to fall in an allocated range and land on a live shard.
    *
-   * <p>The ceiling was 16, which silently hid every 17 and 18 digit object, including the whole Instagram
-   * media range (17841400000000000 upward) among them. 14 is a deliberate floor rather than the
-   * true one: OIDs start around 2.2e9, but 10 digits is also unix seconds and 13 is milliseconds,
-   * so reaching down there costs far more noise than it finds. 19 digits would be nanoseconds.
+   * <p>The ceiling was 16, which silently hid every 17 and 18 digit object, including the whole
+   * Instagram media range (17841400000000000 upward) among them. 14 is a deliberate floor rather
+   * than the true one: OIDs start around 2.2e9, but 10 digits is also unix seconds and 13 is
+   * milliseconds, so reaching down there costs far more noise than it finds. 19 digits would be
+   * nanoseconds.
    *
    * <p>14 rather than 15 because accounts made before the 100... scheme are 14 digits, and they are
    * disproportionately what a researcher looks up. The endpoint itself recognises an FBID from 11

@@ -50,8 +50,7 @@ public class SpartaDetailTest {
 
   @Test
   public void testBareFindingOmitsEmptySections() {
-    SpartaFindingModel bare =
-        new SpartaFindingModel("id-1", "", "", "", "", "", "", "", "", 0L);
+    SpartaFindingModel bare = new SpartaFindingModel("id-1", "", "", "", "", "", "", "", "", 0L);
 
     assertEquals("SPARTA [id-1]", ZurpTabComponent.spartaDetailText(bare));
   }

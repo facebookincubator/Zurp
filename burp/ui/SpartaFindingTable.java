@@ -145,8 +145,8 @@ public class SpartaFindingTable extends JTable {
   }
 
   /**
-   * The selected cells as TSV (tab-separated, one line per row), so a range pastes cleanly into
-   * a spreadsheet or a terminal. Empty when nothing is selected. Package-visible for tests.
+   * The selected cells as TSV (tab-separated, one line per row), so a range pastes cleanly into a
+   * spreadsheet or a terminal. Empty when nothing is selected. Package-visible for tests.
    */
   String selectedCellsText() {
     int[] rows = getSelectedRows();
@@ -172,7 +172,9 @@ public class SpartaFindingTable extends JTable {
     return sb.toString();
   }
 
-  /** The details of every selected finding, separated by a blank line. Package-visible for tests. */
+  /**
+   * The details of every selected finding, separated by a blank line. Package-visible for tests.
+   */
   String selectedFindingsText() {
     StringBuilder sb = new StringBuilder();
     for (int viewRow : getSelectedRows()) {

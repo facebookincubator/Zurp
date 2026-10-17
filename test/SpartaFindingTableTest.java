@@ -22,18 +22,12 @@ public class SpartaFindingTableTest {
 
   @Test
   public void testNamedColorsResolve() {
-    assertEquals(
-        new Color(255, 214, 214), SpartaFindingTable.colorForName("Red"));
-    assertEquals(
-        new Color(255, 235, 214), SpartaFindingTable.colorForName("Orange"));
-    assertEquals(
-        new Color(255, 248, 214), SpartaFindingTable.colorForName("Yellow"));
-    assertEquals(
-        new Color(214, 245, 214), SpartaFindingTable.colorForName("Green"));
-    assertEquals(
-        new Color(214, 232, 255), SpartaFindingTable.colorForName("Blue"));
-    assertEquals(
-        new Color(232, 214, 255), SpartaFindingTable.colorForName("Purple"));
+    assertEquals(new Color(255, 214, 214), SpartaFindingTable.colorForName("Red"));
+    assertEquals(new Color(255, 235, 214), SpartaFindingTable.colorForName("Orange"));
+    assertEquals(new Color(255, 248, 214), SpartaFindingTable.colorForName("Yellow"));
+    assertEquals(new Color(214, 245, 214), SpartaFindingTable.colorForName("Green"));
+    assertEquals(new Color(214, 232, 255), SpartaFindingTable.colorForName("Blue"));
+    assertEquals(new Color(232, 214, 255), SpartaFindingTable.colorForName("Purple"));
   }
 
   @Test

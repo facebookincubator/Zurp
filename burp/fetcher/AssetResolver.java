@@ -21,8 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Resolves one identifier a researcher saw in traffic, such as an FBID, a URL or a persisted doc id, to the
- * code assets behind it, through {@code /bug_bounty/assets}.
+ * Resolves one identifier a researcher saw in traffic, such as an FBID, a URL or a persisted doc
+ * id, to the code assets behind it, through {@code /bug_bounty/assets}.
  *
  * <p>One identifier can name several assets of several kinds at once: a URL carrying an FBID in its
  * query string is both an XController and an Ent. Callers keep the kinds they have a model for.
@@ -40,9 +40,9 @@ public final class AssetResolver {
   private static final int MAX_BATCH_QUERIES = 200;
 
   /**
-   * The endpoint allows 100 batches an hour. Half, on the same
-   * reasoning as the single-lookup budget -- which still leaves 10,000 resolutions an hour against
-   * the 500 a one-at-a-time drain can manage.
+   * The endpoint allows 100 batches an hour. Half, on the same reasoning as the single-lookup
+   * budget -- which still leaves 10,000 resolutions an hour against the 500 a one-at-a-time drain
+   * can manage.
    */
   private static final int HOURLY_BATCH_BUDGET = 50;
 
@@ -58,9 +58,10 @@ public final class AssetResolver {
   private static final int MAX_ATTEMPTS = 3;
 
   /**
-   * The endpoint allows each researcher 1000 hits an hour. Half is deliberate: background lookups must leave the researcher as much again for
-   * their own calls. Do not raise this to the server limit: a spent budget makes every fetcher
-   * that shares it idle, and the researcher's own requests would 429 alongside it.
+   * The endpoint allows each researcher 1000 hits an hour. Half is deliberate: background lookups
+   * must leave the researcher as much again for their own calls. Do not raise this to the server
+   * limit: a spent budget makes every fetcher that shares it idle, and the researcher's own
+   * requests would 429 alongside it.
    */
   private static final int HOURLY_CALL_BUDGET = 500;
 

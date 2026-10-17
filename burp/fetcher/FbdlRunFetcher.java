@@ -37,9 +37,9 @@ public class FbdlRunFetcher extends ZurpDataFetcher {
   private static final int MAX_SWEEP_PAGES = 50;
 
   /**
-   * The endpoint allows each researcher 1000 hits an hour on this
-   * endpoint, and the budget is per endpoint, so this does not compete with the asset or finding
-   * lookups. Half is deliberate: it leaves the researcher as much again for their own calls.
+   * The endpoint allows each researcher 1000 hits an hour on this endpoint, and the budget is per
+   * endpoint, so this does not compete with the asset or finding lookups. Half is deliberate: it
+   * leaves the researcher as much again for their own calls.
    */
   private static final int HOURLY_CALL_BUDGET = 500;
 

@@ -36,7 +36,7 @@ const FINDINGS_PATH = '/bug_bounty/sparta_findings';
  */
 const BUDGET_PER_HOUR = 1000;
 
-/** `FBStefiBBSpartaFindingListPaginationPolicy` clamps a larger page down to this. */
+/** The endpoint clamps a larger page down to this. */
 export const MAX_PAGE_SIZE = 100;
 
 /**
@@ -46,7 +46,7 @@ export const MAX_PAGE_SIZE = 100;
  */
 const MAX_SWEEP_PAGES = 50;
 
-/** Wire values of the Hack `SpartaBountyLeadTargetType` enum. */
+/** Target types as the API sends them. */
 export const TARGET_TYPES = ['published_doc_id', 'endpoint_name'] as const;
 export type TargetType = (typeof TARGET_TYPES)[number];
 
@@ -60,7 +60,7 @@ export interface Finding {
   readonly id: string;
   readonly title: string;
   readonly summary: string;
-  /** Wire values of the Hack `SpartaBountyLeadPriority` enum; unknown values pass through. */
+  /** Priority as the API sends it; unknown values pass through. */
   readonly priority: string;
   /** Absent when the API named a target type this build does not know. */
   readonly target?: SpartaTarget;

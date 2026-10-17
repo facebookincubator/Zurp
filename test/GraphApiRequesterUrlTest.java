@@ -28,8 +28,8 @@ public class GraphApiRequesterUrlTest {
   @Test
   public void testOverriddenBaseUrlReachesTheApiPath() {
     assertEquals(
-        "https://api.devvm60696.lla0.facebook.com/bug_bounty/sparta_findings",
-        GraphApiRequester.join("https://api.devvm60696.lla0.facebook.com/", ENDPOINT));
+        "https://api.example.com/bug_bounty/sparta_findings",
+        GraphApiRequester.join("https://api.example.com/", ENDPOINT));
   }
 
   @Test

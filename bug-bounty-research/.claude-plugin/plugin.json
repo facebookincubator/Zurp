@@ -1,6 +1,6 @@
 {
   "name": "bug-bounty-research",
-  "description": "Meta bug bounty research tooling: build FBDL test environments to reproduce bugs against, resolve identifiers seen in Meta traffic to the code assets behind them, and read the SPARTA scanner findings disclosed to you.",
+  "description": "Meta bug bounty research tooling: build FBDL test environments to reproduce bugs against, resolve identifiers seen in Meta traffic to the code assets behind them, read the SPARTA scanner findings disclosed to you, and enable whitehat traffic inspection on your own test device.",
   "version": "0.1.0",
-  "keywords": ["bug-bounty", "security-research", "fbdl", "meta-context", "sparta", "burp"]
+  "keywords": ["bug-bounty", "security-research", "fbdl", "meta-context", "sparta", "whitehat-device", "burp"]
 }

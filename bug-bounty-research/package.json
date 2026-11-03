@@ -1,18 +1,20 @@
 {
   "name": "bug-bounty-research",
   "version": "0.1.0",
-  "description": "MCP servers for Meta bug bounty research: build FBDL test environments, resolve identifiers seen in Meta traffic to the code assets behind them, and read the SPARTA scanner findings disclosed to you.",
+  "description": "MCP servers for Meta bug bounty research: configure local research devices, build FBDL test environments, resolve identifiers seen in Meta traffic, and read disclosed SPARTA findings.",
   "license": "MIT",
   "type": "module",
   "main": "dist/core/index.js",
   "types": "dist/core/index.d.ts",
   "exports": {
     ".": "./dist/core/index.js",
+    "./device": "./dist/device/index.js",
     "./meta-context": "./dist/meta-context/index.js",
     "./fbdl": "./dist/fbdl/index.js",
     "./sparta": "./dist/sparta/index.js"
   },
   "bin": {
+    "whitehat-device-mcp": "dist/device/index.js",
     "meta-context-mcp": "dist/meta-context/index.js",
     "fbdl-mcp": "dist/fbdl/index.js",
     "sparta-mcp": "dist/sparta/index.js"
@@ -33,6 +35,7 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "test": "tsc && node --test dist/*/__tests__/*.test.js",
+    "start:device": "node dist/device/index.js",
     "start:meta-context": "node dist/meta-context/index.js",
     "start:fbdl": "node dist/fbdl/index.js",
     "start:sparta": "node dist/sparta/index.js"

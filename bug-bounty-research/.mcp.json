@@ -1,5 +1,16 @@
 {
   "mcpServers": {
+    "whitehat-device": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/dist/device/index.js"],
+      "env": {
+        "BB_RESEARCH_IDB_BIN": "${BB_RESEARCH_IDB_BIN:-idb}",
+        "BB_RESEARCH_ADB_BIN": "${BB_RESEARCH_ADB_BIN:-adb}",
+        "ANDROID_SERIAL": "${ANDROID_SERIAL:-}",
+        "IDB_COMPANION": "${IDB_COMPANION:-}",
+        "IDB_UDID": "${IDB_UDID:-}"
+      }
+    },
     "fbdl": {
       "command": "node",
       "args": ["${CLAUDE_PLUGIN_ROOT}/dist/fbdl/index.js"],

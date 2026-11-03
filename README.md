@@ -18,8 +18,9 @@ Every Meta request and response gets a **Meta View** tab, showing what the ident
 | **FBDL** | where do I get accounts I am allowed to attack? | **FBDL** tab, `{{fbdl.*}}` placeholders | `fbdl` server |
 | **CSRF / sprinkle** | why won't this captured request replay? | automatic on the request path | n/a |
 | **SPARTA** | what are the leads to find potentially interesting issues? | **SPARTA** tab, PoCs queued into Organizer | `sparta` server |
+| **Whitehat Device** | how do I enable inspected traffic on my local app? | n/a | `whitehat-device` server |
 
-Use one or use all four. Nothing here depends on anything else here, and each works only against your own account's data.
+Use one or use all five. Nothing here depends on anything else here, and each works only against your own account or local device.
 
 ## Quick start
 
@@ -43,6 +44,7 @@ Mint a token at <https://www.facebook.com/whitehat/fbdl/generate_api_token>. Tok
 * **Java 17** to build from source. Burp supplies its own JVM to run the extension.
 * **Node 22.19.0** or newer, for the MCP servers only.
 * **An MCP client** for the agent side: Muse Code, Claude Code, or anything speaking MCP over stdio.
+* **[idb](https://fbidb.io/)** and an iOS simulator, or `adb` and an Android device with a debuggable app or `adb root`, for local whitehat configuration.
 
 macOS and Linux are what the docs assume. The extension is a jar and the servers are Node, so Windows works too. Only the paths differ.
 
@@ -108,7 +110,7 @@ npm test
 ```
 ## The MCP servers
 
-[`bug-bounty-research/`](bug-bounty-research/README.md) is a standalone Node package sharing no code with the Java here, so it installs on its own if you do not run Burp. Each tool is a separate stdio server: `dist/meta-context/index.js`, `dist/sparta/index.js`, `dist/fbdl/index.js`.
+[`bug-bounty-research/`](bug-bounty-research/README.md) is a standalone Node package sharing no code with the Java here, so it installs on its own if you do not run Burp. Each tool is a separate stdio server: `dist/device/index.js`, `dist/meta-context/index.js`, `dist/sparta/index.js`, `dist/fbdl/index.js`.
 
 Register the ones you want by absolute path. Full per-client instructions, including the several ways a Muse Code config fails *silently*, are in [`bug-bounty-research/README.md`](bug-bounty-research/README.md).
 
@@ -118,7 +120,7 @@ The agent skills in [`bug-bounty-research/skills/`](bug-bounty-research/skills/)
 
 * [docs/CONFIGURATION.md](docs/CONFIGURATION.md): every setting, environment and JVM seeding, log levels, and the `SSLProtocolException` fix.
 * [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): how the pieces fit, the data model, your request budget, and known gaps.
-* [bug-bounty-research/README.md](bug-bounty-research/README.md): the three servers, their tool surface, and per-client setup.
+* [bug-bounty-research/README.md](bug-bounty-research/README.md): the four servers, their tool surface, and per-client setup.
 * [FBDL access criteria](https://www.facebook.com/whitehat/fbdl/): who can use these tools and how to qualify.
 * [Montoya API documentation][montoya]: the extension API the Burp side is written against.
 * [Meta Bug Bounty program terms](https://www.facebook.com/whitehat): what is in scope, and the rules all of this assumes you are working under.

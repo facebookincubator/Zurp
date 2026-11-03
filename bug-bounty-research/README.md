@@ -19,9 +19,10 @@ test accounts by hand.
 | **FBDL** | where do I get accounts I am allowed to attack? | **FBDL** tab, `{{fbdl.*}}` placeholders | `fbdl` server |
 | **CSRF / sprinkle** | why won't this captured request replay? | automatic on the request path | n/a |
 | **SPARTA** | what are the interesting leads in the targeted scope? | **SPARTA** tab | `sparta` server |
+| **Whitehat Device** | how do I enable inspected traffic on my local app? | n/a | `whitehat-device` server |
 
-Three of the four have an agent-side server, and each is its own MCP server; register one, or all
-three. CSRF substitution has no agent equivalent and is covered in
+Four of the five have an agent-side server, and each is its own MCP server; register one, or all
+four. CSRF substitution has no agent equivalent and is covered in
 [Zurp's README](../README.md) instead.
 
 > **SPARTA is not always on.** It is made available during specific engagements we organise — a
@@ -87,6 +88,8 @@ bug-bounty-research requires or works with
 
 * **Node 22.19.0 or newer**, and npm.
 * **An MCP client** — Muse Code, Claude Code, or anything else that speaks MCP over stdio.
+* For local device configuration, **[idb](https://fbidb.io/)** with an iOS simulator, or `adb`
+  with a debuggable Android app or a root adb shell (`adb root`).
 * **A bug bounty researcher API token.** Mint one at
   <https://www.facebook.com/whitehat/fbdl/generate_api_token> — you must be logged in to
   facebook.com for the mint to work. Tokens last 60 days.
@@ -94,15 +97,16 @@ bug-bounty-research requires or works with
   budget. The extension loads in Community Edition, but getting the full use of it needs Burp
   Professional.
 
-One token drives everything: the extension and all three MCP servers. The endpoints share an OAuth
-app and a capability.
+One token drives the extension and the three API-backed MCP servers. Their endpoints share an OAuth
+app and a capability. The local `whitehat-device` server touches only your own device and needs no
+token.
 
 ### Getting access
 
-Every server here is gated on the **same access criteria as FBDL**, and on the same researcher
-allowlist. If you can use FBDL, you can use all three with the token you already have; if you
-cannot, none of them will work and the APIs will answer `403`. The criteria, and how to qualify,
-are documented at <https://www.facebook.com/whitehat/fbdl/>.
+Every API-backed server here is gated on the **same access criteria as FBDL**, and on the same
+researcher allowlist. If you can use FBDL, you can use all three with the token you already have;
+if you cannot, those APIs answer `403`. The local device server is independent. The criteria, and
+how to qualify, are documented at <https://www.facebook.com/whitehat/fbdl/>.
 
 A `403` latches: once the API says the account is not enrolled, no further calls are attempted for
 the life of the process, because the answer cannot change and each attempt still costs a slot.
@@ -139,9 +143,10 @@ npm install
 npm run build          # tsc -> dist/
 ```
 
-That leaves three entry points, each one a stdio MCP server:
+That leaves four entry points, each one a stdio MCP server:
 
 ```
+dist/device/index.js
 dist/meta-context/index.js
 dist/sparta/index.js
 dist/fbdl/index.js
@@ -160,6 +165,13 @@ there yet:
 {
   "schema_version": 1,
   "mcpServers": {
+    "whitehat-device": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/Users/<name>/.local/share/zurp/bug-bounty-research/dist/device/index.js"],
+      "env": { "IDB_UDID": "<simulator-udid>" },
+      "mode": "optional"
+    },
     "meta-context": {
       "type": "stdio",
       "command": "node",
@@ -197,13 +209,33 @@ done
 
 ### Any other MCP client
 
-Point it at the same three commands; they speak stdio and can be run directly:
+Point it at the same four commands; they speak stdio and can be run directly:
 
 ```bash
+node ~/.local/share/zurp/bug-bounty-research/dist/device/index.js
 node ~/.local/share/zurp/bug-bounty-research/dist/meta-context/index.js
 node ~/.local/share/zurp/bug-bounty-research/dist/sparta/index.js
 node ~/.local/share/zurp/bug-bounty-research/dist/fbdl/index.js
 ```
+
+### Enabling whitehat inspection on local mobile apps
+
+`whitehat_configure` turns whitehat inspection on or off for Facebook, Instagram, Messenger and
+Threads, then restarts the app. It needs either:
+
+* an iOS simulator running a simulator build of the app, through `idb` (App Store builds do not
+  run on simulators); or
+* an Android device or emulator through `adb`, with a debuggable build or a root adb shell. For
+  store builds, use an emulator image without Google Play and run `adb root`.
+
+It enables the app's whitehat settings and writes the same certificate settings as the in-app
+Whitehat Settings screen. `enabled: false` turns inspection off and removes the tool's overrides.
+`duration_seconds` limits inspection on Android and on Threads for iOS (24 hours by default, 7 days
+at most). Instagram and Threads on iOS need `account_id`, the logged-in Instagram user id.
+
+The tool does **not** configure a proxy or install a certificate. Set up the proxy and install its
+CA first (in the user store on Android). Facebook and Threads on iOS also need the proxy's root
+imported in the app's Whitehat Settings.
 
 ### Verifying it end to end
 

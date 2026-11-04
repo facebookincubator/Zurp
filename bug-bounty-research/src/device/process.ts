@@ -15,7 +15,7 @@ export interface CommandResult {
 export type CommandRunner = (
   executable: string,
   args: readonly string[],
-  stdin?: string,
+  stdin?: string | Buffer,
 ) => Promise<CommandResult>;
 
 const TIMEOUT_MS = 120_000;

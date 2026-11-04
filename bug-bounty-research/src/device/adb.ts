@@ -10,6 +10,10 @@ import {type CommandRunner, spawnRunner} from './process.js';
 const PACKAGE = /^[A-Za-z][A-Za-z0-9_]*(?:\.[A-Za-z][A-Za-z0-9_]*)+$/;
 const ABSENT = '__whitehat_file_absent__';
 
+// How app files are reached: a root adb shell, su on a rooted device, or run-as for a
+// debuggable app.
+type Access = 'root' | 'su' | 'run-as';
+
 // adb joins its arguments with spaces and the device shell parses them again.
 function quote(word: string): string {
   return `'${word.replaceAll("'", `'\\''`)}'`;
@@ -19,7 +23,7 @@ export class Adb {
   readonly executable: string;
   readonly run: CommandRunner;
   readonly serial: string | undefined;
-  #root: Promise<boolean> | undefined;
+  #access: Promise<Access> | undefined;
 
   constructor(
     run: CommandRunner = spawnRunner,
@@ -100,7 +104,7 @@ export class Adb {
       .map((_, index, parts) => parts.slice(0, index + 1).join('/'))
       .join(' ');
     const own = async (target: string): Promise<string> =>
-      (await this.#isRoot())
+      (await this.#accessMode()) !== 'run-as'
         ? ` && chown $(stat -c %u:%g .) ${target} && chcon $(stat -c %C .) ${target}`
         : '';
     const steps = [
@@ -120,8 +124,10 @@ export class Adb {
 
   async #inApp(packageName: string, script: string, stdin?: string): Promise<{stdout: string}> {
     this.#validate(packageName);
-    if (await this.#isRoot()) {
-      const words = ['sh', '-c', `cd /data/data/${packageName} || exit 1; umask 007; ${script}`];
+    const access = await this.#accessMode();
+    if (access !== 'run-as') {
+      const inData = `cd /data/data/${packageName} || exit 1; umask 007; ${script}`;
+      const words = access === 'root' ? ['sh', '-c', inData] : ['su', '-c', inData];
       return await this.run(this.executable, this.#shell(words), stdin);
     }
     try {
@@ -132,15 +138,27 @@ export class Adb {
       );
     } catch (error) {
       if (!(error instanceof Error) || !error.message.includes('not debuggable')) throw error;
-      throw new Error(`${error.message.trim()}; run \`adb root\` first or use a debuggable build`);
+      throw new Error(
+        `${error.message.trim()}; run \`adb root\` first, allow root for the shell in your su ` +
+          'manager, or use a debuggable build',
+      );
     }
   }
 
-  async #isRoot(): Promise<boolean> {
-    this.#root ??= this.run(this.executable, this.#shell(['id', '-u'])).then(
-      ({stdout}) => stdout.trim() === '0',
-    );
-    return await this.#root;
+  // `adb root` is refused on production builds, so a rooted retail device is reached through su.
+  async #accessMode(): Promise<Access> {
+    this.#access ??= (async (): Promise<Access> => {
+      const {stdout} = await this.run(this.executable, this.#shell(['id', '-u']));
+      if (stdout.trim() === '0') return 'root';
+      try {
+        const su = await this.run(this.executable, this.#shell(['su', '-c', 'id -u']));
+        if (su.stdout.trim() === '0') return 'su';
+      } catch {
+        // No su binary, or root was refused for the shell.
+      }
+      return 'run-as';
+    })();
+    return await this.#access;
   }
 
   #shell(words: readonly string[]): string[] {

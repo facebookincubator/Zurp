@@ -9,6 +9,7 @@ import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {Client} from '@modelcontextprotocol/sdk/client/index.js';
 import {InMemoryTransport} from '@modelcontextprotocol/sdk/inMemory.js';
+import {X509Certificate} from 'node:crypto';
 import {existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
@@ -21,6 +22,7 @@ interface Call {
   readonly executable: string;
   readonly args: readonly string[];
   readonly stdin: string | undefined;
+  readonly bytes: Buffer | undefined;
   readonly words: readonly string[];
 }
 interface StagedWrite {
@@ -34,6 +36,31 @@ interface StagedWrite {
 const MC = 'files/mobileconfig/mc_overrides.json';
 const PREFS_DB_PATH = 'databases/prefs_db';
 const DEVPREFS = 'shared_prefs/devprefs.xml';
+const PROXY_ROOT = 'Library/Application Support/ProxyCACert.der';
+const CA_PEM = `-----BEGIN CERTIFICATE-----
+MIIBhjCCASugAwIBAgIUfYpMcH0hUl04K9PvppIurAeAneQwCgYIKoZIzj0EAwIw
+FzEVMBMGA1UEAwwMenVycC10ZXN0LWNhMCAXDTI2MTEwNDExMDUwOVoYDzIxMjYx
+MDExMTEwNTA5WjAXMRUwEwYDVQQDDAx6dXJwLXRlc3QtY2EwWTATBgcqhkjOPQIB
+BggqhkjOPQMBBwNCAARRfmKjsMRXkXFeukZpK1es5bm9I/mELqGkhNWHf/Vk5tmz
+5VkTeOIUqQOEpvsmlkguYE0TKxFybUHWIX+GhH4Zo1MwUTAdBgNVHQ4EFgQUAZpZ
+ABNDXLSc1aoR2Q83V7c2sSUwHwYDVR0jBBgwFoAUAZpZABNDXLSc1aoR2Q83V7c2
+sSUwDwYDVR0TAQH/BAUwAwEB/zAKBggqhkjOPQQDAgNJADBGAiEA5RRVc32g06cU
+PfJkTdLt2QjiFfBRHJ9tCUphCou9AywCIQCDlbhRuTQQB+vykANjxOeTbhmRMLFZ
+toD7XwyfubCmHQ==
+-----END CERTIFICATE-----
+`;
+const LEAF_PEM = `-----BEGIN CERTIFICATE-----
+MIIBhzCCASygAwIBAgIUUVOh3g7xioIaBBlqYRbZxkg9BEgwCgYIKoZIzj0EAwIw
+GTEXMBUGA1UEAwwOenVycC10ZXN0LWxlYWYwIBcNMjYxMTA0MTEwNTA5WhgPMjEy
+NjEwMTExMTA1MDlaMBkxFzAVBgNVBAMMDnp1cnAtdGVzdC1sZWFmMFkwEwYHKoZI
+zj0CAQYIKoZIzj0DAQcDQgAEQLU4ONZ3QQWl8rCyZGJ1PGES3G2RFQq4/2aHhqsx
+wnpRPS5+yh5LVwUBU3HjYtp8NfdamGvXc/cMvRRK/3y+CKNQME4wHQYDVR0OBBYE
+FMNlOu8avjsagun1/QX6/j+ZZVspMB8GA1UdIwQYMBaAFMNlOu8avjsagun1/QX6
+/j+ZZVspMAwGA1UdEwEB/wQCMAAwCgYIKoZIzj0EAwIDSQAwRgIhAPG2J1bPUi/n
+ZlFAAGcGWt/wUcI0CBMuzUoxUpvMJz9JAiEA9PP+NlceVoIX+tywfwyPuK5DuH5A
+2GWQId2jbzPWLx0=
+-----END CERTIFICATE-----
+`;
 
 // adb joins its arguments and the device shell parses them again; this applies that parse and rejects unquoted metacharacters.
 function deviceWords(args: readonly string[]): string[] {
@@ -73,10 +100,10 @@ function deviceWords(args: readonly string[]): string[] {
   return words;
 }
 
-// The script run inside the app's data directory, through run-as or a root shell.
+// The script run inside the app's data directory, through run-as, a root shell, or su.
 function appScript(words: readonly string[]): string {
   if (words[0] === 'run-as' && words[2] === 'sh' && words[3] === '-c') return words[4] ?? '';
-  if (words[0] === 'sh' && words[1] === '-c')
+  if ((words[0] === 'sh' || words[0] === 'su') && words[1] === '-c')
     return (words[2] ?? '').replace(/^cd \/data\/data\/[\w.]+ \|\| exit 1; umask 007; /, '');
   return '';
 }
@@ -103,6 +130,16 @@ function stagedWrite(words: readonly string[]): StagedWrite | undefined {
 }
 function writesTo(call: Call, path: string): boolean {
   return stagedWrite(call.words)?.path === path;
+}
+function isAccessProbe(call: Call): boolean {
+  return ['id -u', 'su -c id -u'].includes(call.words.join(' '));
+}
+
+function writeCertificate(contents: string | Buffer): string {
+  const directory = mkdtempSync(join(tmpdir(), 'zurp-test-ca-'));
+  const path = join(directory, 'proxy-ca');
+  writeFileSync(path, contents);
+  return path;
 }
 
 function emptyPrefsDb(): string {
@@ -153,8 +190,10 @@ interface ConnectOptions {
   readonly prefsFiles?: Record<string, string>;
   readonly failPrefsFile?: string;
   readonly root?: boolean;
+  readonly su?: boolean;
   readonly notDebuggable?: boolean;
   readonly failRelaunch?: boolean;
+  readonly failCaWrite?: boolean;
   readonly iosGroupRoot?: string;
 }
 
@@ -167,7 +206,15 @@ async function connect(options: ConnectOptions = {}): Promise<{client: Client; c
   const prefsFiles = options.prefsFiles ?? {prefs_db: PREFS_DB};
   const run: CommandRunner = async (executable, args, stdin) => {
     const words = executable === 'adb-test' ? deviceWords(args) : [];
-    calls.push({executable, args, stdin, words});
+    const text = typeof stdin === 'string' ? stdin : undefined;
+    // simctl gets a temporary file, so record what it held at the time of the call.
+    const bytes =
+      executable === 'xcrun'
+        ? readFileSync(args.at(-1) ?? '')
+        : Buffer.isBuffer(stdin)
+          ? stdin
+          : undefined;
+    calls.push({executable, args, stdin: text, bytes, words});
     if (args[0] === 'file' && args[1] === 'ls') {
       if (options.failIosList === true) throw new Error('simulated MC read failure');
       if (options.iosGroupRoot !== undefined && args.at(-1) === 'group.com.burbn.instagram')
@@ -178,9 +225,15 @@ async function connect(options: ConnectOptions = {}): Promise<{client: Client; c
       };
     }
     if (args[0] === 'file' && args[1] === 'read') return {stdout: iosOverrides ?? '', stderr: ''};
+    if (options.failCaWrite === true && args.includes('--application'))
+      throw new Error('simulated CA write failure');
     if (executable !== 'adb-test') return {stdout: '', stderr: ''};
     if (words.join(' ') === 'id -u')
       return {stdout: options.root === true ? '0\n' : '2000\n', stderr: ''};
+    if (words.join(' ') === 'su -c id -u') {
+      if (options.su === true) return {stdout: '0\n', stderr: ''};
+      throw new Error('adb-test exited 127: /system/bin/sh: su: not found');
+    }
     if (options.notDebuggable === true && words[0] === 'run-as')
       throw new Error(`adb-test exited 1: run-as: package not debuggable: ${words[1]}`);
     if (options.failRelaunch === true && words[0] === 'monkey')
@@ -189,8 +242,8 @@ async function connect(options: ConnectOptions = {}): Promise<{client: Client; c
     if (staged !== undefined) {
       const written =
         staged.decoder === 'cat'
-          ? Buffer.byteLength(stdin ?? '')
-          : Buffer.from(stdin ?? '', 'base64').length;
+          ? Buffer.byteLength(text ?? '')
+          : Buffer.from(text ?? '', 'base64').length;
       assert.equal(written, staged.size, `size check for ${staged.path}`);
       return {stdout: '', stderr: ''};
     }
@@ -435,6 +488,161 @@ test('iOS disable clears the bypass before best-effort MC cleanup and reports a 
   await client.close();
 });
 
+test('iOS installs a PEM or DER proxy CA in the app and the simulator keychain while the app is stopped', async () => {
+  const der = new X509Certificate(CA_PEM).raw;
+  for (const contents of [CA_PEM, der]) {
+    const path = writeCertificate(contents);
+    try {
+      const {client, calls} = await connect();
+      const result = await client.callTool({
+        name: 'whitehat_configure',
+        arguments: {
+          platform: 'ios',
+          app: 'facebook',
+          enabled: true,
+          device_id: 'sim-1',
+          ca_certificate_path: path,
+        },
+      });
+      assert.notEqual(result.isError, true, JSON.stringify(result.content));
+      assert.match(
+        JSON.stringify(result.content),
+        /proxy CA is in the app and the simulator keychain/,
+      );
+      const write = calls.findIndex(
+        (call) => call.executable === 'idb-test' && call.bytes !== undefined,
+      );
+      assert.deepEqual(calls[write]?.args, [
+        'file',
+        'write',
+        '--udid',
+        'sim-1',
+        '--application',
+        '--reason',
+        'install the proxy root certificate',
+        `com.facebook.Facebook/${PROXY_ROOT}`,
+      ]);
+      assert.deepEqual(calls[write]?.bytes, der);
+      const keychain = calls.findIndex((call) => call.executable === 'xcrun');
+      assert.deepEqual(calls[keychain]?.args.slice(0, 4), [
+        'simctl',
+        'keychain',
+        'sim-1',
+        'add-root-cert',
+      ]);
+      assert.match(calls[keychain]?.args[4] ?? '', /ProxyCACert\.der$/);
+      assert.deepEqual(calls[keychain]?.bytes, der);
+      assert.ok(!existsSync(calls[keychain]?.args[4] ?? ''));
+      const bypass = calls.findIndex((call) => call.args.includes('FBWhitehatSSLPinningBypass'));
+      assert.ok(write > 0 && keychain > write && bypass > keychain);
+      assert.equal(calls.at(-1)?.args[0], 'launch');
+      await client.close();
+    } finally {
+      rmSync(join(path, '..'), {recursive: true, force: true});
+    }
+  }
+});
+
+test('iOS keychain install defaults to IDB_UDID, then the booted simulator, and skips a remote companion', async () => {
+  const path = writeCertificate(CA_PEM);
+  const saved = {udid: process.env.IDB_UDID, companion: process.env.IDB_COMPANION};
+  const keychainTarget = async (): Promise<{text: string; target: string | undefined}> => {
+    const {client, calls} = await connect();
+    const result = await client.callTool({
+      name: 'whitehat_configure',
+      arguments: {platform: 'ios', app: 'messenger', enabled: true, ca_certificate_path: path},
+    });
+    await client.close();
+    assert.notEqual(result.isError, true, JSON.stringify(result.content));
+    assert.ok(calls.some((call) => call.bytes !== undefined));
+    return {
+      text: JSON.stringify(result.content),
+      target: calls.find((call) => call.executable === 'xcrun')?.args[2],
+    };
+  };
+  try {
+    delete process.env.IDB_COMPANION;
+    process.env.IDB_UDID = 'env-sim';
+    assert.equal((await keychainTarget()).target, 'env-sim');
+    process.env.IDB_UDID = '';
+    assert.equal((await keychainTarget()).target, 'booted');
+    process.env.IDB_COMPANION = 'companion:1';
+    const remote = await keychainTarget();
+    assert.equal(remote.target, undefined);
+    assert.match(remote.text, /keychain was left alone because idb targets a remote companion/);
+    assert.doesNotMatch(remote.text, /in the app and the simulator keychain/);
+  } finally {
+    for (const [name, value] of [
+      ['IDB_UDID', saved.udid],
+      ['IDB_COMPANION', saved.companion],
+    ] as const) {
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
+    }
+    rmSync(join(path, '..'), {recursive: true, force: true});
+  }
+});
+
+test('ca_certificate_path is refused before stopping the app unless it is a CA for an iOS enable', async () => {
+  const ca = writeCertificate(CA_PEM);
+  const leaf = writeCertificate(LEAF_PEM);
+  const garbage = writeCertificate('not a certificate');
+  try {
+    const cases = [
+      [{platform: 'ios', enabled: true, ca_certificate_path: leaf}, /is not a CA certificate/],
+      [{platform: 'ios', enabled: true, ca_certificate_path: garbage}, /Cannot read a PEM or DER/],
+      [{platform: 'ios', enabled: true, ca_certificate_path: `${ca}-missing`}, /Cannot read/],
+      [{platform: 'ios', enabled: false, ca_certificate_path: ca}, /only used when enabling/],
+      [{platform: 'android', enabled: true, ca_certificate_path: ca}, /user certificate store/],
+    ] as const;
+    for (const [args, message] of cases) {
+      const {client, calls} = await connect();
+      const result = await client.callTool({
+        name: 'whitehat_configure',
+        arguments: {app: 'facebook', ...args},
+      });
+      assert.equal(result.isError, true);
+      assert.match(JSON.stringify(result.content), message);
+      assert.equal(calls.length, 0);
+      await client.close();
+    }
+  } finally {
+    for (const path of [ca, leaf, garbage]) {
+      rmSync(join(path, '..'), {recursive: true, force: true});
+    }
+  }
+});
+
+test('a failed proxy CA write relaunches the app without trusting the CA anywhere', async () => {
+  const path = writeCertificate(CA_PEM);
+  try {
+    const {client, calls} = await connect({failCaWrite: true});
+    const result = await client.callTool({
+      name: 'whitehat_configure',
+      arguments: {platform: 'ios', app: 'facebook', enabled: true, ca_certificate_path: path},
+    });
+    assert.equal(result.isError, true);
+    assert.match(JSON.stringify(result.content), /simulated CA write failure/);
+    assert.ok(!calls.some((call) => call.executable === 'xcrun'));
+    assert.ok(!calls.some((call) => call.args.includes('FBWhitehatSSLPinningBypass')));
+    assert.equal(calls.at(-1)?.args[0], 'launch');
+    await client.close();
+  } finally {
+    rmSync(join(path, '..'), {recursive: true, force: true});
+  }
+});
+
+test('iOS enable without a CA says where the proxy root goes', async () => {
+  const {client, calls} = await connect();
+  const result = await client.callTool({
+    name: 'whitehat_configure',
+    arguments: {platform: 'ios', app: 'facebook', enabled: true},
+  });
+  assert.match(JSON.stringify(result.content), /pass ca_certificate_path or install its CA/);
+  assert.ok(!calls.some((call) => call.executable === 'xcrun' || call.bytes !== undefined));
+  await client.close();
+});
+
 test('Android profiles stop the app, write their MC gates, and restart through adb', async () => {
   const {client, calls} = await connect();
   const result = await client.callTool({
@@ -474,9 +682,7 @@ test('Android app_id targets the supplied package', async () => {
     arguments: {platform: 'android', app: 'facebook', enabled: true, app_id: 'com.example.app'},
   });
   assert.notEqual(result.isError, true);
-  const appCalls = calls.filter(
-    (call) => call.executable === 'adb-test' && call.words.join(' ') !== 'id -u',
-  );
+  const appCalls = calls.filter((call) => call.executable === 'adb-test' && !isAccessProbe(call));
   assert.ok(appCalls.length > 0);
   assert.ok(appCalls.every((call) => call.words.includes('com.example.app')));
   assert.ok(!appCalls.some((call) => /chown|chcon/.test(call.args.join(' '))));
@@ -516,6 +722,45 @@ test('a root adb shell edits the app as root and hands files back to the app', a
   await client.close();
 });
 
+test('a rooted device without adb root edits the app through su and hands files back to the app', async () => {
+  const {client, calls} = await connect({su: true, notDebuggable: true});
+  const result = await client.callTool({
+    name: 'whitehat_configure',
+    arguments: {platform: 'android', app: 'instagram', enabled: true},
+  });
+  assert.notEqual(result.isError, true, JSON.stringify(result.content));
+  const appCalls = calls.filter((call) => appScript(call.words) !== '' && !isAccessProbe(call));
+  assert.ok(appCalls.length > 0);
+  assert.ok(
+    appCalls.every(
+      (call) =>
+        call.words[0] === 'su' &&
+        call.words[2]?.startsWith('cd /data/data/com.instagram.android || exit 1; umask 007; ') ===
+          true,
+    ),
+  );
+  const write = appCalls.find((call) => writesTo(call, DEVPREFS));
+  assert.deepEqual(write === undefined ? undefined : stagedWrite(write.words)?.owned, [
+    'shared_prefs',
+    `${DEVPREFS}.whitehat`,
+  ]);
+  assert.deepEqual(
+    calls.filter(isAccessProbe).map((call) => call.words.join(' ')),
+    ['id -u', 'su -c id -u'],
+  );
+  await client.close();
+});
+
+test('a root adb shell is used without probing su', async () => {
+  const {client, calls} = await connect({root: true, su: true});
+  await client.callTool({
+    name: 'whitehat_configure',
+    arguments: {platform: 'android', app: 'threads', enabled: true},
+  });
+  assert.ok(!calls.some((call) => call.words[0] === 'su'));
+  await client.close();
+});
+
 test('a release build without a root shell points at adb root', async () => {
   const {client} = await connect({notDebuggable: true});
   const result = await client.callTool({
@@ -525,7 +770,7 @@ test('a release build without a root shell points at adb root', async () => {
   assert.equal(result.isError, true);
   assert.match(
     JSON.stringify(result.content),
-    /not debuggable: com\.instagram\.android; run `adb root` first/,
+    /not debuggable: com\.instagram\.android; run `adb root` first, allow root for the shell in your su manager/,
   );
   await client.close();
 });
@@ -827,6 +1072,20 @@ test('spawnRunner passes stdin through and reports a failed exit with its stderr
     spawnRunner(process.execPath, ['-e', 'process.stderr.write("broken"); process.exit(3)']),
     /exited 3: broken/,
   );
+});
+
+test('spawnRunner passes binary stdin through unchanged', async () => {
+  const bytes = Buffer.from([0x00, 0xff, 0x30, 0x82, 0x80, 0x0a]);
+  const result = await spawnRunner(
+    process.execPath,
+    [
+      '-e',
+      'const chunks = []; process.stdin.on("data", (c) => chunks.push(c)); ' +
+        'process.stdin.on("end", () => process.stdout.write(Buffer.concat(chunks).toString("hex")));',
+    ],
+    bytes,
+  );
+  assert.equal(result.stdout, bytes.toString('hex'));
 });
 
 test('a failed step and a failed relaunch are both reported', async () => {

@@ -44,7 +44,7 @@ Mint a token at <https://www.facebook.com/whitehat/fbdl/generate_api_token>. Tok
 * **Java 17** to build from source. Burp supplies its own JVM to run the extension.
 * **Node 22.19.0** or newer, for the MCP servers only.
 * **An MCP client** for the agent side: Muse Code, Claude Code, or anything speaking MCP over stdio.
-* **[idb](https://fbidb.io/)** and an iOS simulator, or `adb` and an Android device with a debuggable app or `adb root`, for local whitehat configuration.
+* **[idb](https://fbidb.io/)**, an iOS simulator and a simulator build of the app, or `adb` and an Android device with a debuggable app, `adb root` or `su`, for local whitehat configuration.
 
 macOS and Linux are what the docs assume. The extension is a jar and the servers are Node, so Windows works too. Only the paths differ.
 

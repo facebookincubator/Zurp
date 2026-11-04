@@ -107,6 +107,24 @@ export class Idb {
     );
   }
 
+  async appWrite(
+    bundleId: string,
+    path: string,
+    contents: Buffer,
+    udid: string | undefined,
+  ): Promise<void> {
+    await this.run(
+      this.executable,
+      this.#udidArgs(['file', 'write'], udid, [
+        '--application',
+        '--reason',
+        'install the proxy root certificate',
+        `${bundleId}/${path}`,
+      ]),
+      contents,
+    );
+  }
+
   #targetArgs(command: 'set', target: PreferenceTarget, tail: string[]): string[] {
     return this.#udidArgs([command, '--domain', target.bundleId], target.udid, tail);
   }

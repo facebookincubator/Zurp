@@ -88,8 +88,9 @@ bug-bounty-research requires or works with
 
 * **Node 22.19.0 or newer**, and npm.
 * **An MCP client** — Muse Code, Claude Code, or anything else that speaks MCP over stdio.
-* For local device configuration, **[idb](https://fbidb.io/)** with an iOS simulator, or `adb`
-  with a debuggable Android app or a root adb shell (`adb root`).
+* For local device configuration, **[idb](https://fbidb.io/)** with an iOS simulator and a
+  simulator build of the app, or `adb` with a debuggable Android app, a root adb shell
+  (`adb root`), or `su` on a rooted device.
 * **A bug bounty researcher API token.** Mint one at
   <https://www.facebook.com/whitehat/fbdl/generate_api_token> — you must be logged in to
   facebook.com for the mint to work. Tokens last 60 days.
@@ -202,7 +203,7 @@ Muse Code takes them one at a time:
 
 ```bash
 cd ~/.local/share/zurp/bug-bounty-research
-for skill in meta-context sparta use-fbdl-mcp generate-fbdl validate-fbdl; do
+for skill in meta-context sparta use-fbdl-mcp generate-fbdl validate-fbdl whitehat-device; do
   muse skills install "skills/$skill" --scope user
 done
 ```
@@ -221,21 +222,41 @@ node ~/.local/share/zurp/bug-bounty-research/dist/fbdl/index.js
 ### Enabling whitehat inspection on local mobile apps
 
 `whitehat_configure` turns whitehat inspection on or off for Facebook, Instagram, Messenger and
-Threads, then restarts the app. It needs either:
+Threads, then restarts the app. The [`whitehat-device`](skills/whitehat-device/SKILL.md) skill
+walks an agent through the whole setup. It is offered as is.
 
-* an iOS simulator running a simulator build of the app, through `idb` (App Store builds do not
-  run on simulators); or
-* an Android device or emulator through `adb`, with a debuggable build or a root adb shell. For
-  store builds, use an emulator image without Google Play and run `adb root`.
+* **Android** works on any device or emulator through `adb`, with a debuggable build, `adb root`,
+  or `su` on a rooted phone (grant root to Shell when prompted). For store builds on an emulator,
+  use a Google APIs system image, not Google Play, and install the app with `adb install-multiple`.
+* **iOS** relies on an iOS simulator and a simulator build of the app, through `idb`. App Store
+  builds do not run on simulators and simulator builds are not publicly distributed, so in
+  practice this path is for engagements where one is provided, such as private engagements.
 
 It enables the app's whitehat settings and writes the same certificate settings as the in-app
 Whitehat Settings screen. `enabled: false` turns inspection off and removes the tool's overrides.
 `duration_seconds` limits inspection on Android and on Threads for iOS (24 hours by default, 7 days
 at most). Instagram and Threads on iOS need `account_id`, the logged-in Instagram user id.
 
-The tool does **not** configure a proxy or install a certificate. Set up the proxy and install its
-CA first (in the user store on Android). Facebook and Threads on iOS also need the proxy's root
-imported in the app's Whitehat Settings.
+The tool never configures the proxy itself. On iOS, pass `ca_certificate_path` (PEM or DER) and it
+installs the proxy CA where the apps read it, `Library/Application Support/ProxyCACert.der` in the
+app's container, and in the simulator keychain. On Android, install the CA in the user store
+yourself.
+
+#### Jailbroken iOS
+
+The tool does not support jailbroken devices. A rough outline of the manual equivalent, untested
+and offered as is:
+
+1. Install the proxy CA and trust it in Settings → General → About → Certificate Trust Settings.
+2. With the app stopped, add its whitehat MobileConfig override to `mc_overrides.json` in its app
+   group container. The namespaces and paths are in
+   [`src/device/profiles.ts`](src/device/profiles.ts) and
+   [`src/device/mobileconfig.ts`](src/device/mobileconfig.ts). This makes the in-app Whitehat
+   Settings screen visible.
+3. Turn inspection on in Whitehat Settings and import the proxy root there, or by hand: copy the CA
+   as DER to `Library/Application Support/ProxyCACert.der` in the app's data container and set the
+   boolean `FBWhitehatSSLPinningBypass` in the app's preferences.
+4. Kill and relaunch the app. Both settings are read at launch.
 
 ### Verifying it end to end
 

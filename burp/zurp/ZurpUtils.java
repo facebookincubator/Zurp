@@ -51,6 +51,24 @@ public class ZurpUtils {
    */
   public static final Pattern AD_ACCOUNT_PATTERN = Pattern.compile("\\bact_([1-9]\\d{10,})\\b");
 
+  /**
+   * Hosts an FBDL replay legitimately targets: the in-scope Meta app properties. Deliberately
+   * broader than {@link #isMetaUrl} (facebook.com|meta.com), because FBDL test environments are
+   * replayed against Instagram, WhatsApp, Messenger and Threads too, and gating substitution on
+   * isMetaUrl would silently stop filling placeholders for those. The set mirrors Meta Bug Bounty
+   * scope; adjust it there if scope changes.
+   */
+  public static final Pattern FBDL_HOST_PATTERN =
+      Pattern.compile(
+          "https?://([a-zA-Z0-9.-]+\\.)?(facebook\\.com|fb\\.com|fb\\.me|thefacebook\\.com"
+              + "|meta\\.com|meta\\.ai|instagram\\.com|threads\\.(com|net)"
+              + "|whatsapp\\.(com|net)|messenger\\.com|oculus\\.com)(/.*)?");
+
+  /** True for the Meta app properties an FBDL replay may target. */
+  public static boolean isFbdlSubstitutionHost(String url) {
+    return url != null && FBDL_HOST_PATTERN.matcher(url).matches();
+  }
+
   public static boolean isMetaUrl(String url) {
     Matcher matcherExclude = ZurpUtils.EXCLUDE_URL_PATTERN.matcher(url);
     if (matcherExclude.matches()) {

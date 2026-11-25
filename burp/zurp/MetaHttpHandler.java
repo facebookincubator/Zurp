@@ -50,7 +50,19 @@ class MetaHttpHandler implements HttpHandler {
   /** Returns null when the request should be forwarded untouched. */
   private HttpRequest maybeRewriteFbdl(HttpRequest request) {
     try {
+      // Confine FBDL placeholder substitution to the Meta app properties a replay legitimately
+      // targets, mirroring the CSRF pass's host gate. Values a run minted (a test user's uid, a
+      // page id, a test-account password) must not be substituted into a request bound for an
+      // unrelated host. Broader than isMetaUrl on purpose: FBDL envs are replayed against
+      // Instagram, WhatsApp, Messenger and Threads, which isMetaUrl excludes.
+      if (!ZurpUtils.isFbdlSubstitutionHost(request.url())) {
+        return null;
+      }
       return FbdlRewriter.rewrite(request);
+    } catch (MalformedRequestException e) {
+      // Burp raises this for a request it cannot parse a URL from. Routine on live traffic and not
+      // one we could rewrite anyway, so stay silent rather than fill the log.
+      return null;
     } catch (Exception e) {
       // Same rule as the CSRF pass: this is on the request path for every proxied request, so an
       // unexpected request shape must not break the researcher's traffic.
